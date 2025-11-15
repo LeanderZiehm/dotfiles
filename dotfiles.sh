@@ -3,11 +3,12 @@ set -euo pipefail
 
 SCRIPT_DIR="$(dirname "$(realpath "$0")")"
 DOTFILES_DIR="$SCRIPT_DIR"   # copy INTO this directory
+#"~/.config/nvim"
 
 DOTFILES=(
     "~/.config/i3"
-    "~/.config/nvim"
     "~/.zshrc"
+    "~/.vimrc"
 )
 
 #echo "[INFO] Sync started"
