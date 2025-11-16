@@ -11,8 +11,10 @@ DOTFILES=(
     "~/.vimrc"
 )
 
-#echo "[INFO] Sync started"
-#echo "[INFO] Target directory: $DOTFILES_DIR"
+GIT_MODE=false
+if [[ "${1:-}" == "git" ]]; then
+    GIT_MODE=true
+fi
 
 for item in "${DOTFILES[@]}"; do
     expanded_item=$(eval echo "$item")
@@ -28,12 +30,30 @@ for item in "${DOTFILES[@]}"; do
     # Full destination inside dotfiles/
     dest="$DOTFILES_DIR/sync/$rel_path"
 
-    #echo "[INFO] Copying $expanded_item → $dest"
-
     mkdir -p "$(dirname "$dest")"
     cp -r "$expanded_item" "$dest"
 
     echo "+ Synced: $rel_path"
 done
 
-#echo "[INFO] Sync complete"
+if command -v git &>/dev/null; then
+    cd "$DOTFILES_DIR" || exit 1
+
+    # Get the list of changed files
+    changed_files=$(git diff --name-only)
+
+    if [[ -n "$changed_files" ]]; then
+        echo "[INFO] Files changed:"
+        echo "$changed_files"
+    else
+        echo "[INFO] No changes detected."
+    fi
+fi
+
+if [[ "$GIT_MODE" == true ]]; then
+    cd "$DOTFILES_DIR"
+    git add .
+    git commit -m "sync dotfiles: $(date +'%Y-%m-%d %H:%M:%S')" || echo "No changes to commit"
+    git push
+    echo "[INFO] Changes committed and pushed to git"
+fi
