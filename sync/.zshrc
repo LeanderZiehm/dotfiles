@@ -121,3 +121,5 @@ source ~/miniconda3/bin/activate
 
 
 alias dotfiles='/home/user/stuff/dotfiles/dotfiles.sh'
+
+xset b off

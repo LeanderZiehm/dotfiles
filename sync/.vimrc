@@ -32,6 +32,9 @@ filetype plugin indent on
 "koehler  lunaperche  morning  murphy  pablo  peachpuff  quiet  retrobox  ron
 "shine slate  sorbet  torte  unokai  wildcharm  zaibatsu  zellner     
 
+" In normal mode, press # to comment the current line
+nnoremap # I#<Esc>
+"nnoremap # :s/^#\?/#/<CR>
 
 
 " CHATGPT
