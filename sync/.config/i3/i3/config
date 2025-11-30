@@ -53,9 +53,12 @@ bindsym $mod+d exec --no-startup-id dmenu_run
 # bindcode $mod+40 exec --no-startup-id i3-dmenu-desktop
 
 bindsym $mod+r exec --no-startup-id rofi -show drun
-bindsym $mod+c exec --no-startup-id rofi -show run
+bindsym $mod+c exec --no-startup-id code
+#bindsym $mod+v exec --no-startup-id rofi -show run
+bindsym $mod+n exec --no-startup-id wezterm -e vim ~/notes/daily$(date +%Y_%m_%d).md
+bindsym $mod+t exec --no-startup-id wezterm -e vim ~/notes/todo.md
+#bindsym $mod+s exec --no-startup-id vim ~/notes/spelling.md
 bindsym $mod+g exec --no-startup-id google-chrome-stable
-
 bindsym $mod+p exec --no-startup-id flameshot gui --clipboard --path ~/Pictures/Screenshots
 #bindsym $mod+g exec --no-startup-id "rofi -modi windowcd,window -show windowcd"
 #bindsym $mod+g exec --no-startup-id rofi -modi windowcd,window -show windowcd

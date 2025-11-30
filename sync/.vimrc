@@ -8,7 +8,7 @@ set clipboard=unnamedplus
 set is 
 set hls
 set relativenumber
-
+set number
 " Wildmenu & recursive search
 set wildmenu
 set wildmode=longest:full,full
