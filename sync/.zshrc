@@ -126,3 +126,7 @@ xset b off
 
 export PATH="$PATH:/home/user/.local/bin/"
 
+# store the command history forever 
+HISTFILE=~/.zsh_history
+HISTSIZE=999999999
+SAVEHIST=$HISTSIZE

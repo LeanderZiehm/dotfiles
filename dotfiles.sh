@@ -9,6 +9,7 @@ DOTFILES=(
     "~/.config/i3"
     "~/.zshrc"
     "~/.vimrc"
+    "~/.config/dunst"
 )
 
 GIT_MODE=false
