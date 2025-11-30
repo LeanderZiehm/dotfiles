@@ -33,6 +33,7 @@ bindsym XF86AudioMicMute exec --no-startup-id pactl set-source-mute @DEFAULT_SOU
 
 
 # DISABLE THE BILD UP AND BUID DOWD buttons close to the arrow keys on my legion laptop cuz I missclick them often and never actually want to use them. 
+# xev and xmodmap -pke
 #keycode 112 = Prior NoSymbol Prior
 #keycode 117 = Next NoSymbol Next
 bindsym Next exec --nostartup-id 
