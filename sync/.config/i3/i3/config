@@ -211,3 +211,4 @@ bar {
 #exec --no-startup-id sh -c 'i3-msg "workspace number 5"; wezterm -e vim ~/notes/todo.md'
 #exec --no-startup-id sh -c 'i3-msg "workspace number 4"; wezterm -e vim ~/notes/$(date +%Y_%m_%d).md'
 exec_always --no-startup-id dunst -config ~/.config/dunst/dunstrc
+exec_always --no-startup-id  ~/bin/i3-battery-warning

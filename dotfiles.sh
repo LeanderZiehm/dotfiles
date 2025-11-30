@@ -10,6 +10,7 @@ DOTFILES=(
     "~/.zshrc"
     "~/.vimrc"
     "~/.config/dunst"
+    "~/bin"
 )
 
 GIT_MODE=false
