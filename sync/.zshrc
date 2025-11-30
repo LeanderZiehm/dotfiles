@@ -123,3 +123,6 @@ source ~/miniconda3/bin/activate
 alias dotfiles='/home/user/dotfiles/dotfiles.sh'
 
 xset b off
+
+export PATH="$PATH:/home/user/.local/bin/"
+
