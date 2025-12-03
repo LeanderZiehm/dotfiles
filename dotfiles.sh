@@ -11,6 +11,7 @@ DOTFILES=(
     "~/.vimrc"
     "~/.config/dunst"
     "~/bin"
+    "~/.config/nvim"
 )
 
 GIT_MODE=false
