@@ -72,3 +72,12 @@ export PATH="$PATH:/home/user/bin/"
 HISTFILE=~/.zsh_history
 HISTSIZE=999999999
 SAVEHIST=$HISTSIZE
+export PATH="$HOME/bin:$PATH"
+
+# pnpm
+export PNPM_HOME="/home/user/.local/share/pnpm"
+case ":$PATH:" in
+  *":$PNPM_HOME:"*) ;;
+  *) export PATH="$PNPM_HOME:$PATH" ;;
+esac
+# pnpm end

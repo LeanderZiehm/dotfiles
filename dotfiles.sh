@@ -12,6 +12,7 @@ DOTFILES=(
     "~/.config/dunst"
     "~/bin"
     "~/.config/nvim"
+    "~/.config/hypr"
 )
 
 GIT_MODE=false
