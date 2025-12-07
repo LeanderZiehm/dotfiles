@@ -10,7 +10,7 @@ DOTFILES=(
     "~/.zshrc"
     "~/.vimrc"
     "~/.config/dunst"
-    "~/bin"
+    "~/bin/i3-battery-warning"
     "~/.config/nvim"
     "~/.config/hypr"
 )
