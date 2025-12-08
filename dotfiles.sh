@@ -13,6 +13,7 @@ DOTFILES=(
     "~/bin/i3-battery-warning"
     "~/.config/nvim"
     "~/.config/hypr"
+    "~/.config/kitty"
 )
 
 GIT_MODE=false
