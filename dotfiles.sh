@@ -30,13 +30,23 @@ for item in "${DOTFILES[@]}"; do
     fi
 
     # Everything after $HOME/ (e.g. ".config/i3" or ".zshrc")
-    rel_path="${expanded_item/#$HOME\//}"
+#    rel_path="${expanded_item/#$HOME\//}"
 
     # Full destination inside dotfiles/
-    dest="$DOTFILES_DIR/sync/$rel_path"
+ #   dest="$DOTFILES_DIR/sync/$rel_path"
 
-    mkdir -p "$(dirname "$dest")"
-    cp -r "$expanded_item" "$dest"
+  #  mkdir -p "$(dirname "$dest")"
+   # cp -r "$expanded_item" "$dest"
+    rel_path="${expanded_item/#$HOME\//}"
+
+    # parent directory of destination
+    dest_dir="$DOTFILES_DIR/sync/$(dirname "$rel_path")"
+    mkdir -p "$dest_dir"
+
+    # full final location
+    name=$(basename "$expanded_item")
+
+    cp -r "$expanded_item" "$dest_dir/$name"
 
     echo "+ Synced: $rel_path"
 done
