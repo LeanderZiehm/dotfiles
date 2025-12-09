@@ -81,6 +81,46 @@ case ":$PATH:" in
   *) export PATH="$PNPM_HOME:$PATH" ;;
 esac
 # pnpm end
-#
-alias update='sudo -v && yay -Syu --noconfirm --sudoloop --needed --batchinstall'
-
+pac() {
+    case "$1" in
+        install)
+            shift
+            sudo pacman -S "$@"
+            ;;
+        update)
+            shift
+            sudo pacman -Syu "$@"
+            ;;
+        remove)
+            shift
+            sudo pacman -Rs "$@"
+            ;;
+        clean)
+            sudo pacman -Rns $(pacman -Qtdq)
+            ;;
+        installed)
+            shift
+            # Default: explicitly installed packages
+            if [[ "$1" == "--all" ]]; then
+                pacman -Q
+            elif [[ "$1" == "--count-all" ]]; then
+                pacman -Q | wc -l
+            elif [[ "$1" == "--count" ]]; then
+                pacman -Qe | wc -l
+            elif [[ "$1" == "--desc" ]]; then
+                pacman -Qi | awk '/^Name/{name=$3} /^Installed Size/{size=$4} END{print name,size}' | sort -nrk2
+                # More reliable: we'll fix below
+            else
+                pacman -Qe
+            fi
+            ;;
+        *)
+            echo "pac usage:"
+            echo "  pac install <pkg>"
+            echo "  pac update"
+            echo "  pac remove <pkg>"
+            echo "  pac clean"
+            echo "  pac installed [--all|--count|--desc]"
+            ;;
+    esac
+}
