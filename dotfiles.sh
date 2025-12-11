@@ -14,6 +14,7 @@ DOTFILES=(
     "~/.config/nvim"
     "~/.config/hypr"
     "~/.config/kitty"
+    "~/.config/flameshot"
 )
 
 GIT_MODE=false
