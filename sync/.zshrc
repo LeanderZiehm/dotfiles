@@ -124,3 +124,12 @@ pac() {
             ;;
     esac
 }
+
+
+
+
+#export PATH="/home/user/.local/share/gem/ruby/3.4.0/bin:$PATH"
+export PATH="$HOME/.rbenv/bin:$PATH"
+eval "$(rbenv init - zsh)"
+
+
