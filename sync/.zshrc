@@ -132,4 +132,7 @@ pac() {
 export PATH="$HOME/.rbenv/bin:$PATH"
 eval "$(rbenv init - zsh)"
 
+#export PATH=$PATH:$(go env GOPATH)/bin
+export PATH="$HOME/go/bin:$PATH"
 
+export PATH="$HOME/bin/commands:$PATH"

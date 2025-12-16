@@ -1,14 +1,63 @@
+" [Leander] In normal mode, press # to comment the current line
+nnoremap # I#<Esc>
+
+
+
+
+"set scrolloff = 10
+set scrolloff=10
+
 " Disable Vi compatibility
 colorscheme unokai " wildcharm
 set nocompatible
-
 " Clipboard
 set clipboard=unnamedplus
-
 set is 
 set hls
-set relativenumber
+"set relativenumber
 set number
+
+" Key mappings
+nnoremap <C-p> :find<Space>
+nnoremap <C-S-P> :vimgrep /<C-r>=expand("<cword>")<CR>/ **/*<CR>:copen<CR>
+syntax on
+filetype plugin indent on
+
+"blue  darkblue  default  delek  desert  elflord  evening  habamax  industry
+"koehler  lunaperche  morning  murphy  pablo  peachpuff  quiet  retrobox  ron
+"shine slate  sorbet  torte  unokai  wildcharm  zaibatsu  zellner     
+
+"nnoremap # :s/^#\?/#/<CR>
+" Case-insensitive unless uppercase used
+set ignorecase
+set smartcase
+
+" Incremental search
+set incsearch
+set hlsearch
+
+" Persistent undo
+"set undofile
+"set undodir=~/.vim/undodir
+" Backup and swap files in a separate directory
+"set backupdir=~/.vim/backup//
+"set directory=~/.vim/swap//
+"set backup
+"set swapfile
+" Better indentation
+set smartindent
+set autoindent
+set tabstop=4
+set shiftwidth=4
+set expandtab
+set showmatch
+set cursorline
+set ruler
+" Highlight current line
+hi CursorLine cterm=none ctermbg=236 guibg=Grey20
+
+
+
 " Wildmenu & recursive search
 set wildmenu
 set wildmode=longest:full,full
@@ -19,9 +68,6 @@ set path+=**
  " autocmd!
  " autocmd TextYankPost * silent! lua vim.highlight.on_yank({higroup='Yanked', timeout=300})
 "augroup END
-"
-"
-"
 "
 "###################
 set laststatus=2
@@ -68,102 +114,4 @@ hi User7 guifg=#ffffff  guibg=#880c0e gui=bold
 hi User8 guifg=#ffffff  guibg=#5b7fbb
 hi User9 guifg=#ffffff  guibg=#810085
 hi User0 guifg=#ffffff  guibg=#094afe
-
-" Key mappings
-nnoremap <C-p> :find<Space>
-nnoremap <C-S-P> :vimgrep /<C-r>=expand("<cword>")<CR>/ **/*<CR>:copen<CR>
-syntax on
-filetype plugin indent on
-
-"blue  darkblue  default  delek  desert  elflord  evening  habamax  industry
-"koehler  lunaperche  morning  murphy  pablo  peachpuff  quiet  retrobox  ron
-"shine slate  sorbet  torte  unokai  wildcharm  zaibatsu  zellner     
-
-" In normal mode, press # to comment the current line
-nnoremap # I#<Esc>
-"nnoremap # :s/^#\?/#/<CR>
-
-
-" CHATGPT
-
-" Jump around wrapped lines naturally
-"set linebreak
-"set showbreak=↪\ 
-
-" Faster scrolling
-"nnoremap <C-d> 5j
-"nnoremap <C-u> 5k
-
-
-" Case-insensitive unless uppercase used
-set ignorecase
-set smartcase
-
-" Incremental search
-set incsearch
-set hlsearch
-
-
-" Persistent undo
-"set undofile
-"set undodir=~/.vim/undodir
-
-" Backup and swap files in a separate directory
-"set backupdir=~/.vim/backup//
-"set directory=~/.vim/swap//
-"set backup
-"set swapfile
-
-
-" Better indentation
-set smartindent
-set autoindent
-set tabstop=4
-set shiftwidth=4
-set expandtab
-
-" Show matching brackets
-set showmatch
-
-
-" Simple statusline
-
-" Show tabs as spaces
-"set list
-"set listchars=tab:▸\ ,trail:·
-" Define the highlight group
-"highlight Yanked ctermbg=yellow guibg=yellow
-
-" Clear any existing autocmds in this group
-"augroup YankHighlight
- " autocmd!
-
-  " Highlight yanked text
- " autocmd TextYankPost * call s:HighlightYank()
-"augroup END
-
-" Function to temporarily highlight yanked text
-"function! s:HighlightYank() abort
- " if v:event.operator ==# 'y' && v:event.regname !=# ''
-    " Get the range of the yank
-  "  silent! execute 'normal! gvy'
-    " Highlight the last yanked text with the Yanked group
-   " silent! execute 'match Yanked /\%' . line("'<") . 'l\%' . col("'<") . 'c.*\%' . line("'>") . 'l\%' . col("'>") . 'c/'
-    " Clear the highlight after 300ms
-    "call timer_start(300, {-> execute('match none')})
-  "endif
-"endfunction
-
-
-
-
-" Cursor line and column
-set cursorline
-"set cursorcolumn
-
-" Show line and column in statusline
-set ruler
-
-" Highlight current line
-hi CursorLine cterm=none ctermbg=236 guibg=Grey20
 
