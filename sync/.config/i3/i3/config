@@ -27,11 +27,18 @@ bindsym $mod+d exec --no-startup-id rofi -show run
 # bindcode $mod+40 exec --no-startup-id i3-dmenu-desktop
 
 bindsym $mod+s exec --no-startup-id wezterm start --cwd ~/stuff/
-bindsym $mod+r exec --no-startup-id wezterm -e vim ~/stuff/repos/current-repos/
+#bindsym $mod+r exec --no-startup-id wezterm -e vim ~/stuff/repos/current-repos/
+#bindsym $mod+r exec --no-startup-id wezterm -e tuff/repos/current-repos/{}
+bindsym $mod+r exec --no-startup-id wezterm -e sh -c 'selected=$(ls ~/stuff/repos/current-repos | fzf) && [ -n "$selected" ] && code ~/stuff/repos/current-repos/"$selected"'
+
 bindsym $mod+c exec --no-startup-id code
 #bindsym $mod+v exec --no-startup-id rofi -show run
 bindsym $mod+n exec --no-startup-id wezterm -e vim ~/notes/daily$(date +%Y_%m_%d).md
 bindsym $mod+t exec --no-startup-id wezterm -e vim ~/notes/todo.md
+#bindsym $mod+o exec --no-startup-id wezterm start; grab_focus; floating enable
+#&& i3-msg "[id=$(xdotool getactivewindow)] floating enable"
+
+
 #bindsym $mod+s exec --no-startup-id vim ~/notes/spelling.md
 bindsym $mod+g exec --no-startup-id google-chrome-stable
 bindsym $mod+p exec --no-startup-id flameshot gui --clipboard --path ~/Pictures/Screenshots
