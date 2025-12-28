@@ -3,7 +3,11 @@
 "# personal settings
 let mapleader = " "
 
+" make vim more vscode like with keyboard shortcuts
+nnoremap <C-Down> :m .+1<CR>==
 
+" Move current line up with Ctrl + Up
+nnoremap <C-Up> :m .-2<CR>==
 
 " File Explorer
 nnoremap <C-b> :Lex<Esc>
@@ -11,7 +15,8 @@ nnoremap <leader>e :Lex<Esc>
 nnoremap <leader>n :Lex<Esc>
 nnoremap <leader>dd :Lexplore %:p:h<CR>
 
-" [Leander] In normal mode, press # to comment the current line
+" press # to comment the current line (currently is not file extension aware
+" so it only works for filetypes using hashtag comments)
 nnoremap # I#<Esc>
 
 

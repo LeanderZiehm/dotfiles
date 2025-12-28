@@ -6,18 +6,17 @@ DOTFILES_DIR="$SCRIPT_DIR"   # copy INTO this directory
 #"~/.config/nvim"
 
 DOTFILES=(
-    "~/.config/i3"
-    "~/.zshrc"
     "~/.vimrc"
-    "~/.config/dunst"
-    "~/bin/i3-battery-warning"
     "~/.config/nvim"
+    "~/.config/i3"
     "~/.config/hypr"
+    "~/.zshrc"
+    "~/.config/Code/User/keybindings.json"
+    "~/.config/Code/User/settings.json"
+    "~/.config/Code/User/profiles/"
+    "~/.config/dunst"
     "~/.config/kitty"
     "~/.config/flameshot"
-    "~/.config/Code/User/settings.json"
-    "~/.config/Code/User/keybindings.json"
-    "~/.config/Code/User/profiles/"
 )
 
 GIT_MODE=false
