@@ -1,33 +1,21 @@
+"packadd vimwiki
+
+"# personal settings
+let mapleader = " "
+
+
+
+" File Explorer
+nnoremap <C-b> :Ex<Esc>
+
 " [Leander] In normal mode, press # to comment the current line
 nnoremap # I#<Esc>
 
 
-
-
-"set scrolloff = 10
-set scrolloff=10
-
-" Disable Vi compatibility
-colorscheme unokai " wildcharm
-set nocompatible
-" Clipboard
-set clipboard=unnamedplus
-set is 
-set hls
-"set relativenumber
-set number
-
-" Key mappings
-nnoremap <C-p> :find<Space>
-nnoremap <C-S-P> :vimgrep /<C-r>=expand("<cword>")<CR>/ **/*<CR>:copen<CR>
+"# Settings 
 syntax on
-filetype plugin indent on
-
-"blue  darkblue  default  delek  desert  elflord  evening  habamax  industry
-"koehler  lunaperche  morning  murphy  pablo  peachpuff  quiet  retrobox  ron
-"shine slate  sorbet  torte  unokai  wildcharm  zaibatsu  zellner     
-
-"nnoremap # :s/^#\?/#/<CR>
+filetype indent on
+set nocompatible
 " Case-insensitive unless uppercase used
 set ignorecase
 set smartcase
@@ -36,15 +24,19 @@ set smartcase
 set incsearch
 set hlsearch
 
-" Persistent undo
-"set undofile
-"set undodir=~/.vim/undodir
-" Backup and swap files in a separate directory
-"set backupdir=~/.vim/backup//
-"set directory=~/.vim/swap//
-"set backup
-"set swapfile
-" Better indentation
+
+"set scrolloff = 10
+set scrolloff=10
+
+" Disable Vi compatibility
+colorscheme unokai " wildcharm
+" Clipboard
+set clipboard=unnamedplus
+set is 
+set hls
+"set relativenumber
+set number
+
 set smartindent
 set autoindent
 set tabstop=4
@@ -62,14 +54,49 @@ hi CursorLine cterm=none ctermbg=236 guibg=Grey20
 set wildmenu
 set wildmode=longest:full,full
 set path+=**
+" Key mappings
+"nnoremap <C-p> :find<Space>
+"nnoremap <C-S-P> :vimgrep /<C-r>=expand("<cword>")<CR>/ **/*<CR>:copen<CR>
+"blue  darkblue  default  delek  desert  elflord  evening  habamax  industry
+"koehler  lunaperche  morning  murphy  pablo  peachpuff  quiet  retrobox  ron
+"shine slate  sorbet  torte  unokai  wildcharm  zaibatsu  zellner     
+
+"nnoremap # :s/^#\?/#/<CR>
+" Persistent undo
+"set undofile
+"set undodir=~/.vim/undodir
+" Backup and swap files in a separate directory
+"set backupdir=~/.vim/backup//
+"set directory=~/.vim/swap//
+"set backup
+"set swapfile
+" Better indentation
 
 " Yank highlight
 "augroup YankHighlight
  " autocmd!
  " autocmd TextYankPost * silent! lua vim.highlight.on_yank({higroup='Yanked', timeout=300})
 "augroup END
+
+" PLUGINS 
 "
-"###################
+" 1. VIM WIKI
+"# vim vimwiki settings
+set nocompatible
+filetype plugin on
+syntax on
+
+
+let g:vimwiki_list = [{'path': '~/dev/wiki/',
+                      \ 'syntax': 'markdown', 'ext': 'md'}]
+let g:vimwiki_global_ext = 0
+
+
+
+
+
+
+"# Status Line
 set laststatus=2
 set statusline=
 set statusline=%f\ %y\ %m\ %r\ [%{&ff}]\ [%l,%c]
@@ -94,7 +121,11 @@ set statusline+=%5*\ %{&spelllang}\%{HighlightSearch()}\  "Spellanguage & Highli
 set statusline+=%8*\ %=\ row:%l/%L\ (%03p%%)\             "Rownumber/total (%)
 set statusline+=%9*\ col:%03c\                            "Colnr
 set statusline+=%0*\ \ %m%r%w\ %P\ \                      "Modified? Readonly? Top/bot.
-"Highlight on? function:
+
+
+
+
+"Highlight ????
 
 function! HighlightSearch()
   if &hls

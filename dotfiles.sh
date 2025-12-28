@@ -15,6 +15,9 @@ DOTFILES=(
     "~/.config/hypr"
     "~/.config/kitty"
     "~/.config/flameshot"
+    "~/.config/Code/User/settings.json"
+    "~/.config/Code/User/keybindings.json"
+    "~/.config/Code/User/profiles/"
 )
 
 GIT_MODE=false
