@@ -72,7 +72,8 @@ fi
 if [[ "$GIT_MODE" == true ]]; then
     cd "$DOTFILES_DIR"
     git add .
-    git commit -m "sync dotfiles: $(date +'%Y-%m-%d %H:%M:%S')" || echo "No changes to commit"
+#    git commit -m "sync dotfiles: $(date +'%Y-%m-%d %H:%M:%S')" || echo "No changes to commit"
+    git commit -m "sync" || echo "No changes to commit"
     git push
     echo "[INFO] Changes committed and pushed to git"
 fi
