@@ -6,7 +6,10 @@ let mapleader = " "
 
 
 " File Explorer
-nnoremap <C-b> :Ex<Esc>
+nnoremap <C-b> :Lex<Esc>
+nnoremap <leader>e :Lex<Esc>
+nnoremap <leader>n :Lex<Esc>
+nnoremap <leader>dd :Lexplore %:p:h<CR>
 
 " [Leander] In normal mode, press # to comment the current line
 nnoremap # I#<Esc>
@@ -94,6 +97,62 @@ let g:vimwiki_global_ext = 0
 
 
 
+let g:netrw_keepdir = 0
+let g:netrw_winsize = 20
+let g:netrw_banner = 0
+"let g:netrw_list_hide = '\(^\|\s\s\)\zs\.\S\+'
+"let g:netrw_hide = 1
+
+let g:netrw_localcopydircmd = 'cp -r'
+
+augroup netrw_mark_highlight
+  autocmd!
+  autocmd ColorScheme * hi! link netrwMarkFile Search
+augroup END
+
+augroup netrw_mapping
+  autocmd!
+  autocmd filetype netrw call NetrwMapping()
+augroup END
+
+" Function to define buffer-local keymaps for Netrw
+function! NetrwMapping()
+  " Navigation
+  nmap <buffer> H u            " H: Go back in history (like pressing 'u' in Netrw)
+  nmap <buffer> h -^           " h: Go up one directory
+  nmap <buffer> l <CR>         " l: Open directory or file
+
+  nmap <buffer> . gh           " .: Toggle dotfiles
+  nmap <buffer> P <C-w>z       " P: Close the preview window
+
+  nmap <buffer> L <CR>:Lexplore<CR>  " L: Open file and close Netrw
+  nmap <buffer> <Leader>dd :Lexplore<CR> " <Leader>dd: Close Netrw
+
+  " Marks
+  nmap <buffer> <TAB> mf        " TAB: Mark file/directory
+  nmap <buffer> <S-TAB> mF      " Shift+TAB: Unmark all in buffer
+  nmap <buffer> <Leader><TAB> mu " Leader+TAB: Clear all marks
+
+  " File management prefix 'f'
+  nmap <buffer> ff %:w<CR>:buffer #<CR> " ff: Create new file and return to Netrw
+  nmap <buffer> fe R            " fe: Rename file
+  nmap <buffer> fc mc           " fc: Copy marked files
+  nmap <buffer> fC mtmc         " fC: Copy marked files to target directory
+  nmap <buffer> fx mm           " fx: Move marked files
+  nmap <buffer> fX mtmm         " fX: Move marked files to target
+  nmap <buffer> f; mx           " f;: Run external command on marked files
+
+  " Bookmarks
+  nmap <buffer> bb mb           " bb: Create bookmark
+  nmap <buffer> bd mB           " bd: Remove most recent bookmark
+  nmap <buffer> bl gb           " bl: Jump to most recent bookmark
+endfunction
+
+" Call the function automatically whenever a Netrw buffer is opened
+augroup netrw_mapping
+  autocmd!
+  autocmd filetype netrw call NetrwMapping()
+augroup END
 
 
 "# Status Line

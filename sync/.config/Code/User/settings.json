@@ -68,6 +68,7 @@
     "[css]": {
         "editor.defaultFormatter": "esbenp.prettier-vscode"
     },
+    "editor.minimap.enabled": false,
 }
 
 //   //"editor.fontFamily": "monospace, 'Droid Sans Mono', 'monospace'"
