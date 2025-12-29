@@ -113,11 +113,6 @@ autocmd BufEnter $MYVIMRC nnoremap <leader>r :w<CR>:source $MYVIMRC<CR>:echo "vi
 
 :set shortmess-=S
 
-" File Explorer
-nnoremap <C-b> :Lex<Esc>
-nnoremap <leader>e :Lex<Esc>
-nnoremap <leader>n :Lex<Esc>
-" nnoremap <leader>dd :Lexplore %:p:h<CR>
 
 nnoremap <Leader>b :ls<CR>:buffer<Space>
 nnoremap <Leader>f :find <C-d>
@@ -445,14 +440,11 @@ let g:vimwiki_list = [{'path': '~/dev/wiki/',
 let g:vimwiki_global_ext = 0
 
 
-
-
-let g:netrw_keepdir = 0
-let g:netrw_winsize = 20
-let g:netrw_banner = 0
-"let g:netrw_list_hide = '\(^\|\s\s\)\zs\.\S\+'
-"let g:netrw_hide = 1
-let g:netrw_localcopydircmd = 'cp -r'
+" File Explorer
+nnoremap <C-b> :Lex<Esc>
+nnoremap <leader>e :Lex<Esc>
+nnoremap <leader>n :Lex<Esc>
+" nnoremap <leader>dd :Lexplore %:p:h<CR>
 
 " Netrw basic settings
 let g:netrw_keepdir = 0
@@ -461,22 +453,24 @@ let g:netrw_banner = 0
 let g:netrw_localcopydircmd = 'cp -r'
 
 " Highlight for marked files (optional)
-augroup netrw_mark_highlight
-    autocmd!
-    autocmd ColorScheme * hi! link netrwMarkFile Search
-augroup END
+"augroup netrw_mark_highlight
+    "autocmd!
+    "autocmd ColorScheme * hi! link netrwMarkFile Search
+"augroup END
 
 " Function to define buffer-local keymaps for Netrw
 function! NetrwMapping()
     " Navigation
-    nmap <buffer> h -^           " Up one directory
-    nmap <buffer> l <CR>         " Open directory or file
-    nmap <buffer> . gh           " Toggle dotfiles
+    nmap <buffer> h -^           
+    nmap <buffer> l <CR>         
+    nmap <buffer> . gh           
 
     " File/Directory management
-    nmap <buffer> af %:w<CR>:buffer #<CR> " Create new file
-    nmap <buffer> ad :call mkdir(input('New directory name: '), 'p')<CR> " Add directory
-    nmap <buffer> r R            " Rename file/dir
+    nmap <buffer> af %:w<CR>:buffer #<CR>
+    nmap <buffer> ad :call mkdir(input('New directory name: '), 'p')<CR>
+    nmap <buffer> r R         
+
+    nmap <buffer> q :Lex<Esc>
 
     "nmap <buffer> fx mm           " Move marked files
     "nmap <buffer> fX mtmm         " Move marked files to target
