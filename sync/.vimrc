@@ -30,7 +30,8 @@ vnoremap <S-Up> :m .-2<CR>==
 " Wildmenu & recursive search
 set wildmenu
 set wildmode=longest:full,full
-set path+=**
+set path=
+"set path+=**
 
 " Case-insensitive unless uppercase used
 set ignorecase
@@ -158,13 +159,13 @@ nnoremap <C-S-P> :vimgrep /<C-r>=expand("<cword>")<CR>/ **/*<CR>:copen<CR>
 
 
 " Helper: show a popup with matches and allow selection
-function! s:PopupSelect(matches) abort
-    if empty(a:matches)
-        echo "No matches found"
-        return ''
-    endif
+"function! s:PopupSelect(matches) abort
+    "if empty(a:matches)
+        "echo "No matches found"
+        "return ''
+    "endif
     " Create popup window
-    let id = popup_create(a:matches, #{
+    "let id = popup_create(a:matches, #{
                 \ minwidth: 50,
                 \ minheight: 10,
                 \ border: [],
@@ -175,50 +176,50 @@ function! s:PopupSelect(matches) abort
                 \ })
     
     " Wait for user to select
-    let choice = input("Enter number to open file (empty to cancel): ")
-    call popup_close(id)
-
-    if choice =~ '^\d\+$' && choice >= 1 && choice <= len(a:matches)
-        return a:matches[choice - 1]
-    endif
-    return ''
-endfunction
-
+    "let choice = input("Enter number to open file (empty to cancel): ")
+    "call popup_close(id)
+"
+    "if choice =~ '^\d\+$' && choice >= 1 && choice <= len(a:matches)
+        "return a:matches[choice - 1]
+    "endif
+    "return ''
+"endfunction
+"
 " Helper: search files recursively in a given path
-function! s:SearchFiles(path) abort
-    let files = split(globpath(a:path, '**/*', 0, 1), "\n")
-    return files
-endfunction
+"function! s:SearchFiles(path) abort
+    "let files = split(globpath(a:path, '**/*', 0, 1), "\n")
+    "return files
+"endfunction
 
 " Main search function with interactive popup
-function! s:FileSearch(path) abort
-    let files = s:SearchFiles(a:path)
-    if empty(files)
-        echo "No files found"
-        return
-    endif
+"function! s:FileSearch(path) abort
+    "let files = s:SearchFiles(a:path)
+    "if empty(files)
+        "echo "No files found"
+        "return
+    "endif
     " Optional: filter by user input
-    let term = input("Search term (leave empty for all): ")
-    if !empty(term)
-        let files = filter(copy(files), {_, v -> v =~ term})
-    endif
-    let selected = s:PopupSelect(files)
-    if !empty(selected)
-        execute "edit " . fnameescape(selected)
-    endif
-endfunction
+    "let term = input("Search term (leave empty for all): ")
+    "if !empty(term)
+        "let files = filter(copy(files), {_, v -> v =~ term})
+    "endif
+    "let selected = s:PopupSelect(files)
+    "if !empty(selected)
+        "execute "edit " . fnameescape(selected)
+    "endif
+"endfunction
 
 " =============================
 " Leader mappings for different scopes
 " =============================
 " fd -> ~/dev
-nnoremap <leader>fd :call <sid>FileSearch(expand('~/dev'))<CR>
+"nnoremap <leader>fd :call <sid>FileSearch(expand('~/dev'))<CR>
 " fc -> ~/.conf
-nnoremap <leader>fc :call <sid>FileSearch(expand('~/.conf'))<CR>
-" ff -> current file directory and subdirs
-nnoremap <leader>ff :call <sid>FileSearch(expand('%:p:h'))<CR>
+"nnoremap <leader>fc :call <sid>FileSearch(expand('~/.conf'))<CR>
+ "ff -> current file directory and subdirs
+"nnoremap <leader>ff :call <sid>FileSearch(expand('%:p:h'))<CR>
 " fF -> home with all subdirs
-nnoremap <leader>fF :call <sid>FileSearch(expand('~'))<CR>
+"nnoremap <leader>fF :call <sid>FileSearch(expand('~'))<CR>
 
 
 
@@ -604,4 +605,3 @@ hi User7 guifg=#ffffff  guibg=#880c0e gui=bold
 hi User8 guifg=#ffffff  guibg=#5b7fbb
 hi User9 guifg=#ffffff  guibg=#810085
 hi User0 guifg=#ffffff  guibg=#094afe
-
