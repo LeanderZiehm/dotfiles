@@ -254,7 +254,7 @@ previous activity=Meta+Shift+A,none,Walk through activities (Reverse)
 repeat_action=none,,Manually Invoke Action on Current Clipboard
 show dashboard=Ctrl+F12,Ctrl+F12,Show Desktop
 show-barcode=none,,Show Barcode…
-show-on-mouse-pos=Meta+V,Meta+V,Show Clipboard Items at Mouse Position
+show-on-mouse-pos=Meta+Ctrl+V\tMeta+Shift+V,Meta+V,Show Clipboard Items at Mouse Position
 switch to next activity=none,,Switch to Next Activity
 switch to previous activity=none,,Switch to Previous Activity
 toggle do not disturb=none,,Toggle do not disturb
@@ -266,13 +266,10 @@ _launch=Meta+C
 _launch=Meta+G
 
 [services][net.local.wezterm-2.desktop]
-_launch=Meta+T
+_launch=Meta+V\tMeta+N\tMeta+O
 
 [services][net.local.wezterm.desktop]
 _launch=Meta+Return
-
-[services][notion.desktop]
-_launch=Meta+N
 
 [services][org.kde.krunner.desktop]
 _launch=Meta+S\tAlt+Space
@@ -281,7 +278,7 @@ _launch=Meta+S\tAlt+Space
 RecordRegion=Meta+Shift+R
 
 [services][org.wezfurlong.wezterm.desktop]
-_launch=Ctrl+Alt+T
+_launch=Ctrl+Alt+T\tMeta+T
 
 [services][systemsettings.desktop]
 _launch=Meta+K\tTools

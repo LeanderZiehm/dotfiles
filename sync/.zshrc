@@ -101,10 +101,11 @@ export PATH="$HOME/bin/commands:$PATH"
 alias nvim-lazy="NVIM_APPNAME=LazyVim nvim"
 alias nvim-chad="NVIM_APPNAME=NvChad nvim"
 alias nvim-astro="NVIM_APPNAME=AstroNvim nvim"
+alias svim="NVIM_APPNAME=SlimNvim nvim"
 
 function nvims() {
-  items=("LazyVim" "NvChad" "AstroNvim")
-  config=$(printf "%s\n" "${items[@]}" | fzf --prompt=" Neovim Config  " --height=~50% --layout=reverse --border --exit-0)
+  items=("LazyVim" "NvChad" "AstroNvim" "SlimNvim")
+  config=$(printf "%s\n" "${items[@]}" | fzf --prompt=" Neovim Config " --height=~50% --layout=reverse --border --exit-0)
   if [[ -z $config ]]; then
     echo "Nothing selected"
     return 0
@@ -114,7 +115,7 @@ function nvims() {
   NVIM_APPNAME=$config nvim $@
 }
 
-bindkey -s ^a "nvims\n"
+#bindkey -s ^a "nvims\n"
 
 # bun completions
 [ -s "/home/user/.bun/_bun" ] && source "/home/user/.bun/_bun"

@@ -1,3 +1,9 @@
+" If you want highlighting,
+
+" todo: multi row commenting (need to figure out how do do functions with
+" multi arguments
+
+
 "# Settings 
 syntax on
 filetype indent on
@@ -6,12 +12,18 @@ set nocompatible
 " enable mouse
 set mouse=a
 
+
 let mapleader = " "
 " make vim more vscode like with keyboard shortcuts
 nnoremap <C-Down> :m .+1<CR>==
-
 " Move current line up with Ctrl + Up
 nnoremap <C-Up> :m .-2<CR>==
+" Move current line down with Shift+Down (normal mode)
+nnoremap <S-Down> :m .+1<CR>==
+" Move current line up with Shift+Up (normal mode)
+nnoremap <S-Up> :m .-2<CR>==
+
+
 
 " File Explorer
 nnoremap <C-b> :Lex<Esc>
@@ -21,8 +33,8 @@ nnoremap <leader>n :Lex<Esc>
 
 nnoremap <Leader>b :ls<CR>:buffer<Space>
 "nnoremap <Leader>f :find <C-d>
-nnoremap <Leader>fl :lcd %:p:h<Bar>echo "Root set to ".getcwd()<Bar>find 
-nnoremap <Leader>fg :find<space>
+nnoremap <Leader>ff :lcd %:p:h<Bar>echo "Root set to ".getcwd()<Bar>find 
+nnoremap <Leader>fF :find<space>
 "# Search
 " Wildmenu & recursive search
 set wildmenu
@@ -36,6 +48,72 @@ set smartcase
 " Incremental search
 set incsearch
 set hlsearch
+
+nnoremap ,p "0p
+nnoremap <Space> o<Esc>
+
+
+"# Persistence
+set viminfo='100,<50,s10,h
+
+" Automatically jump to the last cursor position when reopening a file
+if has("autocmd")
+  au BufReadPost *
+        \ if line("'\"") > 0 && line("'\"") <= line("$") |
+        \   exe "normal! g`\"" |
+        \ endif
+endif
+
+
+
+
+
+
+" Persistent undo setup
+let s:undodir = expand('~/.vim/undo')
+
+" Make sure undo dir exists
+if !isdirectory(s:undodir)
+    call mkdir(s:undodir, 'p')
+endif
+
+" Enable persistent undo
+set undofile
+set undodir=s:undodir
+
+
+"nnoremap # :s/^#\?/#/<CR>
+" Persistent undo
+"set undofile
+"set undodir=~/.vim/undodir
+" Backup and swap files in a separate directory
+"set backupdir=~/.vim/backup//
+"set directory=~/.vim/swap//
+"set backup
+"set swapfile
+" Better indentation
+
+" Yank highlight in vimrc in vim but its not working 
+" Define highlight
+"highlight Yanked ctermbg=yellow ctermfg=black guibg=yellow guifg=black
+
+" Function to highlight yanked text
+"function! HighlightYank()
+  "if v:event.operator ==# 'y'
+     "Highlight the yanked region
+    "let l:matchid = matchadd('Yanked', '\%'.line("'<").'l.*')
+     "Remove the highlight after 300ms
+    "call timer_start(300, { -> matchdelete(l:matchid) })
+  "endif
+"endfunction
+"
+" Autocmd
+"augroup YankHighlight
+  "autocmd!
+  "autocmd TextYankPost * call HighlightYank()
+"augroup END
+
+
 
 
 "# Save
@@ -132,7 +210,6 @@ hi CursorLine cterm=none ctermbg=236 guibg=Grey20
     " doautocmd ColorScheme
 " endif
 
-
 " Comments
 function! ToggleCommentLine(range)
   let l:cs = &commentstring
@@ -157,6 +234,7 @@ function! ToggleCommentLine(range)
       call setline(l:num, substitute(l:line, '^\(\s*\)', '\1' . l:prefix . '', ''))
     endif
   endfor
+  normal! j
 endfunction
 
 " Map normal mode
@@ -164,6 +242,16 @@ nnoremap # :call ToggleCommentLine(line('.'))<CR>
 
 " Map visual mode (doesnt work yet. TODO needs fixing)
 vnoremap # :<C-U>call ToggleCommentLine('<,'>)<CR>
+
+
+
+
+
+
+
+
+
+
 
 nnoremap <leader>h :tab help<space>
 autocmd FileType help nnoremap <buffer> q :tabclose<CR>
@@ -173,7 +261,10 @@ autocmd FileType help nnoremap <buffer> q :tabclose<CR>
 " autoreload vimrc if changed
 "autocmd BufEnter $MYVIMRC nnoremap <buffer> <leader>r :w<CR>:source $MYVIMRC<CR>
 autocmd BufEnter $MYVIMRC nnoremap <leader>r :w<CR>:source $MYVIMRC<CR>:echo "vimrc reloaded"<CR>
-autocmd BufWritePost $MYVIMRC source $MYVIMRC
+"autocmd BufWritePost $MYVIMRC source $MYVIMRC
+
+
+
 
 
 " Key mappings
@@ -186,35 +277,82 @@ nnoremap <C-S-P> :vimgrep /<C-r>=expand("<cword>")<CR>/ **/*<CR>:copen<CR>
 "koehler  lunaperche  morning  murphy  pablo  peachpuff  quiet  retrobox  ron
 "shine slate  sorbet  torte  unokai  wildcharm  zaibatsu  zellner     
 
-"nnoremap # :s/^#\?/#/<CR>
-" Persistent undo
-"set undofile
-"set undodir=~/.vim/undodir
-" Backup and swap files in a separate directory
-"set backupdir=~/.vim/backup//
-"set directory=~/.vim/swap//
-"set backup
-"set swapfile
-" Better indentation
 
-" Yank highlight
-"augroup YankHighlight
- " autocmd!
- " autocmd TextYankPost * silent! lua vim.highlight.on_yank({higroup='Yanked', timeout=300})
-"augroup END
+
+nnoremap <leader>/ :call CenteredCmdlineSearch()<CR>
+
+function! CenteredCmdlineSearch()
+  botright new
+  resize 3
+  execute "normal! q/"
+endfunction
+
+
+
+
 
 " PLUGINS 
 
 
-call plug#begin()
+" Minimal Vim plugin manager using git
+
+"function! InstallPlugin(repo_url)
+     "Extract plugin name from URL
+    "let l:parts = split(a:repo_url, '/')
+    "let l:name = substitute(l:parts[-1], '\.git$', '', '')
+
+    " Set installation directory
+    "let l:dir = expand('~/.vim/pack/plugins/start/' . l:name)
+
+    " Check if plugin already exists
+    "if !isdirectory(l:dir)
+        "echo 'Installing ' . l:name . '...'
+        " Use system git clone
+        "call system(['git', 'clone', a:repo_url, l:dir])
+        "echo l:name . ' installed!'
+    "else
+        "echo l:name . ' already installed.'
+    "endif
+"endfunction
+
+
+"function! InstallPlugin(repo_url, post_install)
+    "let l:parts = split(a:repo_url, '/')
+    "let l:name = substitute(l:parts[-1], '\.git$', '', '')
+    "let l:dir = expand('~/.vim/pack/plugins/start/' . l:name)
+"
+    "if !isdirectory(l:dir)
+        "echo 'Installing ' . l:name . '...'
+        "call system(['git', 'clone', a:repo_url, l:dir])
+        "echo l:name . ' installed!'
+        "if a:post_install != ''
+            "execute a:post_install
+        "endif
+    "else
+        "echo l:name . ' already installed.'
+    "endif
+"endfunction
+
+" Example usage
+"call InstallPlugin('https://github.com/junegunn/fzf.git', 'call fzf#install()')
+
+" List your plugins here
+"call InstallPlugin('https://github.com/vimwiki/vimwiki.git')
+"call InstallPlugin('https://github.com/junegunn/fzf.git')
+"call InstallPlugin('https://github.com/junegunn/fzf.vim.git')
+
+
+"hello
+"
+"call plug#begin()
 
 " List your plugins here
 "Plug 'tpope/vim-sensible'
-Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
-Plug 'junegunn/fzf.vim'
+"Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
+"Plug 'junegunn/fzf.vim'
 "Plug 'vimwiki/vimwiki'
 
-call plug#end()
+"call plug#end()
 
 " 1. VIM WIKI
 "# vim vimwiki settings
