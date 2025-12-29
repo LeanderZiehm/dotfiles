@@ -120,8 +120,8 @@ nnoremap <leader>n :Lex<Esc>
 " nnoremap <leader>dd :Lexplore %:p:h<CR>
 
 nnoremap <Leader>b :ls<CR>:buffer<Space>
-"nnoremap <Leader>f :find <C-d>
-"nnoremap <Leader>ff :lcd %:p:h<Bar>echo "Root set to ".getcwd()<Bar>find 
+nnoremap <Leader>f :find <C-d>
+"nnoremap <Leader>ff :lcd %:p:h<Bar>echo "Root set to ".getcwd()<Bar>find "
 "nnoremap <Leader>fF :find<space>
 
 "nnoremap <C-p> :find<Space>
@@ -469,15 +469,15 @@ augroup END
 " Function to define buffer-local keymaps for Netrw
 function! NetrwMapping()
     " Navigation
+    nmap <buffer> h -^           " Up one directory
     nmap <buffer> l <CR>         " Open directory or file
     nmap <buffer> . gh           " Toggle dotfiles
 
     " File/Directory management
-    nmap <buffer> ff %:w<CR>:buffer #<CR> " Create new file
+    nmap <buffer> af %:w<CR>:buffer #<CR> " Create new file
     nmap <buffer> ad :call mkdir(input('New directory name: '), 'p')<CR> " Add directory
-    nmap <buffer> fe R            " Rename file/dir
+    nmap <buffer> r R            " Rename file/dir
 
-    nmap <buffer> h -^           " Up one directory
     "nmap <buffer> fx mm           " Move marked files
     "nmap <buffer> fX mtmm         " Move marked files to target
     "nmap <buffer> fD :call DeleteMarked()<CR> " Delete marked files/dirs
@@ -550,7 +550,7 @@ set statusline+=%7*\[%n]                                  " buffernr
 set statusline+=%1*\ %<%F\                                " File+path
 set statusline+=%2*\ %y\                                  " FileType
 set statusline+=%8*\ %=\                                 " Right align
-set statusline+=%3*\search:%{g:search_count_status}\ 
+set statusline+=%3*\-%{g:search_count_status}-\ 
 set statusline+=%8*\ %=\                                 " Right align
 set statusline+=%8*\ %l/%L\                               " Rownumber/total
 
@@ -596,12 +596,12 @@ set statusline+=%8*\ %l/%L\                               " Rownumber/total
 "endfunction
 "Colors (adapted from ligh2011.vim):
 
-hi User1 guifg=#ffdad8  guibg=#880c0e
-hi User2 guifg=#000000  guibg=#F4905C
-hi User3 guifg=#292b00  guibg=#f4f597
-hi User4 guifg=#112605  guibg=#aefe7B
-hi User5 guifg=#051d00  guibg=#7dcc7d
-hi User7 guifg=#ffffff  guibg=#880c0e gui=bold
-hi User8 guifg=#ffffff  guibg=#5b7fbb
-hi User9 guifg=#ffffff  guibg=#810085
-hi User0 guifg=#ffffff  guibg=#094afe
+"hi User1 guifg=#ffdad8  guibg=#880c0e
+"hi User2 guifg=#000000  guibg=#F4905C
+"hi User3 guifg=#292b00  guibg=#f4f597
+"hi User4 guifg=#112605  guibg=#aefe7B
+"hi User5 guifg=#051d00  guibg=#7dcc7d
+"hi User7 guifg=#ffffff  guibg=#880c0e gui=bold
+"hi User8 guifg=#ffffff  guibg=#5b7fbb
+"hi User9 guifg=#ffffff  guibg=#810085
+"hi User0 guifg=#ffffff  guibg=#094afe
