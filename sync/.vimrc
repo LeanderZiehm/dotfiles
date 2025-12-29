@@ -24,6 +24,16 @@ nnoremap # I#<Esc>
 syntax on
 filetype indent on
 set nocompatible
+
+" enable mouse
+set mouse=a
+
+"# Search
+" Wildmenu & recursive search
+set wildmenu
+set wildmode=longest:full,full
+set path+=**
+
 " Case-insensitive unless uppercase used
 set ignorecase
 set smartcase
@@ -31,6 +41,11 @@ set smartcase
 " Incremental search
 set incsearch
 set hlsearch
+
+" auto save 
+autocmd TextChanged,TextChangedI <buffer> silent write
+autocmd CursorHoldI,CursorHold * silent! update
+
 
 
 "set scrolloff = 10
@@ -58,10 +73,54 @@ hi CursorLine cterm=none ctermbg=236 guibg=Grey20
 
 
 
-" Wildmenu & recursive search
-set wildmenu
-set wildmode=longest:full,full
-set path+=**
+function! ToggleCommentLine()
+  let l:cs = &commentstring
+  if empty(l:cs)
+    return
+  endif
+
+  let l:line = getline('.')
+  let l:prefix = substitute(l:cs, '%s', '', '')
+
+  " Trim trailing space in prefix
+  let l:prefix = substitute(l:prefix, '\s*$', '', '')
+
+  if l:line =~ '^\s*' . escape(l:prefix, '/*$.')
+    " Uncomment
+    call setline('.', substitute(l:line, '^\(\s*\)' . escape(l:prefix, '/*$.'), '\1', ''))
+  else
+    " Comment
+    call setline('.', substitute(l:line, '^\(\s*\)', '\1' . l:prefix . ' ', ''))
+  endif
+endfunction
+
+nnoremap # :call ToggleCommentLine()<CR>
+
+function! ToggleHelpTab()
+  " If current buffer is a help buffer, close the tab
+  if &buftype ==# 'help'
+    tabclose
+    return
+  endif
+
+  " Prompt for help topic
+  let l:topic = input('Help topic: ')
+  if empty(l:topic)
+    return
+  endif
+
+  execute 'tab help ' . l:topic
+endfunction
+
+nnoremap <leader>h :call ToggleHelpTab()<CR>
+autocmd FileType help nnoremap <buffer> q :tabclose<CR>
+
+
+
+
+"autocmd BufEnter $MYVIMRC nnoremap <buffer> <leader>r :w<CR>:source $MYVIMRC<CR>
+autocmd BufEnter $MYVIMRC nnoremap <leader>r :w<CR>:source $MYVIMRC<CR>:echo "vimrc reloaded"<CR>
+
 " Key mappings
 "nnoremap <C-p> :find<Space>
 "nnoremap <C-S-P> :vimgrep /<C-r>=expand("<cword>")<CR>/ **/*<CR>:copen<CR>
@@ -162,17 +221,17 @@ augroup END
 
 "# Status Line
 set laststatus=2
-set statusline=
-set statusline=%f\ %y\ %m\ %r\ [%{&ff}]\ [%l,%c]
-set statusline +=%1*\ %n\ %*            "buffer number
-set statusline +=%5*%{&ff}%*            "file format
-set statusline +=%3*%y%*                "file type
-set statusline +=%4*\ %<%F%*            "full path
-set statusline +=%2*%m%*                "modified flag
-set statusline +=%1*%=%5l%*             "current line
-set statusline +=%2*/%L%*               "total lines
-set statusline +=%1*%4v\ %*             "virtual column number
-set statusline +=%2*0x%04B\ %*          "character under cursor
+" set statusline=
+" set statusline=%f\ %y\ %m\ %r\ [%{&ff}]\ [%l,%c]
+" set statusline +=%1*\ %n\ %*            "buffer number
+" set statusline +=%5*%{&ff}%*            "file format
+" set statusline +=%3*%y%*                "file type
+" set statusline +=%4*\ %<%F%*            "full path
+" set statusline +=%2*%m%*                "modified flag
+" set statusline +=%1*%=%5l%*             "current line
+" set statusline +=%2*/%L%*               "total lines
+" set statusline +=%1*%4v\ %*             "virtual column number
+" set statusline +=%2*0x%04B\ %*          "character under cursor
 
 set statusline=
 set statusline+=%7*\[%n]                                  "buffernr
@@ -182,6 +241,7 @@ set statusline+=%3*\ %{''.(&fenc!=''?&fenc:&enc).''}      "Encoding
 set statusline+=%3*\ %{(&bomb?\",BOM\":\"\")}\            "Encoding2
 set statusline+=%4*\ %{&ff}\                              "FileFormat (dos/unix..) 
 set statusline+=%5*\ %{&spelllang}\%{HighlightSearch()}\  "Spellanguage & Highlight on?
+set statusline+=%=\ autosave_enabled
 set statusline+=%8*\ %=\ row:%l/%L\ (%03p%%)\             "Rownumber/total (%)
 set statusline+=%9*\ col:%03c\                            "Colnr
 set statusline+=%0*\ \ %m%r%w\ %P\ \                      "Modified? Readonly? Top/bot.

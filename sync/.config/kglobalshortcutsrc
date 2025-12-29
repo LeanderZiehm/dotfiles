@@ -46,7 +46,7 @@ Activate Window Demanding Attention=Meta+Ctrl+A,Meta+Ctrl+A,Activate Window Dema
 Cycle Overview=none,none,Cycle through Overview and Grid View
 Cycle Overview Opposite=none,none,Cycle through Grid View and Overview
 Decrease Opacity=none,,Decrease Opacity of Active Window by 5%
-Edit Tiles=Meta+T,Meta+T,Toggle Tiles Editor
+Edit Tiles=none,Meta+T,Toggle Tiles Editor
 Expose=Ctrl+F9,Ctrl+F9,Toggle Present Windows (Current desktop)
 ExposeAll=Ctrl+F10\tMeta+A\tLaunch (C),Ctrl+F10\tLaunch (C),Toggle Present Windows (All desktops)
 ExposeClass=Ctrl+F7,Ctrl+F7,Toggle Present Windows (Window class)
@@ -265,6 +265,12 @@ _launch=Meta+C
 [services][google-chrome.desktop]
 _launch=Meta+G
 
+[services][net.local.wezterm-2.desktop]
+_launch=Meta+T
+
+[services][net.local.wezterm.desktop]
+_launch=Meta+Return
+
 [services][notion.desktop]
 _launch=Meta+N
 
@@ -275,7 +281,7 @@ _launch=Meta+S\tAlt+Space
 RecordRegion=Meta+Shift+R
 
 [services][org.wezfurlong.wezterm.desktop]
-_launch=Meta+Return\tCtrl+Alt+T
+_launch=Ctrl+Alt+T
 
 [services][systemsettings.desktop]
 _launch=Meta+K\tTools
