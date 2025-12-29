@@ -115,7 +115,12 @@ autocmd BufEnter $MYVIMRC nnoremap <leader>r :w<CR>:source $MYVIMRC<CR>:echo "vi
 
 
 nnoremap <Leader>b :ls<CR>:buffer<Space>
-nnoremap <Leader>f :find <C-d>
+"nnoremap <Leader>f :find <C-d>
+
+" TODO make find work well in a certain directory
+"nnoremap <Leader>ff :find ~/dev/wiki/**<CR>
+
+
 "nnoremap <Leader>ff :lcd %:p:h<Bar>echo "Root set to ".getcwd()<Bar>find "
 "nnoremap <Leader>fF :find<space>
 
@@ -446,12 +451,15 @@ nnoremap <leader>e :Lex<Esc>
 nnoremap <leader>n :Lex<Esc>
 " nnoremap <leader>dd :Lexplore %:p:h<CR>
 
+
+
 " Netrw basic settings
 let g:netrw_keepdir = 0
 let g:netrw_winsize = 20
 let g:netrw_banner = 0
 let g:netrw_localcopydircmd = 'cp -r'
 
+":set modifiable  " some weird bug that doesnt let me create a new file or folder 
 " Highlight for marked files (optional)
 "augroup netrw_mark_highlight
     "autocmd!
@@ -471,6 +479,7 @@ function! NetrwMapping()
     nmap <buffer> r R         
 
     nmap <buffer> q :Lex<Esc>
+    nmap <buffer> <Esc> :Lex<Esc>
 
     "nmap <buffer> fx mm           " Move marked files
     "nmap <buffer> fX mtmm         " Move marked files to target
