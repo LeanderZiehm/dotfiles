@@ -532,11 +532,13 @@ function! UpdateSearchCount() abort
   endif
 endfunction
 
+
 augroup SearchCountStatus
   autocmd!
   autocmd CmdlineLeave /,? call UpdateSearchCount()
   autocmd CursorMoved,CursorMovedI * call UpdateSearchCount()
 augroup END
+
 
 "# Status Line
 set laststatus=2 " always show status bar
@@ -547,7 +549,7 @@ set statusline+=%7*\[%n]                                  " buffernr
 set statusline+=%1*\ %<%F\                                " File+path
 set statusline+=%2*\ %y\                                  " FileType
 set statusline+=%8*\ %=\                                 " Right align
-set statusline+=%3*\ %{g:search_count_status}\ 
+set statusline+=%3*\search:%{g:search_count_status}\ 
 set statusline+=%8*\ %=\                                 " Right align
 set statusline+=%8*\ %l/%L\                               " Rownumber/total
 
