@@ -1,8 +1,12 @@
-"packadd vimwiki
+"# Settings 
+syntax on
+filetype indent on
+set nocompatible
 
-"# personal settings
+" enable mouse
+set mouse=a
+
 let mapleader = " "
-
 " make vim more vscode like with keyboard shortcuts
 nnoremap <C-Down> :m .+1<CR>==
 
@@ -13,21 +17,12 @@ nnoremap <C-Up> :m .-2<CR>==
 nnoremap <C-b> :Lex<Esc>
 nnoremap <leader>e :Lex<Esc>
 nnoremap <leader>n :Lex<Esc>
-nnoremap <leader>dd :Lexplore %:p:h<CR>
+" nnoremap <leader>dd :Lexplore %:p:h<CR>
 
-" press # to comment the current line (currently is not file extension aware
-" so it only works for filetypes using hashtag comments)
-nnoremap # I#<Esc>
-
-
-"# Settings 
-syntax on
-filetype indent on
-set nocompatible
-
-" enable mouse
-set mouse=a
-
+nnoremap <Leader>b :ls<CR>:buffer<Space>
+"nnoremap <Leader>f :find <C-d>
+nnoremap <Leader>fl :lcd %:p:h<Bar>echo "Root set to ".getcwd()<Bar>find 
+nnoremap <Leader>fg :find<space>
 "# Search
 " Wildmenu & recursive search
 set wildmenu
@@ -42,24 +37,30 @@ set smartcase
 set incsearch
 set hlsearch
 
-" auto save 
-autocmd TextChanged,TextChangedI <buffer> silent write
-autocmd CursorHoldI,CursorHold * silent! update
 
+"# Save
+nnoremap <leader>s :w<CR>
+nnoremap <C-s> :w<CR>
+
+" auto save 
+"autocmd TextChanged,TextChangedI <buffer> silent write
+"autocmd CursorHoldI,CursorHold * silent! update
 
 
 "set scrolloff = 10
 set scrolloff=10
 
-" Disable Vi compatibility
-colorscheme unokai " wildcharm
 " Clipboard
 set clipboard=unnamedplus
 set is 
 set hls
-"set relativenumber
-set number
 
+
+" VISUAL SETTINGS
+
+colorscheme unokai " wildcharm
+set number
+"set relativenumber
 set smartindent
 set autoindent
 set tabstop=4
@@ -68,62 +69,119 @@ set expandtab
 set showmatch
 set cursorline
 set ruler
+
+" Highlights
+
 " Highlight current line
 hi CursorLine cterm=none ctermbg=236 guibg=Grey20
+" highlight CursorColumn ctermbg=darkgrey ctermfg=black
+" map <leader>c :set cursorline! cursorcolumn!<CR>
 
 
 
-function! ToggleCommentLine()
+" highlight MyName guifg=Red ctermfg=Red
+
+
+
+" ===========================
+" HIGHLIGHTS
+" ===========================
+"  Question  TODO   Todo  
+" Use a function for all custom highlights
+"function! MyHighlights() abort
+    " Highlight current line
+    " hi CursorLine cterm=none ctermbg=236 guibg=Grey20
+
+    " Highlight the first line
+    " hi FirstLine ctermbg=236 guibg=Grey20
+    " call matchadd('FirstLine', '\%1l.*')
+" 
+    " Highlight even lines
+    " hi EvenLines ctermbg=236 guibg=Grey20
+    " let l:num = 2
+    " while l:num <= line('$')
+        " call matchadd('EvenLines', '\%' . l:num . 'l.*')
+        " let l:num += 2
+    " endwhile
+
+    " Highlight lines starting with #
+    " hi CommentLine ctermbg=236 guibg=Grey20
+    " syntax match CommentLine /^#.*/ 
+    " highlight link CommentLine Comment
+
+    " Highlight lines containing TODO
+    " hi TodoLine cterm=bold ctermbg=236 guibg=Yellow
+    " syntax match TodoLine /TODO/
+
+    " Highlight lines containing Question
+    " hi MyQuestions guifg=red guibg=green
+    " syntax match MyQuestions /Question/
+" endfunction
+
+" ===========================
+" APPLY HIGHLIGHTS SAFELY
+" ===========================
+" augroup MyColors
+    " autocmd!
+    " Apply highlights whenever a colorscheme is loaded
+    " autocmd ColorScheme * call MyHighlights()
+" augroup END
+
+" If a colorscheme is already loaded, apply highlights immediately
+" if exists("colors_name")
+    " doautocmd ColorScheme
+" endif
+
+
+" Comments
+function! ToggleCommentLine(range)
   let l:cs = &commentstring
   if empty(l:cs)
     return
   endif
 
-  let l:line = getline('.')
   let l:prefix = substitute(l:cs, '%s', '', '')
-
-  " Trim trailing space in prefix
   let l:prefix = substitute(l:prefix, '\s*$', '', '')
 
-  if l:line =~ '^\s*' . escape(l:prefix, '/*$.')
-    " Uncomment
-    call setline('.', substitute(l:line, '^\(\s*\)' . escape(l:prefix, '/*$.'), '\1', ''))
-  else
-    " Comment
-    call setline('.', substitute(l:line, '^\(\s*\)', '\1' . l:prefix . ' ', ''))
-  endif
+  " Determine the range of lines
+  let l:start = a:firstline
+  let l:end = a:lastline
+
+  for l:num in range(l:start, l:end)
+    let l:line = getline(l:num)
+    if l:line =~ '^\s*' . escape(l:prefix, '/*$.')
+      " Uncomment
+      call setline(l:num, substitute(l:line, '^\(\s*\)' . escape(l:prefix, '/*$.'), '\1', ''))
+    else
+      " Comment
+      call setline(l:num, substitute(l:line, '^\(\s*\)', '\1' . l:prefix . '', ''))
+    endif
+  endfor
 endfunction
 
-nnoremap # :call ToggleCommentLine()<CR>
+" Map normal mode
+nnoremap # :call ToggleCommentLine(line('.'))<CR>
 
-function! ToggleHelpTab()
-  " If current buffer is a help buffer, close the tab
-  if &buftype ==# 'help'
-    tabclose
-    return
-  endif
+" Map visual mode (doesnt work yet. TODO needs fixing)
+vnoremap # :<C-U>call ToggleCommentLine('<,'>)<CR>
 
-  " Prompt for help topic
-  let l:topic = input('Help topic: ')
-  if empty(l:topic)
-    return
-  endif
-
-  execute 'tab help ' . l:topic
-endfunction
-
-nnoremap <leader>h :call ToggleHelpTab()<CR>
+nnoremap <leader>h :tab help<space>
 autocmd FileType help nnoremap <buffer> q :tabclose<CR>
 
 
 
-
+" autoreload vimrc if changed
 "autocmd BufEnter $MYVIMRC nnoremap <buffer> <leader>r :w<CR>:source $MYVIMRC<CR>
 autocmd BufEnter $MYVIMRC nnoremap <leader>r :w<CR>:source $MYVIMRC<CR>:echo "vimrc reloaded"<CR>
+autocmd BufWritePost $MYVIMRC source $MYVIMRC
+
 
 " Key mappings
+
+" VSCODE Like 
+nnoremap <C-p> :browse find<Space>
+nnoremap <C-S-P> :vimgrep /<C-r>=expand("<cword>")<CR>/ **/*<CR>:copen<CR>
 "nnoremap <C-p> :find<Space>
-"nnoremap <C-S-P> :vimgrep /<C-r>=expand("<cword>")<CR>/ **/*<CR>:copen<CR>
 "blue  darkblue  default  delek  desert  elflord  evening  habamax  industry
 "koehler  lunaperche  morning  murphy  pablo  peachpuff  quiet  retrobox  ron
 "shine slate  sorbet  torte  unokai  wildcharm  zaibatsu  zellner     
@@ -146,7 +204,18 @@ autocmd BufEnter $MYVIMRC nnoremap <leader>r :w<CR>:source $MYVIMRC<CR>:echo "vi
 "augroup END
 
 " PLUGINS 
-"
+
+
+call plug#begin()
+
+" List your plugins here
+"Plug 'tpope/vim-sensible'
+Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
+Plug 'junegunn/fzf.vim'
+"Plug 'vimwiki/vimwiki'
+
+call plug#end()
+
 " 1. VIM WIKI
 "# vim vimwiki settings
 set nocompatible
@@ -241,7 +310,7 @@ set statusline+=%3*\ %{''.(&fenc!=''?&fenc:&enc).''}      "Encoding
 set statusline+=%3*\ %{(&bomb?\",BOM\":\"\")}\            "Encoding2
 set statusline+=%4*\ %{&ff}\                              "FileFormat (dos/unix..) 
 set statusline+=%5*\ %{&spelllang}\%{HighlightSearch()}\  "Spellanguage & Highlight on?
-set statusline+=%=\ autosave_enabled
+"set statusline+=%=\ autosave_enabled
 set statusline+=%8*\ %=\ row:%l/%L\ (%03p%%)\             "Rownumber/total (%)
 set statusline+=%9*\ col:%03c\                            "Colnr
 set statusline+=%0*\ \ %m%r%w\ %P\ \                      "Modified? Readonly? Top/bot.
