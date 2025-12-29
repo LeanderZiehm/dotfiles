@@ -1,9 +1,6 @@
-" If you want highlighting,
-
+" If you want highlighting use neovim
 " todo: multi row commenting (need to figure out how do do functions with
 " multi arguments
-
-
 "# Settings 
 syntax on
 filetype indent on
@@ -16,25 +13,19 @@ set mouse=a
 let mapleader = " "
 " make vim more vscode like with keyboard shortcuts
 nnoremap <C-Down> :m .+1<CR>==
+vnoremap <C-Down> :m .+1<CR>==
 " Move current line up with Ctrl + Up
 nnoremap <C-Up> :m .-2<CR>==
+vnoremap <C-Up> :m .-2<CR>==
 " Move current line down with Shift+Down (normal mode)
 nnoremap <S-Down> :m .+1<CR>==
+vnoremap <S-Down> :m .+1<CR>==
 " Move current line up with Shift+Up (normal mode)
 nnoremap <S-Up> :m .-2<CR>==
+vnoremap <S-Up> :m .-2<CR>==
 
 
 
-" File Explorer
-nnoremap <C-b> :Lex<Esc>
-nnoremap <leader>e :Lex<Esc>
-nnoremap <leader>n :Lex<Esc>
-" nnoremap <leader>dd :Lexplore %:p:h<CR>
-
-nnoremap <Leader>b :ls<CR>:buffer<Space>
-"nnoremap <Leader>f :find <C-d>
-nnoremap <Leader>ff :lcd %:p:h<Bar>echo "Root set to ".getcwd()<Bar>find 
-nnoremap <Leader>fF :find<space>
 "# Search
 " Wildmenu & recursive search
 set wildmenu
@@ -53,6 +44,30 @@ nnoremap ,p "0p
 nnoremap <Space> o<Esc>
 
 
+set scrolloff=10
+
+" Clipboard
+set clipboard=unnamedplus
+set is 
+set hls
+
+
+" VISUAL SETTINGS
+
+colorscheme unokai " wildcharm
+set number
+"set relativenumber
+set smartindent
+set autoindent
+set tabstop=4
+set shiftwidth=4
+set expandtab
+"set showmatch
+set cursorline
+"set ruler
+"set colorcolumn=80
+
+
 "# Persistence
 set viminfo='100,<50,s10,h
 
@@ -63,11 +78,6 @@ if has("autocmd")
         \   exe "normal! g`\"" |
         \ endif
 endif
-
-
-
-
-
 
 " Persistent undo setup
 let s:undodir = expand('~/.vim/undo')
@@ -80,6 +90,138 @@ endif
 " Enable persistent undo
 set undofile
 set undodir=s:undodir
+
+
+
+
+
+
+nnoremap <leader>h :tab help<space>
+autocmd FileType help nnoremap <buffer> q :tabclose<CR>
+
+
+
+" autoreload vimrc if changed
+"autocmd BufEnter $MYVIMRC nnoremap <buffer> <leader>r :w<CR>:source $MYVIMRC<CR>
+autocmd BufEnter $MYVIMRC nnoremap <leader>r :w<CR>:source $MYVIMRC<CR>:echo "vimrc reloaded"<CR>
+"autocmd BufWritePost $MYVIMRC source $MYVIMRC
+
+
+
+"# Search and Explore
+
+:set shortmess-=S
+
+" File Explorer
+nnoremap <C-b> :Lex<Esc>
+nnoremap <leader>e :Lex<Esc>
+nnoremap <leader>n :Lex<Esc>
+" nnoremap <leader>dd :Lexplore %:p:h<CR>
+
+nnoremap <Leader>b :ls<CR>:buffer<Space>
+"nnoremap <Leader>f :find <C-d>
+"nnoremap <Leader>ff :lcd %:p:h<Bar>echo "Root set to ".getcwd()<Bar>find 
+"nnoremap <Leader>fF :find<space>
+
+"nnoremap <C-p> :find<Space>
+"blue  darkblue  default  delek  desert  elflord  evening  habamax  industry
+"koehler  lunaperche  morning  murphy  pablo  peachpuff  quiet  retrobox  ron
+"shine slate  sorbet  torte  unokai  wildcharm  zaibatsu  zellner     
+
+
+
+nnoremap <leader>ss :call CenteredCmdlineSearch()<CR>
+
+function! CenteredCmdlineSearch()
+  botright new
+  resize 3
+  execute "normal! q/"
+endfunction
+
+
+
+
+
+
+
+" Key mappings
+
+" VSCODE Like 
+nnoremap <C-p> :browse find<Space>
+nnoremap <C-S-P> :vimgrep /<C-r>=expand("<cword>")<CR>/ **/*<CR>:copen<CR>
+
+
+":set path+=~/dev/**
+":find filename.txt
+
+
+
+
+" Helper: show a popup with matches and allow selection
+function! s:PopupSelect(matches) abort
+    if empty(a:matches)
+        echo "No matches found"
+        return ''
+    endif
+    " Create popup window
+    let id = popup_create(a:matches, #{
+                \ minwidth: 50,
+                \ minheight: 10,
+                \ border: [],
+                \ cursorline: 1,
+                \ scroll: 1,
+                \ mapping: 1,
+                \ title: 'Select a file'
+                \ })
+    
+    " Wait for user to select
+    let choice = input("Enter number to open file (empty to cancel): ")
+    call popup_close(id)
+
+    if choice =~ '^\d\+$' && choice >= 1 && choice <= len(a:matches)
+        return a:matches[choice - 1]
+    endif
+    return ''
+endfunction
+
+" Helper: search files recursively in a given path
+function! s:SearchFiles(path) abort
+    let files = split(globpath(a:path, '**/*', 0, 1), "\n")
+    return files
+endfunction
+
+" Main search function with interactive popup
+function! s:FileSearch(path) abort
+    let files = s:SearchFiles(a:path)
+    if empty(files)
+        echo "No files found"
+        return
+    endif
+    " Optional: filter by user input
+    let term = input("Search term (leave empty for all): ")
+    if !empty(term)
+        let files = filter(copy(files), {_, v -> v =~ term})
+    endif
+    let selected = s:PopupSelect(files)
+    if !empty(selected)
+        execute "edit " . fnameescape(selected)
+    endif
+endfunction
+
+" =============================
+" Leader mappings for different scopes
+" =============================
+" fd -> ~/dev
+nnoremap <leader>fd :call <sid>FileSearch(expand('~/dev'))<CR>
+" fc -> ~/.conf
+nnoremap <leader>fc :call <sid>FileSearch(expand('~/.conf'))<CR>
+" ff -> current file directory and subdirs
+nnoremap <leader>ff :call <sid>FileSearch(expand('%:p:h'))<CR>
+" fF -> home with all subdirs
+nnoremap <leader>fF :call <sid>FileSearch(expand('~'))<CR>
+
+
+
 
 
 "nnoremap # :s/^#\?/#/<CR>
@@ -117,8 +259,8 @@ set undodir=s:undodir
 
 
 "# Save
-nnoremap <leader>s :w<CR>
-nnoremap <C-s> :w<CR>
+"nnoremap <leader>s :w<CR>
+"nnoremap <C-s> :w<CR>
 
 " auto save 
 "autocmd TextChanged,TextChangedI <buffer> silent write
@@ -126,32 +268,6 @@ nnoremap <C-s> :w<CR>
 
 
 "set scrolloff = 10
-set scrolloff=10
-
-" Clipboard
-set clipboard=unnamedplus
-set is 
-set hls
-
-
-" VISUAL SETTINGS
-
-colorscheme unokai " wildcharm
-set number
-"set relativenumber
-set smartindent
-set autoindent
-set tabstop=4
-set shiftwidth=4
-set expandtab
-set showmatch
-set cursorline
-set ruler
-
-" Highlights
-
-" Highlight current line
-hi CursorLine cterm=none ctermbg=236 guibg=Grey20
 " highlight CursorColumn ctermbg=darkgrey ctermfg=black
 " map <leader>c :set cursorline! cursorcolumn!<CR>
 
@@ -253,44 +369,6 @@ vnoremap # :<C-U>call ToggleCommentLine('<,'>)<CR>
 
 
 
-nnoremap <leader>h :tab help<space>
-autocmd FileType help nnoremap <buffer> q :tabclose<CR>
-
-
-
-" autoreload vimrc if changed
-"autocmd BufEnter $MYVIMRC nnoremap <buffer> <leader>r :w<CR>:source $MYVIMRC<CR>
-autocmd BufEnter $MYVIMRC nnoremap <leader>r :w<CR>:source $MYVIMRC<CR>:echo "vimrc reloaded"<CR>
-"autocmd BufWritePost $MYVIMRC source $MYVIMRC
-
-
-
-
-
-" Key mappings
-
-" VSCODE Like 
-nnoremap <C-p> :browse find<Space>
-nnoremap <C-S-P> :vimgrep /<C-r>=expand("<cword>")<CR>/ **/*<CR>:copen<CR>
-"nnoremap <C-p> :find<Space>
-"blue  darkblue  default  delek  desert  elflord  evening  habamax  industry
-"koehler  lunaperche  morning  murphy  pablo  peachpuff  quiet  retrobox  ron
-"shine slate  sorbet  torte  unokai  wildcharm  zaibatsu  zellner     
-
-
-
-nnoremap <leader>/ :call CenteredCmdlineSearch()<CR>
-
-function! CenteredCmdlineSearch()
-  botright new
-  resize 3
-  execute "normal! q/"
-endfunction
-
-
-
-
-
 " PLUGINS 
 
 
@@ -373,61 +451,124 @@ let g:netrw_winsize = 20
 let g:netrw_banner = 0
 "let g:netrw_list_hide = '\(^\|\s\s\)\zs\.\S\+'
 "let g:netrw_hide = 1
-
 let g:netrw_localcopydircmd = 'cp -r'
 
-augroup netrw_mark_highlight
-  autocmd!
-  autocmd ColorScheme * hi! link netrwMarkFile Search
-augroup END
+" Netrw basic settings
+let g:netrw_keepdir = 0
+let g:netrw_winsize = 20
+let g:netrw_banner = 0
+let g:netrw_localcopydircmd = 'cp -r'
 
-augroup netrw_mapping
-  autocmd!
-  autocmd filetype netrw call NetrwMapping()
+" Highlight for marked files (optional)
+augroup netrw_mark_highlight
+    autocmd!
+    autocmd ColorScheme * hi! link netrwMarkFile Search
 augroup END
 
 " Function to define buffer-local keymaps for Netrw
 function! NetrwMapping()
-  " Navigation
-  nmap <buffer> H u            " H: Go back in history (like pressing 'u' in Netrw)
-  nmap <buffer> h -^           " h: Go up one directory
-  nmap <buffer> l <CR>         " l: Open directory or file
+    " Navigation
+    nmap <buffer> l <CR>         " Open directory or file
+    nmap <buffer> . gh           " Toggle dotfiles
 
-  nmap <buffer> . gh           " .: Toggle dotfiles
-  nmap <buffer> P <C-w>z       " P: Close the preview window
+    " File/Directory management
+    nmap <buffer> ff %:w<CR>:buffer #<CR> " Create new file
+    nmap <buffer> ad :call mkdir(input('New directory name: '), 'p')<CR> " Add directory
+    nmap <buffer> fe R            " Rename file/dir
 
-  nmap <buffer> L <CR>:Lexplore<CR>  " L: Open file and close Netrw
-  nmap <buffer> <Leader>dd :Lexplore<CR> " <Leader>dd: Close Netrw
+    nmap <buffer> h -^           " Up one directory
+    "nmap <buffer> fx mm           " Move marked files
+    "nmap <buffer> fX mtmm         " Move marked files to target
+    "nmap <buffer> fD :call DeleteMarked()<CR> " Delete marked files/dirs
 
-  " Marks
-  nmap <buffer> <TAB> mf        " TAB: Mark file/directory
-  nmap <buffer> <S-TAB> mF      " Shift+TAB: Unmark all in buffer
-  nmap <buffer> <Leader><TAB> mu " Leader+TAB: Clear all marks
+    " Marks (commented out)
+    " nmap <buffer> <TAB> mf        " Mark file/directory
+    " nmap <buffer> <S-TAB> mF      " Unmark all
 
-  " File management prefix 'f'
-  nmap <buffer> ff %:w<CR>:buffer #<CR> " ff: Create new file and return to Netrw
-  nmap <buffer> fe R            " fe: Rename file
-  nmap <buffer> fc mc           " fc: Copy marked files
-  nmap <buffer> fC mtmc         " fC: Copy marked files to target directory
-  nmap <buffer> fx mm           " fx: Move marked files
-  nmap <buffer> fX mtmm         " fX: Move marked files to target
-  nmap <buffer> f; mx           " f;: Run external command on marked files
-
-  " Bookmarks
-  nmap <buffer> bb mb           " bb: Create bookmark
-  nmap <buffer> bd mB           " bd: Remove most recent bookmark
-  nmap <buffer> bl gb           " bl: Jump to most recent bookmark
+    " External commands (commented out)
+    " nmap <buffer> f; mx
 endfunction
 
 " Call the function automatically whenever a Netrw buffer is opened
 augroup netrw_mapping
-  autocmd!
-  autocmd filetype netrw call NetrwMapping()
+    autocmd!
+    autocmd filetype netrw call NetrwMapping()
 augroup END
 
+" Delete function for marked files/dirs
+"function! DeleteMarked()
+    "echo "Deleting marked files..."
+    "normal! m`            " Save cursor position
+    " normal! mf          " Optional: mark current file if needed
+    "let marks = netrw#DirListMarked()
+    "for m in marks
+        "if isdirectory(m)
+            "call delete(m, 'rf') " Recursively delete directories
+        "else
+            "call delete(m)
+        "endif
+    "endfor
+    "echo "Deleted marked files/dirs."
+"endfunction
+
+
+
+
+
+
+let g:search_count_status = '-'
+
+function! UpdateSearchCount() abort
+  if !v:hlsearch
+    let g:search_count_status = ''
+    return
+  endif
+
+  let l:sc = searchcount()
+  if l:sc.total > 0
+    let g:search_count_status = l:sc.current . '/' . l:sc.total
+  else
+    let g:search_count_status = ''
+  endif
+endfunction
+
+augroup SearchCountStatus
+  autocmd!
+  autocmd CmdlineLeave /,? call UpdateSearchCount()
+  autocmd CursorMoved,CursorMovedI * call UpdateSearchCount()
+augroup END
 
 "# Status Line
-set laststatus=2
+set laststatus=2 " always show status bar
+
+
+set statusline=
+set statusline+=%7*\[%n]                                  " buffernr
+set statusline+=%1*\ %<%F\                                " File+path
+set statusline+=%2*\ %y\                                  " FileType
+set statusline+=%8*\ %=\                                 " Right align
+set statusline+=%3*\ %{g:search_count_status}\ 
+set statusline+=%8*\ %=\                                 " Right align
+set statusline+=%8*\ %l/%L\                               " Rownumber/total
+
+
+"set statusline=
+"set statusline+=%7*\[%n]                                  "buffernr
+"set statusline+=%1*\ %<%F\                                "File+path
+"set statusline+=%2*\ %y\                                  "FileType
+"set statusline+=%3*\ %{g:search_count_status}\ 
+"set statusline+=%8*\ %=\ %l/%L\             "Rownumber/total
+
+
+
+
+
+"set statusline+=%8*\ %=\ row:%l/%L\ (%03p%%)\             "Rownumber/total (%)
+"set statusline+=%9*\ col:%03c\                            "Colnr
+"set statusline+=%0*\ \ %m%r%w\ %P\ \                      "Modified? Readonly? Top/bot.
+
+"set statusline+=%=\ autosave_enabled
+
 " set statusline=
 " set statusline=%f\ %y\ %m\ %r\ [%{&ff}]\ [%l,%c]
 " set statusline +=%1*\ %n\ %*            "buffer number
@@ -440,31 +581,16 @@ set laststatus=2
 " set statusline +=%1*%4v\ %*             "virtual column number
 " set statusline +=%2*0x%04B\ %*          "character under cursor
 
-set statusline=
-set statusline+=%7*\[%n]                                  "buffernr
-set statusline+=%1*\ %<%F\                                "File+path
-set statusline+=%2*\ %y\                                  "FileType
-set statusline+=%3*\ %{''.(&fenc!=''?&fenc:&enc).''}      "Encoding
-set statusline+=%3*\ %{(&bomb?\",BOM\":\"\")}\            "Encoding2
-set statusline+=%4*\ %{&ff}\                              "FileFormat (dos/unix..) 
-set statusline+=%5*\ %{&spelllang}\%{HighlightSearch()}\  "Spellanguage & Highlight on?
-"set statusline+=%=\ autosave_enabled
-set statusline+=%8*\ %=\ row:%l/%L\ (%03p%%)\             "Rownumber/total (%)
-set statusline+=%9*\ col:%03c\                            "Colnr
-set statusline+=%0*\ \ %m%r%w\ %P\ \                      "Modified? Readonly? Top/bot.
-
-
-
 
 "Highlight ????
 
-function! HighlightSearch()
-  if &hls
-    return 'H'
-  else
-    return ''
-  endif
-endfunction
+"function! HighlightSearch()
+  "if &hls
+    "return 'H'
+  "else
+    "return ''
+  "endif
+"endfunction
 "Colors (adapted from ligh2011.vim):
 
 hi User1 guifg=#ffdad8  guibg=#880c0e
