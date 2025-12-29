@@ -14,6 +14,7 @@ DOTFILES=(
     "~/.config/Code/User/keybindings.json"
     "~/.config/Code/User/settings.json"
     "~/.config/Code/User/profiles/"
+    "~/.config/kglobalshortcutsrc"
     "~/.config/dunst"
     "~/.config/kitty"
     "~/.config/flameshot"
