@@ -123,31 +123,27 @@ alias zshrc="vim ~/.zshrc"
 alias todo="vim ~/dev/todo/todo.md"
 alias notes="vim ~/dev/notes/notes.md"
 
+ff_find_files() {
+    local dirs=(~/dev ~/.config)
+    find "${dirs[@]}" \
+        \( -name "node_modules" -o -name ".git" -o -name ".venv" \
+           -o -name "*.png" -o -name "*.jpg" -o -name "*.svg" -o -name "*.webp" -o -name "*.gif" -o -name "*.ico" \
+           -o -name "*.ttf" -o -name "*.woff" -o -name "*.woff2" -o -name "*.pfb" -o -name "*.hyb" -o -name "*.bcmap" \
+           -o -name "*.class" -o -name "*.so" -o -name "*.jar" -o -name "*.pyc" -o -name "*.tflite" -o -name "*.tgz" \
+           -o -path "*/leveldb/*" -o -name "*.dat" -o -name "*.lock" -o -name "*.db" -o -name "*.syms" -o -path "*/dist-info/*" -o -name "*.old" -o -name "*.map" \
+        \) -prune -o -type f -print 2>/dev/null
+}
+
 
 ff() {
-  local dirs=(~/dev ~/.config)
-  local file
-
-  file=$(find "${dirs[@]}" \
-      \( -name "node_modules" -o -name ".git" \
-         -o -name "*.png" -o -name "*.jpg" -o -name "*.webp" -o -name "*.gif" -o -name "*.ico" \
-         -o -name "*.ttf" -o -name "*.woff" -o -name "*.woff2" -o -name "*.pfb" -o -name "*.hyb" -o -name "*.bcmap" \
-         -o -name "*.class" -o -name "*.so" -o -name "*.jar" -o -name "*.pyc" -o -name "*.tflite" -o -name "*.tgz" \
-         -o -path "*/leveldb/*" -o -name "*.dat" -o -name "*.lock" -o -name "*.db" -o -name "*.syms" -o -path "*/dist-info/*" -o -name "*.old" -o -name "*.map" \
-      \) -prune -o -type f -print 2>/dev/null \
-      | fzf --exact --ignore-case --query="$1") || return
-
-  vim "$file"
+    local file
+    file=$(ff_find_files | fzf --exact --ignore-case --query="$1") || return
+    vim "$file"
 }
 
 
 ff_stats() {
-    local dirs=(~/dev ~/.config)
-    
-    find "${dirs[@]}" \
-        \( -name "node_modules" -o -name ".git" \) -prune -o -type f -print 2>/dev/null \
-    | awk -F. 'NF>1 {ext[tolower($NF)]++} END {for (e in ext) if (ext[e]>10) print ext[e], e}' \
-    | sort -n
+    ff_find_files | awk -F. 'NF>1 {ext[tolower($NF)]++} END {for (e in ext) if (ext[e]>10) print ext[e], e}' | sort -n
 }
 
 
