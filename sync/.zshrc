@@ -129,7 +129,12 @@ ff() {
   local file
 
   file=$(find "${dirs[@]}" \
-      \( -name "node_modules" -o -name ".git" -o -name "*.png" -o -name "*.jpg" -o -name "*.webp" \) -prune -o -type f -print 2>/dev/null \
+      \( -name "node_modules" -o -name ".git" \
+         -o -name "*.png" -o -name "*.jpg" -o -name "*.webp" -o -name "*.gif" -o -name "*.ico" \
+         -o -name "*.ttf" -o -name "*.woff" -o -name "*.woff2" -o -name "*.pfb" -o -name "*.hyb" -o -name "*.bcmap" \
+         -o -name "*.class" -o -name "*.so" -o -name "*.jar" -o -name "*.pyc" -o -name "*.tflite" -o -name "*.tgz" \
+         -o -path "*/leveldb/*" -o -name "*.dat" -o -name "*.lock" -o -name "*.db" -o -name "*.syms" -o -path "*/dist-info/*" -o -name "*.old" -o -name "*.map" \
+      \) -prune -o -type f -print 2>/dev/null \
       | fzf --exact --ignore-case --query="$1") || return
 
   vim "$file"
