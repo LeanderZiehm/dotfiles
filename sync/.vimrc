@@ -93,9 +93,28 @@ set undofile
 set undodir=s:undodir
 
 
+" auto recovery and deal with swap files
+autocmd SwapExists * if !v:swapchoice | let v:swapchoice = 'r' | endif
 
 
 
+" disable auto wrapping so if i write so long it wont automatically do it I
+" DIDNT WORK ITS STILL DOING IT BELOW 
+set textwidth=0
+
+" Prevent auto-inserting comment leaders on Enter WARNING MAYBE HAS SIDE EFFECTS FOR WRAPPING
+autocmd FileType * setlocal formatoptions-=o
+autocmd FileType * setlocal formatoptions-=r
+
+"Optional: If you still want automatic text wrapping but not comment continuation, make sure formatoptions still includes t (for text wrapping) and q (for gq formatting), for example:
+"set formatoptions=tq
+
+
+" autosave markdown 
+autocmd BufLeave,TextChanged,TextChangedI *.md silent! update
+
+" quick quit
+nnoremap <S-q> :q<CR>
 
 nnoremap <leader>h :tab help<space>
 autocmd FileType help nnoremap <buffer> q :tabclose<CR>
@@ -111,6 +130,7 @@ autocmd BufEnter $MYVIMRC nnoremap <leader>r :w<CR>:source $MYVIMRC<CR>:echo "vi
 
 "# Search and Explore
 
+" if not using custom statusbar show seach result counts 
 :set shortmess-=S
 
 

@@ -117,6 +117,8 @@ function nvims() {
 
 #bindkey -s ^a "nvims\n"
 
+alias vimrc="vim ~/.vimrc"
+alias zshrc="vim ~/.zshrc"
 
 alias todo="vim ~/dev/todo/todo.md"
 alias notes="vim ~/dev/notes/notes.md"
