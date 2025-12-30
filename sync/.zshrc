@@ -175,15 +175,19 @@ replaceHomeWithWaves(){
      sed "s|^$HOME|~|"
 }
 
-local projects=(~/dev/todo ~/dev/notes)
+local projects=(~/dotfiles ~/dev/wiki)
 
+#fp() {
+    #local selection
+    # Flatten the directories into a list of files
+    #selection=$(find "${projects[@]}" -maxdepth 0 -type d | sed "s|^$HOME|~|"  | fzf --exact --ignore-case --query="$1") || return
+    #code "$selection"
+#}
 fp() {
     local selection
-    # Flatten the directories into a list of files
-    selection=$(find "${projects[@]}" -maxdepth 0 -type d | sed "s|^$HOME|~|"  | fzf --exact --ignore-case --query="$1") || return
+    selection=$(printf "%s\n" "${projects[@]}" | sed "s|^$HOME|~|" |  fzf --exact --ignore-case --query="$1") || return
     vim "$selection"
 }
-
 
 
 

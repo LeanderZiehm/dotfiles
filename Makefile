@@ -5,3 +5,5 @@ create-shortcut:
 	echo "alias dotfiles='$(MAKE_DIR)/dotfiles.sh'" >> ~/.zshrc
 	source ~/.zshrc
 	@echo "Alias added."
+test:
+	
