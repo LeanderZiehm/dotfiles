@@ -1,10 +1,20 @@
+# X11 disable beeping
+xset b off
+
+# store the command history forever 
+HISTFILE=~/.zsh_history
+HISTSIZE=999999999
+SAVEHIST=$HISTSIZE
+
+# Oh My ZSH
 export ZSH="$HOME/.oh-my-zsh"
-
 ZSH_THEME="robbyrussell"
-
 plugins=(git zsh-autosuggestions zsh-syntax-highlighting)
-
 source $ZSH/oh-my-zsh.sh
+
+# Programming Languages 
+
+# node version manager
 export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
 [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
@@ -13,24 +23,10 @@ export NVM_DIR="$HOME/.nvm"
 alias j!=jbang
 export PATH="$HOME/.jbang/bin:$PATH"
 
-
+# python miniconda
 function conda-activate(){
 source ~/miniconda3/bin/activate
 }
-
-alias dotfiles='/home/user/dotfiles/dotfiles.sh'
-
-xset b off
-
-# PATH 
-export PATH="$PATH:/home/user/.local/bin/"
-export PATH="$PATH:/home/user/bin/"
-
-# store the command history forever 
-HISTFILE=~/.zsh_history
-HISTSIZE=999999999
-SAVEHIST=$HISTSIZE
-export PATH="$HOME/bin:$PATH"
 
 # pnpm
 export PNPM_HOME="/home/user/.local/share/pnpm"
@@ -39,25 +35,6 @@ case ":$PATH:" in
   *) export PATH="$PNPM_HOME:$PATH" ;;
 esac
 # pnpm end
-pac() {
-    case "$1" in
-        install)
-            shift
-            sudo pacman -S "$@"
-            ;;
-        update)
-            shift
-            sudo pacman -Syu "$@"
-            ;;
-        remove)
-            shift
-            sudo pacman -Rs "$@"
-            ;;
-        clean)
-            sudo pacman -Rns $(pacman -Qtdq)
-            ;;
-        installed)
-            shift
             # Default: explicitly installed packages
             if [[ "$1" == "--all" ]]; then
                 pacman -Q
@@ -83,9 +60,6 @@ pac() {
     esac
 }
 
-
-
-
 #export PATH="/home/user/.local/share/gem/ruby/3.4.0/bin:$PATH"
 export PATH="$HOME/.rbenv/bin:$PATH"
 eval "$(rbenv init - zsh)"
@@ -93,7 +67,47 @@ eval "$(rbenv init - zsh)"
 #export PATH=$PATH:$(go env GOPATH)/bin
 export PATH="$HOME/go/bin:$PATH"
 
+# bun completions
+[ -s "/home/user/.bun/_bun" ] && source "/home/user/.bun/_bun"
+
+# bun
+export BUN_INSTALL="$HOME/.bun"
+export PATH="$BUN_INSTALL/bin:$PATH"
+
+
+# PATH 
+
+# PATH global bin for my scripts and cli tools
+export PATH="$PATH:/home/user/.local/bin/"
+export PATH="$PATH:/home/user/bin/"
+export PATH="$HOME/bin:$PATH"
+
+# commands 
 export PATH="$HOME/bin/commands:$PATH"
+
+# dotfiles sync
+alias dotfiles='/home/user/dotfiles/dotfiles.sh'
+
+
+
+
+
+
+
+
+
+
+
+
+
+# CLI tools
+eval "$(zoxide init zsh)"
+
+
+# pacman
+alias pacman-ophins-list="pacman -Qtdq"
+alias pacman-ophins-remove="sudo pacman -Rns $(pacman -Qtdq)"
+alias pacman-installed="pacman -Qi | awk '/^Name/{name=$3} /^Installed Size/{size=$4} END{print name,size}' | sort -nrk2"
 
 
 ### NVIM
@@ -117,10 +131,3 @@ function nvims() {
 }
 
 #bindkey -s ^a "nvims\n"
-
-# bun completions
-[ -s "/home/user/.bun/_bun" ] && source "/home/user/.bun/_bun"
-
-# bun
-export BUN_INSTALL="$HOME/.bun"
-export PATH="$BUN_INSTALL/bin:$PATH"
