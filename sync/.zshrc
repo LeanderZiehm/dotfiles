@@ -122,6 +122,7 @@ alias zshrc="vim ~/.zshrc"
 
 alias todo="vim ~/dev/todo/todo.md"
 alias notes="vim ~/dev/notes/notes.md"
+alias wiki="vim ~/dev/wiki/index.md"
 
 ff_find_files() {
     local dirs=(~/dev ~/.config)
@@ -134,11 +135,33 @@ ff_find_files() {
         \) -prune -o -type f -print 2>/dev/null
 }
 
+fd_find_dirs_deep() {
+    local dirs=(~/dev ~/.config)
+    find "${dirs[@]}" \
+        \( -name "node_modules" -o -name ".git" -o -name ".venv" -o -name "lib"  \
+           -o -path "*/leveldb/*" -o -path "*/dist-info/*" \
+        \) -prune -o -type d -print 2>/dev/null
+}
+
+ff_find_dirs_one_level() {
+    local dirs=(~/dev ~/.config)
+    find "${dirs[@]}" -maxdepth 1 \
+        \( -name "node_modules" -o -name ".git" -o -name ".venv" \
+           -o -path "*/leveldb/*" -o -path "*/dist-info/*" \
+        \) -prune -o -type d -print 2>/dev/null
+}
+
 
 ff() {
     local file
     file=$(ff_find_files | fzf --exact --ignore-case --query="$1") || return
     vim "$file"
+}
+
+fd() {
+    local dir
+    dir=$(ff_find_dirs_one_level | fzf --exact --ignore-case --query="$1") || return
+    vim "$dir"
 }
 
 
