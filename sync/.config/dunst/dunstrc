@@ -1,4 +1,6 @@
 [global]
+
+    timeout = 3
     ### Display ###
 
     # Which monitor should the notifications be displayed on.
@@ -327,7 +329,8 @@
     # IMPORTANT: colors have to be defined in quotation marks.
     # Otherwise the "#" and following would be interpreted as a comment.
     background = "#0E0F03"
-    foreground = "#FF4800"
+#    foreground = "#FF4800"
+    foreground = "#555555"
     timeout = 4
     # Icon for notifications with low urgency, uncomment to enable
     icon = /usr/share/icons/Breathe/24x24/emblems/emblem-default.png

@@ -6,4 +6,4 @@ create-shortcut:
 	source ~/.zshrc
 	@echo "Alias added."
 test:
-	
+	sh ./tests/test_no_duplication.sh
