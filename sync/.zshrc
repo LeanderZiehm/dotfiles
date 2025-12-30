@@ -34,45 +34,21 @@ case ":$PATH:" in
   *":$PNPM_HOME:"*) ;;
   *) export PATH="$PNPM_HOME:$PATH" ;;
 esac
-# pnpm end
-            # Default: explicitly installed packages
-            if [[ "$1" == "--all" ]]; then
-                pacman -Q
-            elif [[ "$1" == "--count-all" ]]; then
-                pacman -Q | wc -l
-            elif [[ "$1" == "--count" ]]; then
-                pacman -Qe | wc -l
-            elif [[ "$1" == "--desc" ]]; then
-                pacman -Qi | awk '/^Name/{name=$3} /^Installed Size/{size=$4} END{print name,size}' | sort -nrk2
-                # More reliable: we'll fix below
-            else
-                pacman -Qe
-            fi
-            ;;
-        *)
-            echo "pac usage:"
-            echo "  pac install <pkg>"
-            echo "  pac update"
-            echo "  pac remove <pkg>"
-            echo "  pac clean"
-            echo "  pac installed [--all|--count|--desc]"
-            ;;
-    esac
-}
 
-#export PATH="/home/user/.local/share/gem/ruby/3.4.0/bin:$PATH"
+
+# ruby
 export PATH="$HOME/.rbenv/bin:$PATH"
 eval "$(rbenv init - zsh)"
 
-#export PATH=$PATH:$(go env GOPATH)/bin
+# go 
 export PATH="$HOME/go/bin:$PATH"
-
-# bun completions
-[ -s "/home/user/.bun/_bun" ] && source "/home/user/.bun/_bun"
 
 # bun
 export BUN_INSTALL="$HOME/.bun"
 export PATH="$BUN_INSTALL/bin:$PATH"
+
+# bun completions
+[ -s "/home/user/.bun/_bun" ] && source "/home/user/.bun/_bun"
 
 
 # PATH 
