@@ -132,7 +132,7 @@ ff_find_files() {
            -o -name "*.ttf" -o -name "*.woff" -o -name "*.woff2" -o -name "*.pfb" -o -name "*.hyb" -o -name "*.bcmap" \
            -o -name "*.class" -o -name "*.so" -o -name "*.jar" -o -name "*.pyc" -o -name "*.tflite" -o -name "*.tgz" \
            -o -path "*/leveldb/*" -o -name "*.dat" -o -name "*.lock" -o -name "*.db" -o -name "*.syms" -o -path "*/dist-info/*" -o -name "*.old" -o -name "*.map" \
-        \) -prune -o -type f -print 2>/dev/null
+        \) -prune -o -type f -print 2>/dev/null | sed "s|^$HOME|~|"
 }
 
 fd_find_dirs_deep() {
@@ -140,7 +140,9 @@ fd_find_dirs_deep() {
     find "${dirs[@]}" \
         \( -name "node_modules" -o -name ".git" -o -name ".venv" -o -name "lib"  \
            -o -path "*/leveldb/*" -o -path "*/dist-info/*" \
-        \) -prune -o -type d -print 2>/dev/null
+        \) -prune -o -type d -print 2>/dev/null | sed "s|^$HOME|~|"
+
+
 }
 
 ff_find_dirs_one_level() {
@@ -148,7 +150,7 @@ ff_find_dirs_one_level() {
     find "${dirs[@]}" -maxdepth 1 \
         \( -name "node_modules" -o -name ".git" -o -name ".venv" \
            -o -path "*/leveldb/*" -o -path "*/dist-info/*" \
-        \) -prune -o -type d -print 2>/dev/null
+        \) -prune -o -type d -print 2>/dev/null | sed "s|^$HOME|~|"
 }
 
 
@@ -168,5 +170,23 @@ fd() {
 ff_stats() {
     ff_find_files | awk -F. 'NF>1 {ext[tolower($NF)]++} END {for (e in ext) if (ext[e]>10) print ext[e], e}' | sort -n
 }
+
+replaceHomeWithWaves(){
+     sed "s|^$HOME|~|"
+}
+
+local projects=(~/dev/todo ~/dev/notes)
+
+fp() {
+    local selection
+    # Flatten the directories into a list of files
+    selection=$(find "${projects[@]}" -maxdepth 0 -type d | sed "s|^$HOME|~|"  | fzf --exact --ignore-case --query="$1") || return
+    vim "$selection"
+}
+
+
+
+
+
 
 
