@@ -6,6 +6,8 @@ HISTFILE=~/.zsh_history
 HISTSIZE=999999999
 SAVEHIST=$HISTSIZE
 
+unsetopt autocd
+
 # Oh My ZSH
 export ZSH="$HOME/.oh-my-zsh"
 ZSH_THEME="robbyrussell"
@@ -86,6 +88,13 @@ alias pacman-ophins-remove="sudo pacman -Rns $(pacman -Qtdq)"
 alias pacman-installed="pacman -Qi | awk '/^Name/{name=$3} /^Installed Size/{size=$4} END{print name,size}' | sort -nrk2"
 
 
+# vi mode (vim lite)
+#bindkey -v
+autoload -Uz edit-command-line
+zle -N edit-command-line
+bindkey '^x^e' edit-command-line
+export EDITOR=vim
+
 ### NVIM
 
 #alias nvim-chad="NVIM_APPNAME=NvChad nvim"
@@ -107,3 +116,21 @@ function nvims() {
 }
 
 #bindkey -s ^a "nvims\n"
+
+
+alias todo="vim ~/dev/todo/todo.md"
+alias notes="vim ~/dev/notes/notes.md"
+
+
+ff() {
+  local dirs=(~/dev ~/.config)
+  local file
+
+  file=$(find "${dirs[@]}" -type f 2>/dev/null | fzf --exact --ignore-case --query="$1") || return
+  vim "$file"
+}
+
+
+
+
+
