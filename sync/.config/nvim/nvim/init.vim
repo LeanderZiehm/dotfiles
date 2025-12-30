@@ -1,15 +1,10 @@
-"source ~/.vimrc
+" source ~/.vimrc
 
-
-" make vim more vscode like with keyboard shortcuts
-nnoremap <C-Down> :m .+1<CR>==
-" Move current line up with Ctrl + Up
-nnoremap <C-Up> :m .-2<CR>==
-" Move current line down with Shift+Down (normal mode)
-nnoremap <S-Down> :m .+1<CR>==
-" Move current line up with Shift+Up (normal mode)
-nnoremap <S-Up> :m .-2<CR>==
-
-
-
+" things I want: multyline comment toggeling
+" nice fuzzy seach with a centered input like telescope
+" switching bettwen buffers and going back and juping to
+" some plugins if needed
+" custom highliting
+" markdown nice render and checkbox toggle and table create 
 lua require('init')
+

@@ -98,9 +98,10 @@ export PATH="$HOME/bin/commands:$PATH"
 
 ### NVIM
 
-alias nvim-lazy="NVIM_APPNAME=LazyVim nvim"
-alias nvim-chad="NVIM_APPNAME=NvChad nvim"
-alias nvim-astro="NVIM_APPNAME=AstroNvim nvim"
+#alias nvim-chad="NVIM_APPNAME=NvChad nvim"
+#alias nvim-astro="NVIM_APPNAME=AstroNvim nvim"
+
+alias lvim="NVIM_APPNAME=LazyVim nvim"
 alias svim="NVIM_APPNAME=SlimNvim nvim"
 
 function nvims() {
