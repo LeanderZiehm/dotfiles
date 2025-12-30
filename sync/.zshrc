@@ -128,11 +128,21 @@ ff() {
   local dirs=(~/dev ~/.config)
   local file
 
-  file=$(find "${dirs[@]}" -type f 2>/dev/null | fzf --exact --ignore-case --query="$1") || return
+  file=$(find "${dirs[@]}" \
+      \( -name "node_modules" -o -name ".git" -o -name "*.png" -o -name "*.jpg" -o -name "*.webp" \) -prune -o -type f -print 2>/dev/null \
+      | fzf --exact --ignore-case --query="$1") || return
+
   vim "$file"
 }
 
 
-
+ff_stats() {
+    local dirs=(~/dev ~/.config)
+    
+    find "${dirs[@]}" \
+        \( -name "node_modules" -o -name ".git" \) -prune -o -type f -print 2>/dev/null \
+    | awk -F. 'NF>1 {ext[tolower($NF)]++} END {for (e in ext) if (ext[e]>10) print ext[e], e}' \
+    | sort -n
+}
 
 
