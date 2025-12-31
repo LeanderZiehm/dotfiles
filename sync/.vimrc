@@ -94,20 +94,59 @@ set undodir=s:undodir
 
 
 " auto recovery and deal with swap files
-autocmd SwapExists * if !v:swapchoice | let v:swapchoice = 'r' | endif
+"autocmd SwapExists * if !v:swapchoice | let v:swapchoice = 'r' | endif
+
 
 
 
 " disable auto wrapping so if i write so long it wont automatically do it I
 " DIDNT WORK ITS STILL DOING IT BELOW 
-set textwidth=0
+"set textwidth=0
 
 " Prevent auto-inserting comment leaders on Enter WARNING MAYBE HAS SIDE EFFECTS FOR WRAPPING
-autocmd FileType * setlocal formatoptions-=o
-autocmd FileType * setlocal formatoptions-=r
+"autocmd FileType * setlocal formatoptions-=o
+"autocmd FileType * setlocal formatoptions-=r
 
 "Optional: If you still want automatic text wrapping but not comment continuation, make sure formatoptions still includes t (for text wrapping) and q (for gq formatting), for example:
 "set formatoptions=tq
+
+
+" Todo fix bug where file is messed up 
+"autocmd VimEnter * call timer_start(500, {-> execute('wincmd =')})
+"set nolazyredraw
+"set nosmoothscroll
+"set cmdheight=1
+
+
+"""
+
+"maybe unsave ////
+
+" Set the time Vim waits before triggering CursorHold (in milliseconds)
+set updatetime=10000  " 10000 ms = 10 seconds
+
+" Function to switch to normal mode if in insert mode
+function! GoToNormalIfIdle()
+  if mode() ==# 'i'  " Check if we are in insert mode
+    stopinsert        " Go back to normal mode
+  endif
+endfunction
+
+" Trigger function on CursorHold event
+autocmd CursorHold * call GoToNormalIfIdle()
+
+
+
+"""
+
+
+
+
+
+
+
+
+
 
 
 " autosave markdown 
@@ -348,7 +387,45 @@ nnoremap <C-S-P> :vimgrep /<C-r>=expand("<cword>")<CR>/ **/*<CR>:copen<CR>
 " endif
 
 " Comments
-function! ToggleCommentLine(range)
+"function! ToggleCommentLine(range)
+  "let l:cs = &commentstring
+  "if empty(l:cs)
+    "return
+  "endif
+"
+  "let l:prefix = substitute(l:cs, '%s', '', '')
+  "let l:prefix = substitute(l:prefix, '\s*$', '', '')
+"
+   "Determine the range of lines
+  "let l:start = a:firstline
+  "let l:end = a:lastline
+"
+  "for l:num in range(l:start, l:end)
+    "let l:line = getline(l:num)
+    "if l:line =~ '^\s*' . escape(l:prefix, '/*$.')
+       "Uncomment
+      "call setline(l:num, substitute(l:line, '^\(\s*\)' . escape(l:prefix, '/*$.'), '\1', ''))
+    "else
+       "Comment
+      "call setline(l:num, substitute(l:line, '^\(\s*\)', '\1' . l:prefix . '', ''))
+    "endif
+  "endfor
+  "normal! j
+"endfunction
+
+" Map normal mode
+"nnoremap # :call ToggleCommentLine(line('.'))<CR>
+
+" Map visual mode (doesnt work yet. TODO needs fixing)
+"vnoremap # :<C-U>call ToggleCommentLine('<,'>)<CR>
+
+
+
+
+" todo vimscript in vimrc split this into two seperate functins one for single
+" line and one for multi line because multiline is still not working it says 
+" Toggle comment for single or multiple lines
+function! ToggleComment(...) abort
   let l:cs = &commentstring
   if empty(l:cs)
     return
@@ -357,10 +434,21 @@ function! ToggleCommentLine(range)
   let l:prefix = substitute(l:cs, '%s', '', '')
   let l:prefix = substitute(l:prefix, '\s*$', '', '')
 
-  " Determine the range of lines
-  let l:start = a:firstline
-  let l:end = a:lastline
+  " Determine line range
+  if a:0 == 0
+    " No arguments: single line
+    let l:start = line('.')
+    let l:end = l:start
+  elseif a:0 == 2
+    " Two arguments passed (start and end line)
+    let l:start = a:1
+    let l:end = a:2
+  else
+    echoerr "Invalid number of arguments"
+    return
+  endif
 
+  " Toggle comment for each line in range
   for l:num in range(l:start, l:end)
     let l:line = getline(l:num)
     if l:line =~ '^\s*' . escape(l:prefix, '/*$.')
@@ -368,22 +456,18 @@ function! ToggleCommentLine(range)
       call setline(l:num, substitute(l:line, '^\(\s*\)' . escape(l:prefix, '/*$.'), '\1', ''))
     else
       " Comment
-      call setline(l:num, substitute(l:line, '^\(\s*\)', '\1' . l:prefix . '', ''))
+      call setline(l:num, substitute(l:line, '^\(\s*\)', '\1' . l:prefix, ''))
     endif
   endfor
-  normal! j
 endfunction
 
-" Map normal mode
-nnoremap # :call ToggleCommentLine(line('.'))<CR>
+" Normal mode: toggle single line
+nnoremap # :call ToggleComment()<CR>
+nnoremap <C-/> :call ToggleComment()<CR>
 
-" Map visual mode (doesnt work yet. TODO needs fixing)
-vnoremap # :<C-U>call ToggleCommentLine('<,'>)<CR>
-
-
-
-
-
+" Visual mode: toggle selected range
+vnoremap # :<C-U>call ToggleComment(line("'<"), line("'>"))<CR>
+vnoremap <C-/> :<C-U>call ToggleComment(line("'<"), line("'>"))<CR>
 
 
 

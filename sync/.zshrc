@@ -186,11 +186,28 @@ local projects=(~/dotfiles ~/dev/wiki)
 fp() {
     local selection
     selection=$(printf "%s\n" "${projects[@]}" | sed "s|^$HOME|~|" |  fzf --exact --ignore-case --query="$1") || return
-    vim "$selection"
+    code "$selection"
+
 }
 
 
 
 
+du_top10() {
+    local TARGET="/home/user"
+    local EXCLUDES="--exclude=.git --exclude=.venv"
+
+    echo "Top 10 largest files in $TARGET"
+    du -ah $TARGET $EXCLUDES 2>/dev/null \
+        | grep -v '/$' \
+        | sort -hr \
+        | head -n 10
+
+    echo
+    echo "Top 10 largest directories in $TARGET"
+    du -h --max-depth=1 $TARGET $EXCLUDES 2>/dev/null \
+        | sort -hr \
+        | head -n 10
+}
 
 
