@@ -70,6 +70,11 @@
     },
     "editor.minimap.enabled": false,
     "vim.vimrc.enable": true,
+    "window.newWindowProfile": "Unchanged VSCode",
+    "cSpell.language": "en,de",
+    "editor.pasteAs.preferences": [
+        "markdown.link"
+    ]
 }
 
 //   //"editor.fontFamily": "monospace, 'Droid Sans Mono', 'monospace'"

@@ -124,6 +124,66 @@ alias todo="vim ~/dev/todo/todo.md"
 alias notes="vim ~/dev/notes/notes.md"
 alias wiki="vim ~/dev/wiki/index.md"
 
+# --------------------
+# Notes root
+export NOTES_ROOT=~/dev/notes
+
+# --------------------
+# Journal function with embedded template
+journal() {
+  local NOTES_DIR="$NOTES_ROOT/journal"
+  local TS="$(date '+%Y-%m-%d_%H%M')"
+  local DATE="$(date '+%Y-%m-%d')"
+  local FILE="$NOTES_DIR/$TS.md"
+
+  mkdir -p "$NOTES_DIR"
+
+  cat > "$FILE" <<EOF
+# Journal — $DATE
+
+## Context
+- Location:
+- Mood:
+- Focus:
+
+## Notes
+
+## Reflection
+EOF
+
+  vim "$FILE"
+}
+
+# --------------------
+# Idea function with embedded template
+idea() {
+  local NOTES_DIR="$NOTES_ROOT/ideas"
+  local TS="$(date '+%Y-%m-%d %H:%M:%S')"
+  local ID="$(date +%s)-$(openssl rand -hex 2)"
+  local FILE="$NOTES_DIR/$ID.md"
+
+  mkdir -p "$NOTES_DIR"
+
+  cat > "$FILE" <<EOF
+---
+id: $ID
+created: $TS
+tags: []
+---
+
+# $ID
+
+## Idea
+
+## Links
+- 
+EOF
+
+  vim "$FILE"
+}
+
+
+
 ff_find_files() {
     local dirs=(~/dev ~/.config)
     find "${dirs[@]}" \
@@ -209,5 +269,3 @@ du_top10() {
         | sort -hr \
         | head -n 10
 }
-
-

@@ -88,14 +88,42 @@ if !isdirectory(s:undodir)
     call mkdir(s:undodir, 'p')
 endif
 
-" Enable persistent undo
+" -----------------------------
+" Persistent undo
+" -----------------------------
+" Make sure undo dir exists
+if !isdirectory(expand('~/.vim/undo'))
+    call mkdir(expand('~/.vim/undo'), 'p')
+endif
+
+" Enable persistent undo and set the undo directory
 set undofile
-set undodir=s:undodir
+let &undodir = expand('~/.vim/undo')
 
 
-" auto recovery and deal with swap files
-"autocmd SwapExists * if !v:swapchoice | let v:swapchoice = 'r' | endif
+" -----------------------------
+" Backup and swap files
+" -----------------------------
+" Keep backups and swap files in separate directories
+if !isdirectory(expand('~/.vim/backup'))
+    call mkdir(expand('~/.vim/backup'), 'p')
+endif
 
+if !isdirectory(expand('~/.vim/swap'))
+    call mkdir(expand('~/.vim/swap'), 'p')
+endif
+
+set backup
+set backupdir=~/.vim/backup//
+set swapfile
+set directory=~/.vim/swap//
+
+
+" -----------------------------
+" Auto recovery for swap files
+" -----------------------------
+" Automatically recover swap files if they exist
+autocmd SwapExists * if !v:swapchoice | let v:swapchoice = 'r' | endif
 
 
 
@@ -281,18 +309,6 @@ nnoremap <C-S-P> :vimgrep /<C-r>=expand("<cword>")<CR>/ **/*<CR>:copen<CR>
 "nnoremap <leader>fF :call <sid>FileSearch(expand('~'))<CR>
 
 
-
-
-
-"nnoremap # :s/^#\?/#/<CR>
-" Persistent undo
-"set undofile
-"set undodir=~/.vim/undodir
-" Backup and swap files in a separate directory
-"set backupdir=~/.vim/backup//
-"set directory=~/.vim/swap//
-"set backup
-"set swapfile
 " Better indentation
 
 " Yank highlight in vimrc in vim but its not working 
