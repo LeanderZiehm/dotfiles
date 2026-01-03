@@ -26,6 +26,42 @@ vnoremap <S-Up> :m .-2<CR>==
 
 
 
+
+
+" GIT
+
+" Compare clipboard with current buffer, left = buffer, right = clipboard
+command! DiffClipboard call DiffClipboard()
+
+function! DiffClipboard()
+    " Save clipboard contents to a temporary file
+    let tempname = tempname()
+    call writefile(split(getreg('+', 1), "\n"), tempname)
+
+    " Open the clipboard file in a vertical split on the right quietly
+    " 'silent!' suppresses messages and avoids the hit-enter prompt
+    silent! vert rightbelow vsplit
+    silent! execute 'edit ' . tempname
+
+    " Configure scratch buffer
+    setlocal buftype=nofile bufhidden=wipe nobuflisted
+    file [Clipboard]
+
+    " Enable diff in both windows
+    wincmd p
+    diffthis
+    wincmd w
+    diffthis
+
+    "[HINT] YOUT HAVE TO FOCUS THE RIGHT WINDOW TO CLOSE WITH q.  Map 'q' to close the clipboard buffer and restore normal view
+    nnoremap <buffer> q :q!<CR>
+    
+    " Return focus to original buffer
+    wincmd p
+endfunction
+
+nnoremap <leader>dif :DiffClipboard<CR>
+
 "# Search
 " Wildmenu & recursive search
 set wildmenu
@@ -765,3 +801,24 @@ set statusline+=%8*\ %l/%L\                               " Rownumber/total
 "hi User8 guifg=#ffffff  guibg=#5b7fbb
 "hi User9 guifg=#ffffff  guibg=#810085
 "hi User0 guifg=#ffffff  guibg=#094afe
+
+
+
+
+
+
+
+" From the internet 
+augroup VIMRC
+    autocmd!
+    autocmd BufLeave *.css,*.scss normal! mC
+    autocmd BufLeave *.html       normal! mH
+    autocmd BufLeave *.js,*.ts    normal! mJ
+    autocmd BufLeave *.md         normal! mM
+    autocmd BufLeave *.yml,*.yaml normal! mY
+augroup END
+
+
+
+
+

@@ -280,17 +280,61 @@ serve_clipboard_live() {
     tmpfile="$host_dir/clipboard.html"     # file to write clipboard
     port=3214
 
-    # Check wl-paste exists
-    if ! command -v wl-paste &>/dev/null; then
-        echo "wl-paste not found. Install wl-clipboard."
+    # Detect available clipboard tool
+    if command -v wl-paste &>/dev/null; then
+        clipboard_cmd="wl-paste"
+        echo "Using wl-clipboard (wl-paste)."
+    elif command -v xclip &>/dev/null; then
+        clipboard_cmd="xclip -selection clipboard -o"
+        echo "Using xclip."
+    elif command -v xsel &>/dev/null; then
+        clipboard_cmd="xsel --clipboard --output"
+        echo "Using xsel."
+    else
+        echo "No supported clipboard tool found (wl-paste, xclip, or xsel)."
         return 1
     fi
 
-    # Initial write
-    wl-paste > "$tmpfile" || echo "" > "$tmpfile"
+    # Function to write clipboard into HTML with live JS update
+    write_clipboard_html() {
+        local content="$1"
+        cat > "$tmpfile" <<EOF
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Live Clipboard</title>
+</head>
+<body>
+<pre id="clip"></pre>
+<script>
+let prevContent = '';
+async function update() {
+    try {
+        const resp = await fetch('clipboard.txt?_=' + Date.now());
+        const text = await resp.text();
+        if (text !== prevContent) {
+            prevContent = text;
+            document.getElementById('clip').textContent = text;
+        }
+    } catch(e) {
+        console.error(e);
+    }
+}
+setInterval(update, 500);
+update();
+</script>
+</body>
+</html>
+EOF
+    }
+
+    # Separate clipboard text file
+    clip_txt="$host_dir/clipboard.txt"
+    echo "$($clipboard_cmd 2>/dev/null || echo "")" > "$clip_txt"
+    write_clipboard_html "$(cat "$clip_txt")"
 
     # Start server in background, serving host_dir explicitly
-    # Do NOT redirect errors while debugging
     python3 -m http.server $port -d "$host_dir" &
     server_pid=$!
 
@@ -302,13 +346,20 @@ serve_clipboard_live() {
     xdg-open "$url" &>/dev/null
 
     prev=""
-    trap 'kill $server_pid; echo "Server stopped."; exit' INT
+    cleanup() {
+        kill $server_pid 2>/dev/null
+        rm -rf "$host_dir"
+        echo "Server stopped and temporary folder deleted."
+        exit
+    }
+    trap cleanup INT TERM EXIT
 
     # Live update loop
     while true; do
-        current=$(wl-paste || echo "")
+        current=$($clipboard_cmd 2>/dev/null || echo "")
         if [[ "$current" != "$prev" ]]; then
-            echo "$current" > "$tmpfile"
+            echo "$current" > "$clip_txt"
+            write_clipboard_html "$current"
             prev="$current"
         fi
         sleep 0.5
