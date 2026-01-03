@@ -239,6 +239,43 @@ nnoremap <C-p> :browse find<Space>
 nnoremap <C-S-P> :vimgrep /<C-r>=expand("<cword>")<CR>/ **/*<CR>:copen<CR>
 
 
+
+
+
+" F2 to rename word under cursor or selection
+function! RenameWord()
+  " Check if in visual mode
+  if mode() ==# 'v' || mode() ==# 'V' || mode() ==# "\<C-v>"
+    " Get selected text
+    normal! gv"zy
+    let l:word = @z
+  else
+    " Get word under cursor
+    let l:word = expand('<cword>')
+  endif
+
+  " Prompt for replacement
+  let l:replacement = input('Replace "' . l:word . '" with: ')
+
+  " If input is empty, abort
+  if l:replacement == ''
+    echo "Rename canceled"
+    return
+  endif
+
+  " Do the replacement globally
+  execute '%s/\V' . escape(l:word, '/\') . '/' . escape(l:replacement, '/\') . '/g'
+  echo 'Replaced "' . l:word . '" with "' . l:replacement . '"'
+endfunction
+
+" Map F2 in normal and visual mode
+nnoremap <F2> :call RenameWord()<CR>
+vnoremap <F2> :<C-u>call RenameWord()<CR>
+
+
+
+
+
 ":set path+=~/dev/**
 ":find filename.txt
 

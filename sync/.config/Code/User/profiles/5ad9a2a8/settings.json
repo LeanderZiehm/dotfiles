@@ -2,5 +2,7 @@
     "files.autoSave": "afterDelay",
     "explorer.confirmDragAndDrop": false,
     "git.enableSmartCommit": true,
-    "git.autofetch": true
+    "git.autofetch": true,
+    "playwright.reuseBrowser": false,
+    "git.confirmSync": false
 }

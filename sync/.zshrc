@@ -117,16 +117,20 @@ function nvims() {
 
 #bindkey -s ^a "nvims\n"
 
+
+
 alias vimrc="vim ~/.vimrc"
 alias zshrc="vim ~/.zshrc"
+alias slides="vim ~/dev/repos/00_active-repos/presentation-artificial-intelligence/slides.md"
+# Notes setup
 
-alias todo="vim ~/dev/todo/todo.md"
-alias notes="vim ~/dev/notes/notes.md"
-alias wiki="vim ~/dev/wiki/index.md"
-
-# --------------------
-# Notes root
 export NOTES_ROOT=~/dev/notes
+
+alias sync-notes="cd $NOTES_ROOT && git add . && git commit -m 'sync' && git push"
+
+alias todo="vim $NOTES_ROOT/todo/todo.md"
+alias notes="vim $NOTES_ROOT/notes/notes.md"
+alias wiki="vim $NOTES_ROOT/wiki/index.md"
 
 # --------------------
 # Journal function with embedded template
@@ -268,4 +272,45 @@ du_top10() {
     du -h --max-depth=1 $TARGET $EXCLUDES 2>/dev/null \
         | sort -hr \
         | head -n 10
+}
+
+serve_clipboard_live() {
+    host_dir="$HOME/host-clipboard"
+    mkdir -p "$host_dir"                   # ensure folder exists
+    tmpfile="$host_dir/clipboard.html"     # file to write clipboard
+    port=3214
+
+    # Check wl-paste exists
+    if ! command -v wl-paste &>/dev/null; then
+        echo "wl-paste not found. Install wl-clipboard."
+        return 1
+    fi
+
+    # Initial write
+    wl-paste > "$tmpfile" || echo "" > "$tmpfile"
+
+    # Start server in background, serving host_dir explicitly
+    # Do NOT redirect errors while debugging
+    python3 -m http.server $port -d "$host_dir" &
+    server_pid=$!
+
+    url="http://localhost:$port/clipboard.html"
+    echo "Serving clipboard live at $url"
+
+    # Give server a moment to start
+    sleep 1
+    xdg-open "$url" &>/dev/null
+
+    prev=""
+    trap 'kill $server_pid; echo "Server stopped."; exit' INT
+
+    # Live update loop
+    while true; do
+        current=$(wl-paste || echo "")
+        if [[ "$current" != "$prev" ]]; then
+            echo "$current" > "$tmpfile"
+            prev="$current"
+        fi
+        sleep 0.5
+    done
 }

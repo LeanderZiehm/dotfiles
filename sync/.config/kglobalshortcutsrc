@@ -11,6 +11,8 @@ _k_friendly_name=Keyboard Layout Switcher
 [com.google.Chrome]
 61E610B4A8DFAE14A2928F7282EBEB3B-enter-picker-mode=none,none,Create a custom filter
 61E610B4A8DFAE14A2928F7282EBEB3B-enter-zapper-mode=none,none,Remove an element
+72745B32F4FE14FC90279075629542F1-run-slot-1=none,none,Play macro slot 1
+72745B32F4FE14FC90279075629542F1-run-slot-2=none,none,Play macro slot 2
 F423577B5A0D2A996B6C9EFD2F1D4251-autofill_card=none,none,Autofill the last used card for the current website
 F423577B5A0D2A996B6C9EFD2F1D4251-autofill_identity=none,none,Autofill the last used identity for the current website
 F423577B5A0D2A996B6C9EFD2F1D4251-autofill_login=none,none,Autofill the last used login for the current website
@@ -231,7 +233,7 @@ _k_friendly_name=Power Management
 powerProfile=Battery,Battery\tMeta+B,Switch Power Profile
 
 [plasmashell]
-Slideshow Wallpaper Next Image=none,,Next Wallpaper Image
+Slideshow Wallpaper Next Image=none,none,Next Wallpaper Image
 _k_friendly_name=plasmashell
 activate application launcher=Alt+F1\tMeta,Meta\tAlt+F1,Activate Application Launcher
 activate task manager entry 1=none,Meta+1,Activate Task Manager Entry 1
