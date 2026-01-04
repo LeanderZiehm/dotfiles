@@ -4,5 +4,8 @@
     "git.enableSmartCommit": true,
     "git.autofetch": true,
     "playwright.reuseBrowser": false,
-    "git.confirmSync": false
+    "git.confirmSync": false,
+    "chat.sendElementsToChat.attachImages": false,
+    "chat.sendElementsToChat.attachCSS": false,
+    "chat.sendElementsToChat.enabled": false
 }

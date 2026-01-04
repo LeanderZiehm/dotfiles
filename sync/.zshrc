@@ -122,16 +122,17 @@ function nvims() {
 alias vimrc="vim ~/.vimrc"
 alias zshrc="vim ~/.zshrc"
 alias slides="vim ~/dev/repos/00_active-repos/presentation-artificial-intelligence/slides.md"
+
+
+
+
+
 # Notes setup
-
 export NOTES_ROOT=~/dev/notes
-
 alias sync-notes="cd $NOTES_ROOT && git add . && git commit -m 'sync' && git push"
-
-alias todo="vim $NOTES_ROOT/todo/todo.md"
+#alias todo="vim $NOTES_ROOT/todo/todo.md"
 alias notes="vim $NOTES_ROOT/notes/notes.md"
 alias wiki="vim $NOTES_ROOT/wiki/index.md"
-
 # --------------------
 # Journal function with embedded template
 journal() {
@@ -276,11 +277,12 @@ du_top10() {
 
 serve_clipboard_live() {
     host_dir="$HOME/host-clipboard"
-    mkdir -p "$host_dir"                   # ensure folder exists
-    tmpfile="$host_dir/clipboard.html"     # file to write clipboard
+    mkdir -p "$host_dir"
+    tmpfile="$host_dir/clipboard.html"
+    clip_txt="$host_dir/clipboard.txt"
     port=3214
 
-    # Detect available clipboard tool
+    # Detect clipboard tool
     if command -v wl-paste &>/dev/null; then
         clipboard_cmd="wl-paste"
         echo "Using wl-clipboard (wl-paste)."
@@ -295,10 +297,13 @@ serve_clipboard_live() {
         return 1
     fi
 
-    # Function to write clipboard into HTML with live JS update
+    # Function to write HTML for live updates
     write_clipboard_html() {
         local content="$1"
-        cat > "$tmpfile" <<EOF
+        if grep -qi "<html" <<< "$content"; then
+            echo "$content" > "$tmpfile"
+        else
+            cat > "$tmpfile" <<EOF
 <!DOCTYPE html>
 <html>
 <head>
@@ -327,35 +332,34 @@ update();
 </body>
 </html>
 EOF
+        fi
     }
 
-    # Separate clipboard text file
-    clip_txt="$host_dir/clipboard.txt"
+    # Initial clipboard write
     echo "$($clipboard_cmd 2>/dev/null || echo "")" > "$clip_txt"
     write_clipboard_html "$(cat "$clip_txt")"
 
-    # Start server in background, serving host_dir explicitly
+    # Start server
     python3 -m http.server $port -d "$host_dir" &
     server_pid=$!
 
     url="http://localhost:$port/clipboard.html"
     echo "Serving clipboard live at $url"
-
-    # Give server a moment to start
     sleep 1
     xdg-open "$url" &>/dev/null
 
     prev=""
+    stop_loop=false
     cleanup() {
+        stop_loop=true
         kill $server_pid 2>/dev/null
         rm -rf "$host_dir"
         echo "Server stopped and temporary folder deleted."
-        exit
     }
-    trap cleanup INT TERM EXIT
+    trap cleanup INT TERM
 
     # Live update loop
-    while true; do
+    while ! $stop_loop; do
         current=$($clipboard_cmd 2>/dev/null || echo "")
         if [[ "$current" != "$prev" ]]; then
             echo "$current" > "$clip_txt"
@@ -365,3 +369,22 @@ EOF
         sleep 0.5
     done
 }
+
+
+
+
+
+# Todo
+
+todo() {
+    if [ -z "$1" ]; then
+        echo "Usage: todo <text>"
+        return 1
+    fi
+
+    curl -X POST 'https://tracker-api.leanderziehm.com/texts' \
+         -H 'accept: application/json' \
+         -H 'Content-Type: application/json' \
+         -d "{\"text\": \"$1\"}"
+}
+

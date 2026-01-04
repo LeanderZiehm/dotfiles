@@ -11,7 +11,9 @@ set mouse=a
 
 
 let mapleader = " "
-" make vim more vscode like with keyboard shortcuts
+nnoremap <Space> <Nop> 
+set timeoutlen=3000 " 3 seconds 
+" Keyboard shortcuts Vscode
 nnoremap <C-Down> :m .+1<CR>==
 vnoremap <C-Down> :m .+1<CR>==
 " Move current line up with Ctrl + Up
@@ -30,6 +32,10 @@ vnoremap <S-Up> :m .-2<CR>==
 
 " GIT
 
+
+
+" [TODO(future)] make partial diffs where you can select something in visual
+" mode and if and then it diffs that with the clipboard
 " Compare clipboard with current buffer, left = buffer, right = clipboard
 command! DiffClipboard call DiffClipboard()
 
@@ -166,7 +172,6 @@ autocmd SwapExists * if !v:swapchoice | let v:swapchoice = 'r' | endif
 " disable auto wrapping so if i write so long it wont automatically do it I
 " DIDNT WORK ITS STILL DOING IT BELOW 
 "set textwidth=0
-
 " Prevent auto-inserting comment leaders on Enter WARNING MAYBE HAS SIDE EFFECTS FOR WRAPPING
 "autocmd FileType * setlocal formatoptions-=o
 "autocmd FileType * setlocal formatoptions-=r
@@ -175,16 +180,6 @@ autocmd SwapExists * if !v:swapchoice | let v:swapchoice = 'r' | endif
 "set formatoptions=tq
 
 
-" Todo fix bug where file is messed up 
-"autocmd VimEnter * call timer_start(500, {-> execute('wincmd =')})
-"set nolazyredraw
-"set nosmoothscroll
-"set cmdheight=1
-
-
-"""
-
-"maybe unsave ////
 
 " Set the time Vim waits before triggering CursorHold (in milliseconds)
 set updatetime=10000  " 10000 ms = 10 seconds
@@ -244,7 +239,7 @@ nnoremap <Leader>b :ls<CR>:buffer<Space>
 "nnoremap <Leader>ff :find ~/dev/wiki/**<CR>
 
 
-"nnoremap <Leader>ff :lcd %:p:h<Bar>echo "Root set to ".getcwd()<Bar>find "
+"nnoremap <Leader>ff :lcd %:p:h<Bar>echo "Root set to ".getcwd()<Bar>find ""
 "nnoremap <Leader>fF :find<space>
 
 "nnoremap <C-p> :find<Space>
@@ -265,17 +260,19 @@ endfunction
 
 
 
-
-
-
 " Key mappings
+
+nnoremap <C-j> 5j
+vnoremap <C-j> 5j
+inoremap <C-j> 5j
+nnoremap <C-k> 5k
+vnoremap <C-k> 5k
+inoremap <C-k> 5k
+
 
 " VSCODE Like 
 nnoremap <C-p> :browse find<Space>
 nnoremap <C-S-P> :vimgrep /<C-r>=expand("<cword>")<CR>/ **/*<CR>:copen<CR>
-
-
-
 
 
 " F2 to rename word under cursor or selection
@@ -307,209 +304,6 @@ endfunction
 " Map F2 in normal and visual mode
 nnoremap <F2> :call RenameWord()<CR>
 vnoremap <F2> :<C-u>call RenameWord()<CR>
-
-
-
-
-
-":set path+=~/dev/**
-":find filename.txt
-
-
-
-
-" Helper: show a popup with matches and allow selection
-"function! s:PopupSelect(matches) abort
-    "if empty(a:matches)
-        "echo "No matches found"
-        "return ''
-    "endif
-    " Create popup window
-    "let id = popup_create(a:matches, #{
-                \ minwidth: 50,
-                \ minheight: 10,
-                \ border: [],
-                \ cursorline: 1,
-                \ scroll: 1,
-                \ mapping: 1,
-                \ title: 'Select a file'
-                \ })
-    
-    " Wait for user to select
-    "let choice = input("Enter number to open file (empty to cancel): ")
-    "call popup_close(id)
-"
-    "if choice =~ '^\d\+$' && choice >= 1 && choice <= len(a:matches)
-        "return a:matches[choice - 1]
-    "endif
-    "return ''
-"endfunction
-"
-" Helper: search files recursively in a given path
-"function! s:SearchFiles(path) abort
-    "let files = split(globpath(a:path, '**/*', 0, 1), "\n")
-    "return files
-"endfunction
-
-" Main search function with interactive popup
-"function! s:FileSearch(path) abort
-    "let files = s:SearchFiles(a:path)
-    "if empty(files)
-        "echo "No files found"
-        "return
-    "endif
-    " Optional: filter by user input
-    "let term = input("Search term (leave empty for all): ")
-    "if !empty(term)
-        "let files = filter(copy(files), {_, v -> v =~ term})
-    "endif
-    "let selected = s:PopupSelect(files)
-    "if !empty(selected)
-        "execute "edit " . fnameescape(selected)
-    "endif
-"endfunction
-
-" =============================
-" Leader mappings for different scopes
-" =============================
-" fd -> ~/dev
-"nnoremap <leader>fd :call <sid>FileSearch(expand('~/dev'))<CR>
-" fc -> ~/.conf
-"nnoremap <leader>fc :call <sid>FileSearch(expand('~/.conf'))<CR>
- "ff -> current file directory and subdirs
-"nnoremap <leader>ff :call <sid>FileSearch(expand('%:p:h'))<CR>
-" fF -> home with all subdirs
-"nnoremap <leader>fF :call <sid>FileSearch(expand('~'))<CR>
-
-
-" Better indentation
-
-" Yank highlight in vimrc in vim but its not working 
-" Define highlight
-"highlight Yanked ctermbg=yellow ctermfg=black guibg=yellow guifg=black
-
-" Function to highlight yanked text
-"function! HighlightYank()
-  "if v:event.operator ==# 'y'
-     "Highlight the yanked region
-    "let l:matchid = matchadd('Yanked', '\%'.line("'<").'l.*')
-     "Remove the highlight after 300ms
-    "call timer_start(300, { -> matchdelete(l:matchid) })
-  "endif
-"endfunction
-"
-" Autocmd
-"augroup YankHighlight
-  "autocmd!
-  "autocmd TextYankPost * call HighlightYank()
-"augroup END
-
-
-
-
-"# Save
-"nnoremap <leader>s :w<CR>
-"nnoremap <C-s> :w<CR>
-
-" auto save 
-"autocmd TextChanged,TextChangedI <buffer> silent write
-"autocmd CursorHoldI,CursorHold * silent! update
-
-
-"set scrolloff = 10
-" highlight CursorColumn ctermbg=darkgrey ctermfg=black
-" map <leader>c :set cursorline! cursorcolumn!<CR>
-
-
-
-" highlight MyName guifg=Red ctermfg=Red
-
-
-
-" ===========================
-" HIGHLIGHTS
-" ===========================
-"  Question  TODO   Todo  
-" Use a function for all custom highlights
-"function! MyHighlights() abort
-    " Highlight current line
-    " hi CursorLine cterm=none ctermbg=236 guibg=Grey20
-
-    " Highlight the first line
-    " hi FirstLine ctermbg=236 guibg=Grey20
-    " call matchadd('FirstLine', '\%1l.*')
-" 
-    " Highlight even lines
-    " hi EvenLines ctermbg=236 guibg=Grey20
-    " let l:num = 2
-    " while l:num <= line('$')
-        " call matchadd('EvenLines', '\%' . l:num . 'l.*')
-        " let l:num += 2
-    " endwhile
-
-    " Highlight lines starting with #
-    " hi CommentLine ctermbg=236 guibg=Grey20
-    " syntax match CommentLine /^#.*/ 
-    " highlight link CommentLine Comment
-
-    " Highlight lines containing TODO
-    " hi TodoLine cterm=bold ctermbg=236 guibg=Yellow
-    " syntax match TodoLine /TODO/
-
-    " Highlight lines containing Question
-    " hi MyQuestions guifg=red guibg=green
-    " syntax match MyQuestions /Question/
-" endfunction
-
-" ===========================
-" APPLY HIGHLIGHTS SAFELY
-" ===========================
-" augroup MyColors
-    " autocmd!
-    " Apply highlights whenever a colorscheme is loaded
-    " autocmd ColorScheme * call MyHighlights()
-" augroup END
-
-" If a colorscheme is already loaded, apply highlights immediately
-" if exists("colors_name")
-    " doautocmd ColorScheme
-" endif
-
-" Comments
-"function! ToggleCommentLine(range)
-  "let l:cs = &commentstring
-  "if empty(l:cs)
-    "return
-  "endif
-"
-  "let l:prefix = substitute(l:cs, '%s', '', '')
-  "let l:prefix = substitute(l:prefix, '\s*$', '', '')
-"
-   "Determine the range of lines
-  "let l:start = a:firstline
-  "let l:end = a:lastline
-"
-  "for l:num in range(l:start, l:end)
-    "let l:line = getline(l:num)
-    "if l:line =~ '^\s*' . escape(l:prefix, '/*$.')
-       "Uncomment
-      "call setline(l:num, substitute(l:line, '^\(\s*\)' . escape(l:prefix, '/*$.'), '\1', ''))
-    "else
-       "Comment
-      "call setline(l:num, substitute(l:line, '^\(\s*\)', '\1' . l:prefix . '', ''))
-    "endif
-  "endfor
-  "normal! j
-"endfunction
-
-" Map normal mode
-"nnoremap # :call ToggleCommentLine(line('.'))<CR>
-
-" Map visual mode (doesnt work yet. TODO needs fixing)
-"vnoremap # :<C-U>call ToggleCommentLine('<,'>)<CR>
-
-
-
 
 " todo vimscript in vimrc split this into two seperate functins one for single
 " line and one for multi line because multiline is still not working it says 
@@ -553,79 +347,15 @@ endfunction
 " Normal mode: toggle single line
 nnoremap # :call ToggleComment()<CR>
 nnoremap <C-/> :call ToggleComment()<CR>
+inoremap <C-/> :call ToggleComment()<CR>
 
 " Visual mode: toggle selected range
 vnoremap # :<C-U>call ToggleComment(line("'<"), line("'>"))<CR>
 vnoremap <C-/> :<C-U>call ToggleComment(line("'<"), line("'>"))<CR>
+inoremap <C-/> :<C-U>call ToggleComment(line("'<"), line("'>"))<CR>
 
 
-
-
-
-
-" PLUGINS 
-
-
-" Minimal Vim plugin manager using git
-
-"function! InstallPlugin(repo_url)
-     "Extract plugin name from URL
-    "let l:parts = split(a:repo_url, '/')
-    "let l:name = substitute(l:parts[-1], '\.git$', '', '')
-
-    " Set installation directory
-    "let l:dir = expand('~/.vim/pack/plugins/start/' . l:name)
-
-    " Check if plugin already exists
-    "if !isdirectory(l:dir)
-        "echo 'Installing ' . l:name . '...'
-        " Use system git clone
-        "call system(['git', 'clone', a:repo_url, l:dir])
-        "echo l:name . ' installed!'
-    "else
-        "echo l:name . ' already installed.'
-    "endif
-"endfunction
-
-
-"function! InstallPlugin(repo_url, post_install)
-    "let l:parts = split(a:repo_url, '/')
-    "let l:name = substitute(l:parts[-1], '\.git$', '', '')
-    "let l:dir = expand('~/.vim/pack/plugins/start/' . l:name)
-"
-    "if !isdirectory(l:dir)
-        "echo 'Installing ' . l:name . '...'
-        "call system(['git', 'clone', a:repo_url, l:dir])
-        "echo l:name . ' installed!'
-        "if a:post_install != ''
-            "execute a:post_install
-        "endif
-    "else
-        "echo l:name . ' already installed.'
-    "endif
-"endfunction
-
-" Example usage
-"call InstallPlugin('https://github.com/junegunn/fzf.git', 'call fzf#install()')
-
-" List your plugins here
-"call InstallPlugin('https://github.com/vimwiki/vimwiki.git')
-"call InstallPlugin('https://github.com/junegunn/fzf.git')
-"call InstallPlugin('https://github.com/junegunn/fzf.vim.git')
-
-
-"hello
-"
-"call plug#begin()
-
-" List your plugins here
-"Plug 'tpope/vim-sensible'
-"Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
-"Plug 'junegunn/fzf.vim'
-"Plug 'vimwiki/vimwiki'
-
-"call plug#end()
-
+" Todo replace vim wiki with my own vimrc code
 " 1. VIM WIKI
 "# vim vimwiki settings
 set nocompatible
@@ -638,13 +368,76 @@ let g:vimwiki_list = [{'path': '~/dev/wiki/',
 let g:vimwiki_global_ext = 0
 
 
+" Map <leader>al to create automatic Markdown link
+nnoremap <leader>al :call CreateMarkdownLink()<CR>
+
+function! CreateMarkdownLink()
+  " Get the current word under cursor
+  let l:word = expand('<cword>')
+
+  " Initialize path array
+  let l:path = []
+
+  " Track the last top-level header (#)
+  let l:last_h1 = ''
+  " Track current subheaders under that H1
+  let l:subheaders = []
+
+  " Loop backwards from current line to the start
+  for lnum in reverse(range(1, line('.') - 1))
+    let l:line = getline(lnum)
+    if l:line =~ '^# '
+      " Found the closest preceding top-level header
+      let l:last_h1 = substitute(l:line, '^#\s*', '', '')
+      break
+    endif
+  endfor
+
+  " If top-level header exists, add it to path (lowercased, underscores)
+  if l:last_h1 != ''
+    call add(l:path, tolower(substitute(l:last_h1, '\s\+', '_', 'g')))
+  endif
+
+  " Find subheaders (##, ###) between H1 and current line
+  let l:start_line = l:last_h1 == '' ? 1 : lnum + 1
+  for lnum2 in range(l:start_line, line('.') - 1)
+    let l:line2 = getline(lnum2)
+    if l:line2 =~ '^##\+\s'
+      let l:sub = substitute(l:line2, '^##\+\s*', '', '')
+      call add(l:path, tolower(substitute(l:sub, '\s\+', '_', 'g')))
+    endif
+  endfor
+
+  " Construct relative path (lowercase word as well)
+  let l:relative_path = './' . join(l:path, '/') . '/' . tolower(l:word) . '.md'
+
+  " Replace current word with Markdown link
+  execute "normal! viW"
+  execute "normal! c[" . l:word . "](" . l:relative_path . ")"
+endfunction
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 " File Explorer
 nnoremap <C-b> :Lex<Esc>
 nnoremap <leader>e :Lex<Esc>
 nnoremap <leader>n :Lex<Esc>
 " nnoremap <leader>dd :Lexplore %:p:h<CR>
-
-
 
 " Netrw basic settings
 let g:netrw_keepdir = 0
@@ -652,14 +445,8 @@ let g:netrw_winsize = 20
 let g:netrw_banner = 0
 let g:netrw_localcopydircmd = 'cp -r'
 
-":set modifiable  " some weird bug that doesnt let me create a new file or folder 
-" Highlight for marked files (optional)
-"augroup netrw_mark_highlight
-    "autocmd!
-    "autocmd ColorScheme * hi! link netrwMarkFile Search
-"augroup END
 
-" Function to define buffer-local keymaps for Netrw
+" Keymaps Netrw
 function! NetrwMapping()
     " Navigation
     nmap <buffer> h -^           
@@ -674,16 +461,6 @@ function! NetrwMapping()
     nmap <buffer> q :Lex<Esc>
     nmap <buffer> <Esc> :Lex<Esc>
 
-    "nmap <buffer> fx mm           " Move marked files
-    "nmap <buffer> fX mtmm         " Move marked files to target
-    "nmap <buffer> fD :call DeleteMarked()<CR> " Delete marked files/dirs
-
-    " Marks (commented out)
-    " nmap <buffer> <TAB> mf        " Mark file/directory
-    " nmap <buffer> <S-TAB> mF      " Unmark all
-
-    " External commands (commented out)
-    " nmap <buffer> f; mx
 endfunction
 
 " Call the function automatically whenever a Netrw buffer is opened
@@ -691,26 +468,6 @@ augroup netrw_mapping
     autocmd!
     autocmd filetype netrw call NetrwMapping()
 augroup END
-
-" Delete function for marked files/dirs
-"function! DeleteMarked()
-    "echo "Deleting marked files..."
-    "normal! m`            " Save cursor position
-    " normal! mf          " Optional: mark current file if needed
-    "let marks = netrw#DirListMarked()
-    "for m in marks
-        "if isdirectory(m)
-            "call delete(m, 'rf') " Recursively delete directories
-        "else
-            "call delete(m)
-        "endif
-    "endfor
-    "echo "Deleted marked files/dirs."
-"endfunction
-
-
-
-
 
 
 let g:search_count_status = '-'
@@ -750,64 +507,6 @@ set statusline+=%3*\-%{g:search_count_status}-\
 set statusline+=%8*\ %=\                                 " Right align
 set statusline+=%8*\ %l/%L\                               " Rownumber/total
 
-
-"set statusline=
-"set statusline+=%7*\[%n]                                  "buffernr
-"set statusline+=%1*\ %<%F\                                "File+path
-"set statusline+=%2*\ %y\                                  "FileType
-"set statusline+=%3*\ %{g:search_count_status}\ 
-"set statusline+=%8*\ %=\ %l/%L\             "Rownumber/total
-
-
-
-
-
-"set statusline+=%8*\ %=\ row:%l/%L\ (%03p%%)\             "Rownumber/total (%)
-"set statusline+=%9*\ col:%03c\                            "Colnr
-"set statusline+=%0*\ \ %m%r%w\ %P\ \                      "Modified? Readonly? Top/bot.
-
-"set statusline+=%=\ autosave_enabled
-
-" set statusline=
-" set statusline=%f\ %y\ %m\ %r\ [%{&ff}]\ [%l,%c]
-" set statusline +=%1*\ %n\ %*            "buffer number
-" set statusline +=%5*%{&ff}%*            "file format
-" set statusline +=%3*%y%*                "file type
-" set statusline +=%4*\ %<%F%*            "full path
-" set statusline +=%2*%m%*                "modified flag
-" set statusline +=%1*%=%5l%*             "current line
-" set statusline +=%2*/%L%*               "total lines
-" set statusline +=%1*%4v\ %*             "virtual column number
-" set statusline +=%2*0x%04B\ %*          "character under cursor
-
-
-"Highlight ????
-
-"function! HighlightSearch()
-  "if &hls
-    "return 'H'
-  "else
-    "return ''
-  "endif
-"endfunction
-"Colors (adapted from ligh2011.vim):
-
-"hi User1 guifg=#ffdad8  guibg=#880c0e
-"hi User2 guifg=#000000  guibg=#F4905C
-"hi User3 guifg=#292b00  guibg=#f4f597
-"hi User4 guifg=#112605  guibg=#aefe7B
-"hi User5 guifg=#051d00  guibg=#7dcc7d
-"hi User7 guifg=#ffffff  guibg=#880c0e gui=bold
-"hi User8 guifg=#ffffff  guibg=#5b7fbb
-"hi User9 guifg=#ffffff  guibg=#810085
-"hi User0 guifg=#ffffff  guibg=#094afe
-
-
-
-
-
-
-
 " From the internet 
 augroup VIMRC
     autocmd!
@@ -817,8 +516,3 @@ augroup VIMRC
     autocmd BufLeave *.md         normal! mM
     autocmd BufLeave *.yml,*.yaml normal! mY
 augroup END
-
-
-
-
-
