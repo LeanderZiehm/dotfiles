@@ -1,10 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-#echo "hello I am the test script"
-
 DOTFILES_DIR="$(dirname "$(realpath "$0")")"
-#echo $DOTFILES_DIR
 
 DOTFILES=(
     ~/.vimrc
@@ -22,11 +19,27 @@ DOTFILES=(
     ~/.config/flameshot
 )
 
-
-#echo $DOTFILES
+IGNORE=(
+    "*state.vscdb*"
+    "*.backup*"
+)
 
 sync_dir="$DOTFILES_DIR/sync/"
 mkdir -p "$sync_dir"
+
+
+
+matches_ignore() {
+    local file="$1"
+    for pattern in "${IGNORE[@]}"; do
+        if [[ "$file" == $pattern ]]; then
+            return 0  # matched ignore
+        fi
+    done
+    return 1  # did not match
+}
+
+
 
 for dir_to_sync in "${DOTFILES[@]}"; do
 
@@ -35,37 +48,36 @@ for dir_to_sync in "${DOTFILES[@]}"; do
         continue
     fi
 
-    
-    # find all files in dir with find command
-    # then copy them 1 by one into syncdir using the cp command
-      # Resolve absolute path and strip leading /
-
-    # dest_base="$sync_dir/$dir_to_sync"
-    #echo "dest_base $dest_base" 
-    # mkdir -p "$(dirname "$dest_base")"
-    #echo "mkdir -p '$(dirname "$dest_base')'"
-
     if [[ -f "$dir_to_sync" ]]; then
         # Strip home directory prefix
         file_rel="${dir_to_sync/#$HOME\//}"
+       
+        if matches_ignore "$file_rel"; then
+            echo "- Ignored file: $file_rel"
+            continue
+        fi
+
         dest="$sync_dir/$file_rel"
 
         mkdir -p "$(dirname "$dest")"
         cp -p "$dir_to_sync" "$dest"
-        #echo "+ Copied file: $dir_to_sync"
     else
         find "$dir_to_sync" -type f | while IFS= read -r file; do
             file_real="$(realpath "$file")"
-            # Strip the home directory prefix
             file_rel="${file_real/#$HOME\//}"
+
+            if matches_ignore "$file_rel"; then
+                echo "- Ignored file: $file_rel"
+                continue
+            fi
+
             dest="$sync_dir/$file_rel"
             mkdir -p "$(dirname "$dest")"
             cp -p "$file_real" "$dest"
-            echo "+ Copied file: $file_real to $dest"
+            #echo "+ Copied file: $file_real to $dest"
         done
     fi
 done
-
 
 
 
