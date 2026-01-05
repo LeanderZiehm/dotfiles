@@ -97,6 +97,7 @@ if command -v git &>/dev/null; then
     if [[ -n "$changed_files" ]]; then
         echo "[INFO] Files changed:"
         echo "$changed_files"
+        echo ""
     else
         echo "[INFO] No changes detected."
     fi
