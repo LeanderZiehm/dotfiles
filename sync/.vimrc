@@ -1,18 +1,36 @@
-" If you want highlighting use neovim
-" todo: multi row commenting (need to figure out how do do functions with
-" multi arguments
-"# Settings 
+" TODO figure out a good timeout so esc is instant but I still have time to
+" press my keys 
+
 syntax on
-filetype indent on
+filetype plugin indent on
 set nocompatible
+" VISUAL SETTINGS
+colorscheme unokai " wildcharm
+set number
+set cursorline
+let &t_SI = "\e[6 q"
+let &t_EI = "\e[2 q"
+" reset the cursor on start (for older versions of vim, usually not required)
+augroup myCmds
+au!
+autocmd VimEnter * silent !echo -ne "\e[2 q"
+augroup END
+
+
+
+set ttimeout
+set ttimeoutlen=50
+"set timeoutlen=3000 " 3 seconds 
 
 " enable mouse
 set mouse=a
 
 
+
+
+
 let mapleader = " "
 nnoremap <Space> <Nop> 
-set timeoutlen=3000 " 3 seconds 
 " Keyboard shortcuts Vscode
 nnoremap <C-Down> :m .+1<CR>==
 vnoremap <C-Down> :m .+1<CR>==
@@ -36,11 +54,31 @@ nnoremap <A-Up> :m .-2<CR>==
 vnoremap <A-Up> :m .-2<CR>==
 
 
-
-" GIT
-
+" Help
 
 
+nnoremap <leader>hk :tab help key-notation<CR>
+nnoremap <leader>hk :tab help key-notation<CR>
+
+" vimwiki
+" Map <leader>Backspace to go to previous buffer
+nnoremap <BS> :bp<CR>
+nnoremap <leader><BS> :bp<CR>
+
+" Map <leader>Tab to go to next buffer
+nnoremap <leader><Tab> :bn<CR>
+
+
+
+
+
+
+
+
+" GIT (TODO)
+
+
+" DIFF 
 " [TODO(future)] make partial diffs where you can select something in visual
 " mode and if and then it diffs that with the clipboard
 " Compare clipboard with current buffer, left = buffer, right = clipboard
@@ -93,7 +131,6 @@ set hlsearch
 nnoremap ,p "0p
 nnoremap <Space> o<Esc>
 
-
 set scrolloff=10
 
 " Clipboard
@@ -102,18 +139,17 @@ set is
 set hls
 
 
-" VISUAL SETTINGS
-
-colorscheme unokai " wildcharm
-set number
+" INDENT
 "set relativenumber
-set smartindent
-set autoindent
-set tabstop=4
-set shiftwidth=4
-set expandtab
+"set smartindent
+"set autoindent
+"set tabstop=4
+"set shiftwidth=4
+"set expandtab
+
+"autocmd FileType java setlocal shiftwidth=4 tabstop=4 softtabstop=4 expandtab smartindent
+
 "set showmatch
-set cursorline
 "set ruler
 "set colorcolumn=80
 
@@ -365,18 +401,19 @@ inoremap <C-/> :<C-U>call ToggleComment(line("'<"), line("'>"))<CR>
 " Todo replace vim wiki with my own vimrc code
 " 1. VIM WIKI
 "# vim vimwiki settings
-set nocompatible
-filetype plugin on
-syntax on
+"set nocompatible
+"filetype plugin on
+"syntax on
 
 
-let g:vimwiki_list = [{'path': '~/dev/wiki/',
-                      \ 'syntax': 'markdown', 'ext': 'md'}]
-let g:vimwiki_global_ext = 0
+"let g:vimwiki_list = [{'path': '~/dev/wiki/',
+                      "\ 'syntax': 'markdown', 'ext': 'md'}]
+"let g:vimwiki_global_ext = 0
 
 
 " Map <leader>al to create automatic Markdown link
 nnoremap <leader>al :call CreateMarkdownLink()<CR>
+nnoremap <CR> :call CreateMarkdownLink()<CR>
 
 function! CreateMarkdownLink()
   " Get the current word under cursor
@@ -421,12 +458,21 @@ function! CreateMarkdownLink()
   " Replace current word with Markdown link
   execute "normal! viW"
   execute "normal! c[" . l:word . "](" . l:relative_path . ")"
+  " Create the file for the relative path if it doesn't exist
+  let l:dir = fnamemodify(l:relative_path, ":h")
+  if !isdirectory(l:dir)
+    call mkdir(l:dir, "p")
+  endif
+
+  if !filereadable(l:relative_path)
+    call writefile([], l:relative_path)
+  endif
 endfunction
 
 
 
 
-
+":filetype plugin indent on
 
 
 
