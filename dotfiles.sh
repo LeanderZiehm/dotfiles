@@ -53,7 +53,7 @@ for dir_to_sync in "${DOTFILES[@]}"; do
         file_rel="${dir_to_sync/#$HOME\//}"
        
         if matches_ignore "$file_rel"; then
-            echo "- Ignored file: $file_rel"
+            #echo "- Ignored file: $file_rel"
             continue
         fi
 
