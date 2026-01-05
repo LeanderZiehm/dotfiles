@@ -19,6 +19,7 @@ vnoremap <C-Down> :m .+1<CR>==
 " Move current line up with Ctrl + Up
 nnoremap <C-Up> :m .-2<CR>==
 vnoremap <C-Up> :m .-2<CR>==
+
 " Move current line down with Shift+Down (normal mode)
 nnoremap <S-Down> :m .+1<CR>==
 vnoremap <S-Down> :m .+1<CR>==
@@ -27,6 +28,12 @@ nnoremap <S-Up> :m .-2<CR>==
 vnoremap <S-Up> :m .-2<CR>==
 
 
+" Move current line down with Shift+Down (normal mode)
+nnoremap <A-Down> :m .+1<CR>==
+vnoremap <A-Down> :m .+1<CR>==
+" Move current line up with Shift+Up (normal mode)
+nnoremap <A-Up> :m .-2<CR>==
+vnoremap <A-Up> :m .-2<CR>==
 
 
 

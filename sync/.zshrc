@@ -123,6 +123,20 @@ alias vimrc="vim ~/.vimrc"
 alias zshrc="vim ~/.zshrc"
 alias slides="vim ~/dev/repos/00_active-repos/presentation-artificial-intelligence/slides.md"
 
+alias fzfman="apropos . | fzf --exact"
+alias manfzf="apropos . | fzf --exact"
+
+alias zoxide-debug="zoxide query -l -s"
+
+
+#vim +Man\ "$@"
+manvim() {
+  MANPAGER=cat man "$@" | vim -
+}
+
+vimman() {
+  MANPAGER=cat man "$@" | vim -
+}
 
 
 
@@ -133,6 +147,8 @@ alias sync-notes="cd $NOTES_ROOT && git add . && git commit -m 'sync' && git pus
 #alias todo="vim $NOTES_ROOT/todo/todo.md"
 alias notes="vim $NOTES_ROOT/notes/notes.md"
 alias wiki="vim $NOTES_ROOT/wiki/index.md"
+alias wiki-git="cd $NOTES_ROOT/wiki/ && git add . && git commit -m 'sync wiki' && git push"
+alias notes-git="cd $NOTES_ROOT/ && git add . && git commit -m 'sync all' && git push"
 # --------------------
 # Journal function with embedded template
 journal() {
