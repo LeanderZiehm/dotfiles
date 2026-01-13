@@ -7,5 +7,15 @@
     "git.confirmSync": false,
     "chat.sendElementsToChat.attachImages": false,
     "chat.sendElementsToChat.attachCSS": false,
-    "chat.sendElementsToChat.enabled": false
+    "chat.sendElementsToChat.enabled": false,
+    "editor.minimap.enabled": false,
+    "explorer.confirmPasteNative": false,
+    "extensions.ignoreRecommendations": true,
+    "python.analysis.typeCheckingMode": "standard",
+    "python.analysis.extraPaths": [
+        "/home/user/venv/global"
+    ],
+    "python.defaultInterpreterPath": "/home/user/venv/global/bin/python",
+    "python.venvPath": "~/venv",
+    "explorer.confirmDelete": false
 }

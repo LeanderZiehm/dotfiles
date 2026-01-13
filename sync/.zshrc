@@ -39,8 +39,8 @@ esac
 
 
 # ruby
-export PATH="$HOME/.rbenv/bin:$PATH"
-eval "$(rbenv init - zsh)"
+#export PATH="$HOME/.rbenv/bin:$PATH"
+#eval "$(rbenv init - zsh)"
 
 # go 
 export PATH="$HOME/go/bin:$PATH"
@@ -79,8 +79,8 @@ alias dotfiles='/home/user/dotfiles/dotfiles.sh'
 
 
 # CLI tools
-eval "$(zoxide init zsh)"
 
+#eval "$(zoxide init zsh)"
 
 # pacman
 alias pacman-ophins-list="pacman -Qtdq"
@@ -89,7 +89,7 @@ alias pacman-installed="pacman -Qi | awk '/^Name/{name=$3} /^Installed Size/{siz
 
 
 # vi mode (vim lite)
-#bindkey -v
+bindkey -v
 autoload -Uz edit-command-line
 zle -N edit-command-line
 bindkey '^x^e' edit-command-line
@@ -291,7 +291,7 @@ du_top10() {
         | head -n 10
 }
 
-serve_clipboard_live() {
+live_clipboard_server() {
     host_dir="$HOME/host-clipboard"
     mkdir -p "$host_dir"
     tmpfile="$host_dir/clipboard.html"
@@ -398,9 +398,30 @@ todo() {
         return 1
     fi
 
-    curl -X POST 'https://tracker-api.leanderziehm.com/texts' \
+    curl -X POST 'https://todo-api.leanderziehm.com/texts' \
          -H 'accept: application/json' \
          -H 'Content-Type: application/json' \
          -d "{\"text\": \"$1\"}"
 }
 
+llm() {
+curl -X 'POST' \
+  'https://llm.leanderziehm.com/chat/auto' \
+  -H 'accept: application/json' \
+  -H 'Content-Type: application/json' \
+  -d "{\"message\": \"$1\"}"
+}
+
+
+kali(){
+qemu-system-x86_64 \
+    -enable-kvm \
+    -m 6G \
+    -cpu host \
+    -smp 4,sockets=1,cores=4,threads=1 \
+    -drive file=/home/user/VMs/kali.qcow2,if=virtio,cache=writeback \
+    -net nic,model=virtio -net user,hostfwd=tcp::2222-:22 \
+    -vga virtio \
+    -display gtk,gl=on \
+    -usb -device usb-tablet
+}

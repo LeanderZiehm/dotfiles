@@ -1,4 +1,4 @@
-default_border pixel 0
+default_border pixel 1
 set $mod Mod4
 exec --no-startup-id dex --autostart --environment i3
 exec --no-startup-id xss-lock --transfer-sleep-lock -- i3lock --nofork
@@ -26,15 +26,16 @@ bindsym $mod+d exec --no-startup-id rofi -show run
 # .desktop file. It is a wrapper around dmenu, so you need that installed.
 # bindcode $mod+40 exec --no-startup-id i3-dmenu-desktop
 
-bindsym $mod+s exec --no-startup-id wezterm start --cwd ~/stuff/
+#bindsym $mod+s exec --no-startup-id wezterm start --cwd ~/stuff/
 #bindsym $mod+r exec --no-startup-id wezterm -e vim ~/stuff/repos/current-repos/
 #bindsym $mod+r exec --no-startup-id wezterm -e tuff/repos/current-repos/{}
-bindsym $mod+r exec --no-startup-id wezterm -e sh -c 'selected=$(ls ~/stuff/repos/current-repos | fzf) && [ -n "$selected" ] && code ~/stuff/repos/current-repos/"$selected"'
+#bindsym $mod+r exec --no-startup-id wezterm -e sh -c 'selected=$(ls ~/stuff/repos/current-repos | fzf) && [ -n "$selected" ] && code ~/stuff/repos/current-repos/"$selected"'
 
 bindsym $mod+c exec --no-startup-id code
+bindsym $mod+v exec --no-startup-id code
 #bindsym $mod+v exec --no-startup-id rofi -show run
-bindsym $mod+n exec --no-startup-id wezterm -e vim ~/notes/daily$(date +%Y_%m_%d).md
-bindsym $mod+t exec --no-startup-id wezterm -e vim ~/notes/todo.md
+#bindsym $mod+n exec --no-startup-id wezterm -e vim ~/notes/daily$(date +%Y_%m_%d).md
+#bindsym $mod+t exec --no-startup-id wezterm -e vim ~/notes/todo.md
 #bindsym $mod+o exec --no-startup-id wezterm start; grab_focus; floating enable
 #&& i3-msg "[id=$(xdotool getactivewindow)] floating enable"
 
@@ -70,10 +71,10 @@ bindsym $mod+Shift+Up move up
 bindsym $mod+Shift+Right move right
 
 # split in horizontal orientation
-bindsym $mod+h split h
+#bindsym $mod+h split h
 
 # split in vertical orientation
-bindsym $mod+v split v
+#bindsym $mod+v split v
 
 # enter fullscreen mode for the focused container
 bindsym $mod+f fullscreen toggle
@@ -85,9 +86,10 @@ bindsym $mod+f fullscreen toggle
 
 # toggle tiling / floating
 bindsym $mod+Shift+space floating toggle
+bindsym $mod+Shift+f floating toggle
 
 # change focus between tiling / floating windows
-bindsym $mod+space focus mode_toggle
+#bindsym $mod+space focus mode_toggle
 
 # focus the parent container
 bindsym $mod+a focus parent

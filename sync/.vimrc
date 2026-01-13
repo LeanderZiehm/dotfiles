@@ -54,6 +54,13 @@ nnoremap <A-Up> :m .-2<CR>==
 vnoremap <A-Up> :m .-2<CR>==
 
 
+
+
+"nnoremap <C-a> mzggVG`z
+"inoremap <C-a> ggVG
+"vnoremap <C-a> ggVG
+
+
 " Help
 
 
@@ -156,52 +163,6 @@ set hls
 
 "# Persistence
 set viminfo='100,<50,s10,h
-
-" Automatically jump to the last cursor position when reopening a file
-if has("autocmd")
-  au BufReadPost *
-        \ if line("'\"") > 0 && line("'\"") <= line("$") |
-        \   exe "normal! g`\"" |
-        \ endif
-endif
-
-" Persistent undo setup
-let s:undodir = expand('~/.vim/undo')
-
-" Make sure undo dir exists
-if !isdirectory(s:undodir)
-    call mkdir(s:undodir, 'p')
-endif
-
-" -----------------------------
-" Persistent undo
-" -----------------------------
-" Make sure undo dir exists
-if !isdirectory(expand('~/.vim/undo'))
-    call mkdir(expand('~/.vim/undo'), 'p')
-endif
-
-" Enable persistent undo and set the undo directory
-set undofile
-let &undodir = expand('~/.vim/undo')
-
-
-" -----------------------------
-" Backup and swap files
-" -----------------------------
-" Keep backups and swap files in separate directories
-if !isdirectory(expand('~/.vim/backup'))
-    call mkdir(expand('~/.vim/backup'), 'p')
-endif
-
-if !isdirectory(expand('~/.vim/swap'))
-    call mkdir(expand('~/.vim/swap'), 'p')
-endif
-
-set backup
-set backupdir=~/.vim/backup//
-set swapfile
-set directory=~/.vim/swap//
 
 
 " -----------------------------
@@ -397,20 +358,6 @@ vnoremap # :<C-U>call ToggleComment(line("'<"), line("'>"))<CR>
 vnoremap <C-/> :<C-U>call ToggleComment(line("'<"), line("'>"))<CR>
 inoremap <C-/> :<C-U>call ToggleComment(line("'<"), line("'>"))<CR>
 
-
-" Todo replace vim wiki with my own vimrc code
-" 1. VIM WIKI
-"# vim vimwiki settings
-"set nocompatible
-"filetype plugin on
-"syntax on
-
-
-"let g:vimwiki_list = [{'path': '~/dev/wiki/',
-                      "\ 'syntax': 'markdown', 'ext': 'md'}]
-"let g:vimwiki_global_ext = 0
-
-
 " Map <leader>al to create automatic Markdown link
 nnoremap <leader>al :call CreateMarkdownLink()<CR>
 nnoremap <CR> :call CreateMarkdownLink()<CR>
@@ -471,6 +418,26 @@ endfunction
 
 
 
+
+":filetype plugin indent on
+
+
+
+
+
+
+
+
+
+
+
+
+
+" File Explorer
+nnoremap <C-b> :Lex<Esc>
+nnoremap <leader>e :Lex<Esc>
+nnoremap <leader>n :Lex<Esc>
+" nnoremap <leader>dd :Lexplore %:p:h<CR>
 
 ":filetype plugin indent on
 
