@@ -5,7 +5,7 @@ DOTFILES_DIR="$(dirname "$(realpath "$0")")"
 
 DOTFILES=(
     ~/.vimrc
-    ~/.config/nvim
+    ~/.config/nvim/init.lua
     ~/.zshrc
     ~/.config/kglobalshortcutsrc
     ~/.config/i3
