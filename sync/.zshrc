@@ -425,3 +425,6 @@ qemu-system-x86_64 \
     -display gtk,gl=on \
     -usb -device usb-tablet
 }
+
+
+alias vim="nvim"
