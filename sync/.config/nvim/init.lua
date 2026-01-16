@@ -2,9 +2,6 @@ vim.g.mapleader = " "
 vim.g.maplocalleader = " "
 
 
-
-
-
 -- Treat empty buffers as markdown. (for example when doing: nvim )
 vim.api.nvim_create_autocmd("BufEnter", {
   callback = function()
@@ -68,7 +65,13 @@ vim.api.nvim_set_keymap('n', '<F2>', [[:lua
 
 
 
+-- vim.keymap.set('n', '<C-l>', ':tabnext<CR>', { noremap = true, silent = true })
+-- vim.keymap.set('n', '<C-h>', ':tabprev<CR>', { noremap = true, silent = true })
 -- Move to the next tab
+vim.keymap.set('n', '<leader><Tab>', ':tabnext<CR>', { noremap = true, silent = true })
+vim.keymap.set('n', '<leader>t', ':tabnext<CR>', { noremap = true, silent = true })
+vim.keymap.set('n', '<leader>tn', ':tabnext<CR>', { noremap = true, silent = true })
+vim.keymap.set('n', '<leader>tp', ':tabprevious<CR>', { noremap = true, silent = true })
 vim.keymap.set('n', '<C-Tab>', ':tabnext<CR>', { noremap = true, silent = true })
 -- Move to the previous tab
 vim.keymap.set('n', '<C-S-Tab>', ':tabprevious<CR>', { noremap = true, silent = true })
@@ -144,6 +147,33 @@ vim.api.nvim_create_autocmd("BufReadPost", {
 
 
 --  ============================================================
+--  TAB LINES
+--  ============================================================
+-- make tabs wider
+vim.o.tabline = "%!v:lua.MyTabLine()"  -- custom tabline function
+
+-- example custom tabline function
+function _G.MyTabLine()
+  local s = ""
+  for i = 1, vim.fn.tabpagenr("$") do
+    local buflist = vim.fn.tabpagebuflist(i)
+    local winnr = vim.fn.tabpagewinnr(i)
+    local bufname = vim.fn.bufname(buflist[winnr])
+    if bufname == "" then bufname = "[No Name]" end
+    -- pad the name to make the tab "longer"
+    bufname = " "..bufname.." "
+    if i == vim.fn.tabpagenr() then
+      s = s .. "%#TabLineSel#" .. i .. ":" .. bufname
+    else
+      s = s .. "%#TabLine#" .. i .. ":" .. bufname
+    end
+  end
+  s = s .. "%#TabLineFill#"
+  return s
+end
+
+
+--  ============================================================
 --  Terminal
 --  ============================================================
 vim.keymap.set("t", "<Esc>", [[<C-\><C-n>]], { silent = true })
@@ -202,14 +232,11 @@ vim.keymap.set("t", "<C-j>", toggle_terminal, { silent = true, desc = "Toggle te
 --  ============================================================
 
 
+--  ============================================================
+--  VIM WIKI 
+--  ============================================================
 
-
-
-
-
--- ============================================================
-
-vim.keymap.set('n', '<leader>cf', function()
+local function smart_gf()
     local line = vim.api.nvim_get_current_line()
     local col = vim.fn.col('.')  -- cursor column
     local path = nil
@@ -249,7 +276,14 @@ vim.keymap.set('n', '<leader>cf', function()
 
     -- finally, open it
     vim.cmd('edit ' .. vim.fn.fnameescape(abs_path))
-end, { noremap = true, silent = true })
+end
+
+vim.keymap.set('n', '<leader>cf', smart_gf, { noremap = true, silent = true })
+vim.keymap.set('n', '<leader>gf', smart_gf, { noremap = true, silent = true })
+vim.keymap.set('n', '<CR>', smart_gf, { noremap = true, silent = true })
+vim.keymap.set('n', '<BS>', '<C-o>', { noremap = true, silent = true })
+
+
 -- vim.keymap.set('n', '<leader>cf', function()
 --     local word = vim.fn.expand('<cWORD>')
 --     local path = word:match("%((.-)%)") or word  -- extract text inside parentheses, fallback to word
@@ -932,7 +966,12 @@ end, { desc = '[S]earch [H]elp in new tab' })
     -- dependencies = { 'nvim-treesitter/nvim-treesitter', 'nvim-tree/nvim-web-devicons' }, -- if you prefer nvim-web-devicons
     ---@module 'render-markdown'
     ---@type render.md.UserConfig
-    opts = {render_modes = {'v' },},
+    opts =  {
+
+render_modes = { 'v', 'V'},--'n', 't' 
+			-- render_modes = {'v' },
+
+		},
 },
 -- {
 --     "mason-org/mason.nvim",
@@ -1259,6 +1298,14 @@ key = 'p',
 key_format = ' %s',
 action = 'Telescope projects',
 },
+{
+  icon = '󰉓 ',
+  desc = 'Oil File Explorer',
+  key = 'e',
+  key_hl = 'Number',
+  key_format = ' %s',
+  action = 'Oil',
+},
           {
             icon = '󰈞 ',
             desc = 'Find Files',
@@ -1379,5 +1426,53 @@ action = 'edit $MYVIMRC',
 
 })
 
+-- init.lua
+vim.keymap.set('n', '<leader>mt', '<cmd>RenderMarkdown toggle<CR>', { desc = 'Toggle RenderMarkdown' })
+
+-- Toggle Markdown preview with <leader>m
+vim.api.nvim_set_keymap(
+  'n', 
+  '<leader>m', 
+  ":lua require('render-markdown').toggle()<CR>", 
+  { noremap = true, silent = true }
+)
 
 
+-- vim.keymap.set('n', '<leader>e', ':Oil<CR>', { desc = "Open Oil" })       -- Leader + e, like VSCode Explorer
+-- vim.keymap.set('n', '<leader>E', ':Oil --float<CR>', { desc = "Open Oil floating" })
+-- vim.keymap.set('n', '<C-e>', ':Oil<CR>', { desc = "Open Oil (Ctrl+E)" }) -- Ctrl+E alternative
+
+-- vim.keymap.set('n', '<C-e>', ':tabnew | Oil .<CR>', { desc = "Open Oil in new tab (Ctrl+E)" })
+
+vim.keymap.set('n', '<C-e>', ':tabnew | Oil<CR>', { desc = "Open Oil in new tab (Ctrl+E)" })
+vim.keymap.set('n', '<leader><e>', ':tabnew | Oil<CR>', { desc = "Open Oil in new tab (Ctrl+E)" })
+
+-- vim.keymap.set('n', '<C-e>', function()
+--   -- open a new tab
+--   vim.cmd("tabnew")
+--   -- open Oil in the current tab
+--   vim.cmd("Oil")
+--   -- rename the tab buffer
+--   vim.api.nvim_buf_set_name(0, "Oil")
+-- end, { desc = "Open Oil in new tab with name (Ctrl+E)" })
+
+
+-- local oil = require("oil")
+--
+-- vim.keymap.set('n', '<leader>e', function()
+--   -- Check if there’s already a tab with Oil
+--   for _, tab in ipairs(vim.api.nvim_list_tabpages()) do
+--     for _, win in ipairs(vim.api.nvim_tabpage_list_wins(tab)) do
+--       local buf = vim.api.nvim_win_get_buf(win)
+--       if vim.api.nvim_buf_get_name(buf):match("oil://") then
+--         -- Switch to that tab if found
+--         vim.api.nvim_set_current_tabpage(tab)
+--         return
+--       end
+--     end
+--   end
+--
+--   -- Oil not open yet → open a new tab and Oil
+--   vim.cmd("tabnew")  -- create new tab
+--   oil.open()
+-- end, { desc = "Open Oil in a new tab / switch if already open" })
