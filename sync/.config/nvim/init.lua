@@ -13,6 +13,33 @@ vim.keymap.set("i", "kj", "<Esc>", { noremap = true, silent = true })
 
 
 -- VSCODE LIKE 
+
+
+
+
+-- vim.keymap.set({'n','v'}, 'd', '"_d', { noremap = true, silent = true })
+
+-- Function to copy like VSCode
+local function copy_like_vscode()
+  local mode = vim.fn.mode()
+  if mode == "v" or mode == "V" or mode == "\22" then
+    -- If something is visually selected, yank it
+    vim.cmd('normal! "+y')
+  else
+    -- If nothing is selected, yank the whole line
+    vim.cmd('normal! "+yy')
+  end
+end
+
+-- Map Ctrl-C in normal and visual mode
+vim.keymap.set({'n','v'}, '<C-c>', copy_like_vscode, { silent = true })
+-- Insert mode paste
+vim.keymap.set('i', '<C-v>', '<C-r>+', { silent = true })
+-- Normal mode paste (like VSCode)
+vim.keymap.set('n', '<C-v>', '"+p', { silent = true })
+-- Visual mode paste (replaces selection, like VSCode)
+vim.keymap.set('v', '<C-v>', '"+p', { silent = true })
+--
 -- Trigger omni-completion or keyword completion with Ctrl+.
 vim.keymap.set("i", "<C-.>", "<C-n>", { noremap = true, silent = true })
 -- Smart Tab for insert mode completion
@@ -123,8 +150,8 @@ vim.opt.splitright = true
 -- =========================================================
 -- Scrolling & Navigation
 -- =========================================================
-vim.opt.scrolloff = 8
-vim.opt.sidescrolloff = 8
+vim.opt.scrolloff = 10
+vim.opt.sidescrolloff = 10
 
 -- =========================================================
 -- Performance & Responsiveness
@@ -169,27 +196,120 @@ vim.opt.backspace = { "start", "eol", "indent" }
 -- =========================================================
 -- Unified swap / undo / backup directories
 -- =========================================================
-local data_path = vim.fn.stdpath("data")
 
-vim.opt.directory  = data_path .. "/swap//"
-vim.opt.undodir    = data_path .. "/undo//"
-vim.opt.backupdir  = data_path .. "/backup//"
 
-vim.opt.swapfile   = true
-vim.opt.undofile   = true
-vim.opt.backup     = false
-vim.opt.writebackup = false
 
--- Create directories if they don't exist
--- for _, dir in ipairs({
---   vim.opt.directory:get(),
---   vim.opt.undodir:get(),
---   vim.opt.backupdir:get(),
--- }) do
---   if vim.fn.isdirectory(dir) == 0 then
---     vim.fn.mkdir(dir, "p")
---   end
+-- Base data directory (cross-platform safe)
+local data_dir = vim.fn.stdpath('data')
+
+-- Ensure directory exists helper
+local function ensure_dir(dir)
+  if vim.fn.isdirectory(dir) == 0 then
+    vim.fn.mkdir(dir, 'p')
+  end
+end
+
+-- === Undo ===
+local undo_dir = data_dir .. '/undo'
+ensure_dir(undo_dir)
+vim.o.undofile = true
+vim.o.undodir = undo_dir
+
+-- === Swap ===
+local swap_dir = data_dir .. '/swap'
+ensure_dir(swap_dir)
+vim.o.directory = swap_dir
+
+-- === Backup ===
+local backup_dir = data_dir .. '/backup'
+ensure_dir(backup_dir)
+vim.o.backup = true
+vim.o.writebackup = true
+vim.o.backupdir = backup_dir
+
+-- Optional: more sane defaults
+vim.o.undolevels = 1000
+vim.o.undoreload = 10000
+vim.o.backupcopy = 'yes'  -- avoid issues with some tools like git
+--
+
+
+-- -- Enable persistent undo
+-- vim.o.undofile = true
+--
+-- -- Set undo directory
+-- -- Make sure this directory exists!
+-- local undo_dir = vim.fn.stdpath('data') .. '/undo'
+-- if vim.fn.isdirectory(undo_dir) == 0 then
+--   vim.fn.mkdir(undo_dir, 'p')
 -- end
+-- vim.o.undodir = undo_dir
+--
+-- -- Optional: configure undo limits
+-- vim.o.undolevels = 1000
+-- vim.o.undoreload = 10000
+--
+--
+-- local data_path = vim.fn.stdpath("data")
+--
+-- vim.opt.directory  = data_path .. "/swap//"
+-- -- vim.opt.undodir    = data_path .. "/undo//"
+-- vim.opt.backupdir  = data_path .. "/backup//"
+--
+-- vim.opt.swapfile   = true
+-- -- vim.opt.undofile   = true
+-- vim.opt.backup     = false
+-- vim.opt.writebackup = false
+--
+-- -- Create directories if they don't exist
+-- -- for _, dir in ipairs({
+-- --   vim.opt.directory:get(),
+-- --   vim.opt.undodir:get(),
+-- --   vim.opt.backupdir:get(),
+-- -- }) do
+-- --   if vim.fn.isdirectory(dir) == 0 then
+-- --     vim.fn.mkdir(dir, "p")
+-- --   end
+-- -- end
+--
+--
+--
+--
+--
+
+
+
+
+
+--- SURROUND WITH CODE TO REPLACE PLUGIN: SURROUNT WITH
+local function surround_selection(left, right)
+  local start_pos = vim.fn.getpos("'<")
+  local end_pos = vim.fn.getpos("'>")
+  local lines = vim.api.nvim_buf_get_lines(0, start_pos[2]-1, end_pos[2], false)
+
+  -- Add left/right to first/last line
+  lines[1] = string.rep(left, 1) .. lines[1]
+  lines[#lines] = lines[#lines] .. string.rep(right, 1)
+
+  vim.api.nvim_buf_set_lines(0, start_pos[2]-1, end_pos[2], false, lines)
+end
+
+vim.keymap.set("v", "'", function() surround_selection("'", "'") end, { desc = "Surround selection with '" })
+vim.keymap.set("v", '"', function() surround_selection('"', '"') end, { desc = 'Surround selection with "' })
+vim.keymap.set("v", '`', function() surround_selection('`', '`') end, { desc = "Surround selection with `" })
+vim.keymap.set("v", '{', function() surround_selection('{', '}') end, { desc = "Surround selection with {" })
+vim.keymap.set("v", '[', function() surround_selection('[', ']') end, { desc = "Surround selection with [" })
+vim.keymap.set("v", '(', function() surround_selection('(', ')') end, { desc = "Surround selection with (" })
+vim.keymap.set("v", '<', function() surround_selection('<', '>') end, { desc = "Surround selection with <" })
+
+
+-- Move line up and down in normal mode
+vim.keymap.set('n', '<A-j>', ':m .+1<CR>==', { noremap = true, silent = true })
+vim.keymap.set('n', '<A-k>', ':m .-2<CR>==', { noremap = true, silent = true })
+
+-- Move selected lines up and down in visual mode
+vim.keymap.set('v', '<A-j>', ":m '>+1<CR>gv=gv", { noremap = true, silent = true })
+vim.keymap.set('v', '<A-k>', ":m '<-2<CR>gv=gv", { noremap = true, silent = true })
 
 
 -- Backspace
@@ -218,25 +338,110 @@ rtp:prepend(lazypath)
 
 require('lazy').setup({
   -- 'NMAC427/guess-indent.nvim', -- Detect tabstop and shiftwidth automatically
-  { -- You can easily change to a different colorscheme.
-    'folke/tokyonight.nvim',
-    priority = 1000, -- Make sure to load this before all the other start plugins.
-    config = function()
-      require('tokyonight').setup {
-        styles = {
-          comments = { italic = false }, -- Disable italics in comments
-        },
-      }
-      vim.cmd.colorscheme 'tokyonight-night'
-    end,
+  
+
+
+	-- TOKYONIGHT
+	{ -- You can easily change to a different colorscheme.
+	   'folke/tokyonight.nvim',
+	   priority = 1000, -- Make sure to load this before all the other start plugins.
+	   config = function()
+	     require('tokyonight').setup {
+	       styles = {
+	         comments = { italic = false }, -- Disable italics in comments
+	       },
+	     }
+	     vim.cmd.colorscheme 'tokyonight-night'
+	   end,
+	 },
+-- FLUOROMACHINE
+	{
+			'maxmx03/fluoromachine.nvim',
+			lazy = false,
+			priority = 1000,
+			config = function ()
+			 local fm = require 'fluoromachine'
+
+			 fm.setup {
+					glow = false,
+					theme = 'fluoromachine',
+					transparent = true,
+			 }
+
+			 -- vim.cmd.colorscheme 'fluoromachine'
+			end
+	},
+
+-- CATPPUCCIN
+-- 	{ "catppuccin/nvim", name = "catppuccin", priority = 1000, config = function()
+-- 		require("catppuccin").setup({
+--     auto_integrations = true,
+-- })
+-- vim.cmd.colorscheme "catppuccin"
+-- end, },
+
+	-- vscode theme
+-- {
+--     'Mofiqul/vscode.nvim',
+--     lazy = false,         -- load immediately
+--     priority = 1000,      -- ensure it loads first
+--     config = function()
+--         local c = require('vscode.colors').get_colors()
+--         require('vscode').setup({
+--             -- Choose style: 'dark' or 'light'
+--             style = 'dark',
+--
+--             -- optional settings
+--             transparent = true,
+--             italic_comments = true,
+--             italic_inlayhints = true,
+--             underline_links = true,
+--             disable_nvimtree_bg = true,
+--             terminal_colors = true,
+--
+--             color_overrides = {
+--                 vscLineNumber = '#FFFFFF',
+--             },
+--
+--             group_overrides = {
+--                 Cursor = { fg = c.vscDarkBlue, bg = c.vscLightGreen, bold = true },
+--             },
+--         })
+--
+--         -- Apply the theme
+--         vim.cmd.colorscheme 'vscode'
+--     end,
+-- },
+-- TREE SITTER
+  { -- Highlight, edit, and navigate code
+    'nvim-treesitter/nvim-treesitter',
+    build = ':TSUpdate',
+    main = 'nvim-treesitter.configs', -- Sets main module to use for opts
+    -- [[ Configure Treesitter ]] See `:help nvim-treesitter`
+    opts = {
+      ensure_installed = { 'bash', 'c', 'diff', 'html', 'lua', 'luadoc', 'markdown', 'markdown_inline', 'query', 'vim', 'vimdoc' },
+      -- Autoinstall languages that are not installed
+      auto_install = true,
+      highlight = {
+        enable = true,
+        -- Some languages depend on vim's regex highlighting system (such as Ruby) for indent rules.
+        --  If you are experiencing weird indenting issues, add the language to
+        --  the list of additional_vim_regex_highlighting and disabled languages for indent.
+        additional_vim_regex_highlighting = { 'ruby' },
+      },
+      indent = { enable = true, disable = { 'ruby' } },
+    },
+    -- There are additional nvim-treesitter modules that you can use to interact
+    -- with nvim-treesitter. You should go explore a few and see what interests you:
+    --
+    --    - Incremental selection: Included, see `:help nvim-treesitter-incremental-selection-mod`
+    --    - Show your current context: https://github.com/nvim-treesitter/nvim-treesitter-context
+    --    - Treesitter + textobjects: https://github.com/nvim-treesitter/nvim-treesitter-textobjects
   },
-  -- { 'folke/todo-comments.nvim', event = 'VimEnter', dependencies = { 'nvim-lua/plenary.nvim' }, opts = { signs = false } },
 
 
 
 -- TELESCOPE
-
-
   { -- Fuzzy Finder (files, lsp, etc)
     'nvim-telescope/telescope.nvim',
     event = 'VimEnter',
@@ -292,6 +497,11 @@ require('lazy').setup({
         --   },
         -- },
         -- pickers = {}
+      pickers = {
+        colorscheme = {
+          enable_preview = true
+        }
+      },
         extensions = {
           ['ui-select'] = {
             require('telescope.themes').get_dropdown(),
@@ -315,7 +525,7 @@ require('lazy').setup({
       vim.keymap.set('n', '<leader>sr', builtin.resume, { desc = '[S]earch [R]esume' })
       vim.keymap.set('n', '<leader>s.', builtin.oldfiles, { desc = '[S]earch Recent Files ("." for repeat)' })
       vim.keymap.set('n', '<leader><leader>', builtin.buffers, { desc = '[ ] Find existing buffers' })
-
+      vim.keymap.set('n', '<leader>cs', builtin.colorscheme, { desc = '[C]olor [S]chemes' })
       -- Slightly advanced example of overriding default behavior and theme
       vim.keymap.set('n', '<leader>/', function()
         -- You can pass additional configuration to Telescope to change the theme, layout, etc.
@@ -340,57 +550,15 @@ require('lazy').setup({
       end, { desc = '[S]earch [N]eovim files' })
     end,
   },
-
--- RENDER MARKDOWN
-{
-    'MeanderingProgrammer/render-markdown.nvim',
-    dependencies = { 'nvim-treesitter/nvim-treesitter', 'nvim-mini/mini.nvim' },            -- if you use the mini.nvim suite
-    -- dependencies = { 'nvim-treesitter/nvim-treesitter', 'nvim-mini/mini.icons' },        -- if you use standalone mini plugins
-    -- dependencies = { 'nvim-treesitter/nvim-treesitter', 'nvim-tree/nvim-web-devicons' }, -- if you prefer nvim-web-devicons
-    ---@module 'render-markdown'
-    ---@type render.md.UserConfig
-    opts = {},
-},
-
-
-
-
-
--- TREE SITTER
-  { -- Highlight, edit, and navigate code
-    'nvim-treesitter/nvim-treesitter',
-    build = ':TSUpdate',
-    main = 'nvim-treesitter.configs', -- Sets main module to use for opts
-    -- [[ Configure Treesitter ]] See `:help nvim-treesitter`
-    opts = {
-      ensure_installed = { 'bash', 'c', 'diff', 'html', 'lua', 'luadoc', 'markdown', 'markdown_inline', 'query', 'vim', 'vimdoc' },
-      -- Autoinstall languages that are not installed
-      auto_install = true,
-      highlight = {
-        enable = true,
-        -- Some languages depend on vim's regex highlighting system (such as Ruby) for indent rules.
-        --  If you are experiencing weird indenting issues, add the language to
-        --  the list of additional_vim_regex_highlighting and disabled languages for indent.
-        additional_vim_regex_highlighting = { 'ruby' },
-      },
-      indent = { enable = true, disable = { 'ruby' } },
-    },
-    -- There are additional nvim-treesitter modules that you can use to interact
-    -- with nvim-treesitter. You should go explore a few and see what interests you:
-    --
-    --    - Incremental selection: Included, see `:help nvim-treesitter-incremental-selection-mod`
-    --    - Show your current context: https://github.com/nvim-treesitter/nvim-treesitter-context
-    --    - Treesitter + textobjects: https://github.com/nvim-treesitter/nvim-treesitter-textobjects
-  },
-
-
+  -- { 'folke/todo-comments.nvim', event = 'VimEnter', dependencies = { 'nvim-lua/plenary.nvim' }, opts = { signs = false } },
+--- WHICH KEY
   { -- Useful plugin to show you pending keybinds.
     'folke/which-key.nvim',
     event = 'VimEnter', -- Sets the loading event to 'VimEnter'
     opts = {
       -- delay between pressing a key and opening which-key (milliseconds)
       -- this setting is independent of vim.o.timeoutlen
-      delay = 0,
+      delay = 3000,
       icons = {
         -- set icon mappings to true if you have a Nerd Font
         mappings = vim.g.have_nerd_font,
@@ -437,6 +605,13 @@ require('lazy').setup({
     },
   },
 
+
+
+
+{
+  "neovim/nvim-lspconfig"
+},
+
   -- NOTE: Plugins can specify dependencies.
   --
   -- The dependencies are proper plugin specifications as well - anything
@@ -446,4 +621,3 @@ require('lazy').setup({
 
 })
 
-require('render-markdown').enable()
