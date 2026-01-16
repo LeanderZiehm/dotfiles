@@ -14,10 +14,28 @@ vim.keymap.set("i", "kj", "<Esc>", { noremap = true, silent = true })
 
 -- VSCODE LIKE 
 
+-- MOVE LINE: ALT UP DOWN
+vim.keymap.set('n', '<M-j>', ':m .+1<CR>==', { noremap = true, silent = true })
+vim.keymap.set('n', '<M-k>', ':m .-2<CR>==', { noremap = true, silent = true })
+vim.keymap.set('v', '<M-j>', ":m '>+1<CR>gv=gv", { noremap = true, silent = true })
+vim.keymap.set('v', '<M-k>', ":m '<-2<CR>gv=gv", { noremap = true, silent = true })
+vim.keymap.set('n', '<M-Down>', ':m .+1<CR>==', { noremap = true, silent = true })
+vim.keymap.set('n', '<M-Up>', ':m .-2<CR>==', { noremap = true, silent = true })
+vim.keymap.set('v', '<M-Down>', ":m '>+1<CR>gv=gv", { noremap = true, silent = true })
+vim.keymap.set('v', '<M-Up>', ":m '<-2<CR>gv=gv", { noremap = true, silent = true })
+
+-- Toggle line wrap: ALT Z
+vim.api.nvim_set_keymap('n', '<M-z>', ':set wrap! linebreak!<CR>', { noremap = true, silent = true })
 
 
-
+-- vim.keymap.set({'n','v'}, '<leader>d', '"_d', { noremap = true, silent = true })
 -- vim.keymap.set({'n','v'}, 'd', '"_d', { noremap = true, silent = true })
+
+
+-- VSCODE PASTE AND COPY: CTRL V and CTRL C
+vim.keymap.set('i', '<C-v>', '<C-r>+', { silent = true })
+vim.keymap.set('n', '<C-v>', '"+p', { silent = true })
+vim.keymap.set('v', '<C-v>', '"+p', { silent = true })
 
 -- Function to copy like VSCode
 local function copy_like_vscode()
@@ -30,18 +48,16 @@ local function copy_like_vscode()
     vim.cmd('normal! "+yy')
   end
 end
-
 -- Map Ctrl-C in normal and visual mode
 vim.keymap.set({'n','v'}, '<C-c>', copy_like_vscode, { silent = true })
--- Insert mode paste
-vim.keymap.set('i', '<C-v>', '<C-r>+', { silent = true })
--- Normal mode paste (like VSCode)
-vim.keymap.set('n', '<C-v>', '"+p', { silent = true })
--- Visual mode paste (replaces selection, like VSCode)
-vim.keymap.set('v', '<C-v>', '"+p', { silent = true })
---
+
+
+
+
 -- Trigger omni-completion or keyword completion with Ctrl+.
 vim.keymap.set("i", "<C-.>", "<C-n>", { noremap = true, silent = true })
+vim.api.nvim_set_keymap('n', '<M-.>', '<C-n>', { noremap = true, silent = true })
+
 -- Smart Tab for insert mode completion
 vim.keymap.set("i", "<Tab>", function()
     if vim.fn.pumvisible() == 1 then
@@ -234,52 +250,6 @@ vim.o.backupcopy = 'yes'  -- avoid issues with some tools like git
 --
 
 
--- -- Enable persistent undo
--- vim.o.undofile = true
---
--- -- Set undo directory
--- -- Make sure this directory exists!
--- local undo_dir = vim.fn.stdpath('data') .. '/undo'
--- if vim.fn.isdirectory(undo_dir) == 0 then
---   vim.fn.mkdir(undo_dir, 'p')
--- end
--- vim.o.undodir = undo_dir
---
--- -- Optional: configure undo limits
--- vim.o.undolevels = 1000
--- vim.o.undoreload = 10000
---
---
--- local data_path = vim.fn.stdpath("data")
---
--- vim.opt.directory  = data_path .. "/swap//"
--- -- vim.opt.undodir    = data_path .. "/undo//"
--- vim.opt.backupdir  = data_path .. "/backup//"
---
--- vim.opt.swapfile   = true
--- -- vim.opt.undofile   = true
--- vim.opt.backup     = false
--- vim.opt.writebackup = false
---
--- -- Create directories if they don't exist
--- -- for _, dir in ipairs({
--- --   vim.opt.directory:get(),
--- --   vim.opt.undodir:get(),
--- --   vim.opt.backupdir:get(),
--- -- }) do
--- --   if vim.fn.isdirectory(dir) == 0 then
--- --     vim.fn.mkdir(dir, "p")
--- --   end
--- -- end
---
---
---
---
---
-
-
-
-
 
 --- SURROUND WITH CODE TO REPLACE PLUGIN: SURROUNT WITH
 local function surround_selection(left, right)
@@ -301,15 +271,6 @@ vim.keymap.set("v", '{', function() surround_selection('{', '}') end, { desc = "
 vim.keymap.set("v", '[', function() surround_selection('[', ']') end, { desc = "Surround selection with [" })
 vim.keymap.set("v", '(', function() surround_selection('(', ')') end, { desc = "Surround selection with (" })
 vim.keymap.set("v", '<', function() surround_selection('<', '>') end, { desc = "Surround selection with <" })
-
-
--- Move line up and down in normal mode
-vim.keymap.set('n', '<A-j>', ':m .+1<CR>==', { noremap = true, silent = true })
-vim.keymap.set('n', '<A-k>', ':m .-2<CR>==', { noremap = true, silent = true })
-
--- Move selected lines up and down in visual mode
-vim.keymap.set('v', '<A-j>', ":m '>+1<CR>gv=gv", { noremap = true, silent = true })
-vim.keymap.set('v', '<A-k>', ":m '<-2<CR>gv=gv", { noremap = true, silent = true })
 
 
 -- Backspace
@@ -367,49 +328,31 @@ require('lazy').setup({
 					theme = 'fluoromachine',
 					transparent = true,
 			 }
-
 			 -- vim.cmd.colorscheme 'fluoromachine'
 			end
 	},
-
--- CATPPUCCIN
--- 	{ "catppuccin/nvim", name = "catppuccin", priority = 1000, config = function()
--- 		require("catppuccin").setup({
---     auto_integrations = true,
--- })
--- vim.cmd.colorscheme "catppuccin"
--- end, },
-
-	-- vscode theme
 -- {
---     'Mofiqul/vscode.nvim',
---     lazy = false,         -- load immediately
---     priority = 1000,      -- ensure it loads first
+--     'tanvirtin/monokai.nvim',
+--     lazy = false,       -- load immediately
+--     priority = 1000,    -- load before other plugins
 --     config = function()
---         local c = require('vscode.colors').get_colors()
---         require('vscode').setup({
---             -- Choose style: 'dark' or 'light'
---             style = 'dark',
---
---             -- optional settings
---             transparent = true,
---             italic_comments = true,
---             italic_inlayhints = true,
---             underline_links = true,
---             disable_nvimtree_bg = true,
---             terminal_colors = true,
---
---             color_overrides = {
---                 vscLineNumber = '#FFFFFF',
---             },
---
---             group_overrides = {
---                 Cursor = { fg = c.vscDarkBlue, bg = c.vscLightGreen, bold = true },
+--         local monokai = require('monokai')
+--         -- Optional: choose a palette
+--         local palette = monokai.classic
+--         -- Setup the colorscheme
+--         monokai.setup({
+--             palette = palette,  -- you can also use monokai.pro, monokai.soda, monokai.ristretto
+--             italics = false,    -- disable italics if you prefer
+--             custom_hlgroups = {
+--                 TSInclude = { fg = palette.aqua },
+--                 GitSignsAdd = { fg = palette.green, bg = palette.base2 },
+--                 GitSignsDelete = { fg = palette.pink, bg = palette.base2 },
+--                 GitSignsChange = { fg = palette.orange, bg = palette.base2 },
 --             },
 --         })
 --
---         -- Apply the theme
---         vim.cmd.colorscheme 'vscode'
+--         -- Apply the colorscheme
+--         -- vim.cmd.colorscheme 'monokai'
 --     end,
 -- },
 -- TREE SITTER
