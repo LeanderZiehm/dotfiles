@@ -256,7 +256,6 @@ replaceHomeWithWaves(){
      sed "s|^$HOME|~|"
 }
 
-local projects=(~/dotfiles ~/dev/wiki)
 
 #fp() {
     #local selection
@@ -265,6 +264,7 @@ local projects=(~/dotfiles ~/dev/wiki)
     #code "$selection"
 #}
 fp() {
+		local projects=(~/dotfiles ~/dev/wiki)
     local selection
     selection=$(printf "%s\n" "${projects[@]}" | sed "s|^$HOME|~|" |  fzf --exact --ignore-case --query="$1") || return
     code "$selection"
