@@ -1244,17 +1244,24 @@ end, { desc = '[S]earch [H]elp in new tab' })
     dashboard.setup({
       theme = 'doom',
       config = {
-					header = {'','','','','','','','','','','','',''},
+					header = {'','','','','','','','','','',''},
         -- week_header = {
         --   enable = true,
         -- },
 
         center = {
+{
+icon = '󰏓 ',
+							icon_hl = 'Title',
+desc = 'Projects',
+							desc_hl = 'String',
+key = 'p',
+key_format = ' %s',
+action = 'Telescope projects',
+},
           {
             icon = '󰈞 ',
-            icon_hl = 'Title',
             desc = 'Find Files',
-            desc_hl = 'String',
             key = 'f',
             key_hl = 'Number',
             key_format = ' %s',
@@ -1349,7 +1356,27 @@ action = 'edit $MYVIMRC',
       },
     })
   end,
+},
+
+
+{
+  "ahmedkhalf/project.nvim",
+  dependencies = { "nvim-telescope/telescope.nvim" },
+  -- opts = {},
+  opts = {
+    manual_mode = false,
+    detection_methods = { "lsp", "pattern" },
+    patterns = { ".git", "package.json", "pyproject.toml", "Makefile" },
+    silent_chdir = true,
+  },
+  config = function(_, opts)
+    require("project_nvim").setup(opts)
+    require("telescope").load_extension("projects")
+  end,
 }
+
+
+
 })
 
 
