@@ -270,9 +270,6 @@ _launch=Meta+V\tMeta+C
 [services][google-chrome.desktop]
 _launch=Meta+G
 
-[services][net.local.wezterm-3.desktop]
-_launch=Meta+T
-
 [services][net.local.wezterm.desktop]
 _launch=Meta+Return
 

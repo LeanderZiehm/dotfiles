@@ -92,6 +92,7 @@ local function toggle_comment()
 end
 
 vim.keymap.set("n", "<C-/>", toggle_comment, { silent = true, desc = "Toggle Comment" })
+vim.keymap.set("n", "<C-_>", toggle_comment, { silent = true, desc = "Toggle Comment" }) -- when in tmux 
 
 
 --  ------------------------------------------------------------
@@ -946,69 +947,7 @@ end, { desc = '[S]earch [H]elp in new tab' })
       end, { desc = '[S]earch [N]eovim files' })
     end,
 
-
-
-
-
-
 	},
-  -- { 'folke/todo-comments.nvim', event = 'VimEnter', dependencies = { 'nvim-lua/plenary.nvim' }, opts = { signs = false } },
---- WHICH KEY
-  { -- Useful plugin to show you pending keybinds.
-    'folke/which-key.nvim',
-    event = 'VimEnter', -- Sets the loading event to 'VimEnter'
-    opts = {
-      -- delay between pressing a key and opening which-key (milliseconds)
-      -- this setting is independent of vim.o.timeoutlen
-      delay = 3000,
-      icons = {
-        -- set icon mappings to true if you have a Nerd Font
-        mappings = vim.g.have_nerd_font,
-        -- If you are using a Nerd Font: set icons.keys to an empty table which will use the
-        -- default which-key.nvim defined Nerd Font icons, otherwise define a string table
-        keys = vim.g.have_nerd_font and {} or {
-          Up = '<Up> ',
-          Down = '<Down> ',
-          Left = '<Left> ',
-          Right = '<Right> ',
-          C = '<C-…> ',
-          M = '<M-…> ',
-          D = '<D-…> ',
-          S = '<S-…> ',
-          CR = '<CR> ',
-          Esc = '<Esc> ',
-          ScrollWheelDown = '<ScrollWheelDown> ',
-          ScrollWheelUp = '<ScrollWheelUp> ',
-          NL = '<NL> ',
-          BS = '<BS> ',
-          Space = '<Space> ',
-          Tab = '<Tab> ',
-          F1 = '<F1>',
-          F2 = '<F2>',
-          F3 = '<F3>',
-          F4 = '<F4>',
-          F5 = '<F5>',
-          F6 = '<F6>',
-          F7 = '<F7>',
-          F8 = '<F8>',
-          F9 = '<F9>',
-          F10 = '<F10>',
-          F11 = '<F11>',
-          F12 = '<F12>',
-        },
-      },
-
-      -- Document existing key chains
-      spec = {
-        { '<leader>s', group = '[S]earch' },
-        { '<leader>t', group = '[T]oggle' },
-        { '<leader>h', group = 'Git [H]unk', mode = { 'n', 'v' } },
-      },
-    },
-  },
--- {
---   "neovim/nvim-lspconfig"
--- },
 {
     'MeanderingProgrammer/render-markdown.nvim',
     dependencies = { 'nvim-treesitter/nvim-treesitter', 'nvim-mini/mini.nvim' },            -- if you use the mini.nvim suite
@@ -1470,9 +1409,13 @@ action = 'edit $MYVIMRC',
     require("project_nvim").setup(opts)
     require("telescope").load_extension("projects")
   end,
+},
+{
+    "catgoose/nvim-colorizer.lua",
+    event = "BufReadPre",
+    opts = { -- set to setup table
+    },
 }
-
-
 
 })
 
@@ -1487,66 +1430,5 @@ vim.api.nvim_set_keymap(
   { noremap = true, silent = true }
 )
 
-
--- vim.keymap.set('n', '<leader>e', ':Oil<CR>', { desc = "Open Oil" })       -- Leader + e, like VSCode Explorer
--- vim.keymap.set('n', '<leader>E', ':Oil --float<CR>', { desc = "Open Oil floating" })
--- vim.keymap.set('n', '<C-e>', ':Oil<CR>', { desc = "Open Oil (Ctrl+E)" }) -- Ctrl+E alternative
-
--- vim.keymap.set('n', '<C-e>', ':tabnew | Oil .<CR>', { desc = "Open Oil in new tab (Ctrl+E)" })
-
 vim.keymap.set('n', '<C-e>', ':tabnew | Oil<CR>', { desc = "Open Oil in new tab (Ctrl+E)" })
 vim.keymap.set('n', '<leader><e>', ':tabnew | Oil<CR>', { desc = "Open Oil in new tab (Ctrl+E)" })
-
--- vim.keymap.set('n', '<C-e>', function()
---   -- open a new tab
---   vim.cmd("tabnew")
---   -- open Oil in the current tab
---   vim.cmd("Oil")
---   -- rename the tab buffer
---   vim.api.nvim_buf_set_name(0, "Oil")
--- end, { desc = "Open Oil in new tab with name (Ctrl+E)" })
-
-
--- local oil = require("oil")
---
--- vim.keymap.set('n', '<leader>e', function()
---   -- Check if there’s already a tab with Oil
---   for _, tab in ipairs(vim.api.nvim_list_tabpages()) do
---     for _, win in ipairs(vim.api.nvim_tabpage_list_wins(tab)) do
---       local buf = vim.api.nvim_win_get_buf(win)
---       if vim.api.nvim_buf_get_name(buf):match("oil://") then
---         -- Switch to that tab if found
---         vim.api.nvim_set_current_tabpage(tab)
---         return
---       end
---     end
---   end
---
---   -- Oil not open yet → open a new tab and Oil
---   vim.cmd("tabnew")  -- create new tab
---   oil.open()
--- end, { desc = "Open Oil in a new tab / switch if already open" })
---
--- vim.keymap.set("n", "<C-/>", "gcc<CR>", { noremap = true, silent = true })
--- vim.keymap.set("n", "<C-,>", "gcc", { noremap = true, silent = true })
--- -- vim.keymap.set("n", "<C-m>", "gcc<Esc>", { noremap = true, silent = true })
---
--- -- Using Comment.nvim API (recommended)
--- vim.keymap.set("n", "<C-m>", function()
---     require('Comment.api').toggle.linewise.current()
--- end, { noremap = true, silent = true })
--- vim.keymap.set("n", "<C-_>", "normal! gcc", { noremap = true, silent = true })
-
--- Map Ctrl+/ to the same function as gcc
--- Get the gcc callback
--- local gcc_map = vim.api.nvim_get_keymap("n")
--- local gcc_callback
--- for _, m in ipairs(gcc_map) do
---   if m.lhs == "gcc" and m.callback then
---     gcc_callback = m.callback
---     break
---   end
--- end
-
--- Map Ctrl+m in normal mode
--- vim.api.nvim_set_keymap('n', '<C-m>', toggle_comment, { noremap = true, silent = true })

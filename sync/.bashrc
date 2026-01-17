@@ -1,55 +1,60 @@
 
-# Don't auto-insert anything; always show menu
+
+#  ============================================================
+#  Autocomplete
+#  ============================================================
 bind 'set show-all-if-ambiguous on'
 bind 'set menu-complete-display-prefix on'
 bind '"\t":menu-complete'
 bind '"\e[Z":menu-complete-backward'  # Shift-Tab to go backwards
-
-# # Optional: ignore case
-# bind 'set completion-ignore-case on'
-# # Make tab completion smarter and less aggressive
-# # Show all options if ambiguous
-# bind 'set show-all-if-ambiguous on'
-#
-# # Cycle through options instead of auto-completing halfway
-# bind '"\t":menu-complete'
-#
-# # Optional: display all possible completions immediately
-# bind 'set completion-display-width 0'
-#
-# # Optional: ignore case for completions (like Zsh)
-# bind 'set completion-ignore-case on'
-#
-
-# Enable bash completion if installed
-# if [ -f /usr/share/bash-completion/bash_completion ]; then
-#     . /usr/share/bash-completion/bash_completion
-# elif [ -f /etc/bash_completion ]; then
-#     . /etc/bash_completion
-# fi
-
-# Tab completion cycles through options
-# bind '"\t":menu-complete'
-# bind '"\e[Z":menu-complete-backward'
-# # Make tab completion ignore case
-# bind 'set completion-ignore-case on'
-
 # Ctrl+R searches history incrementally (like Zsh)
 bind '"\C-r": reverse-search-history'
 
 bind '"\e[A": history-search-backward'
 bind '"\e[B": history-search-forward'
-
-# shopt -s autocd             # change to dir by typing its name
-# shopt -s cdspell             # autocorrect minor typos in directory names
-# shopt -s dirspell            # correct typos in command arguments like paths
-
 _git_branches() {
   COMPREPLY=($(compgen -W "$(git branch --all | sed 's#^\s*##' | sed 's#remotes/##')" -- "${COMP_WORDS[1]}"))
 }
 complete -F _git_branches checkout
 
 
+#  ============================================================
+#  TMUX
+#  ============================================================
+# Autostart tmux
+if [ -z "$TMUX" ]; then
+  exec tmux new-session -A -s dev
+fi
+
+tmux_project() {
+    local DEV_DIR="$HOME/dev"
+    local dirs
+    local selected
+    local SESSION_NAME
+    local SESSION_DIR
+
+    # List directories up to depth 3, exclude hidden ones
+    dirs=$(find "$DEV_DIR" -maxdepth 3 -mindepth 1 -type d ! -name ".*" | sed "s|^$HOME|~|")
+
+    # Use FZF for exact matching
+    selected=$(printf '%s\n' "$dirs" | fzf --exact --prompt="Select project dir: ")
+
+    # Exit if no selection
+    [[ -z "$selected" ]] && return 0
+
+    # Remove ~/dev/ prefix for tmux session name
+    SESSION_NAME="${selected#"$HOME/dev/"}"
+    SESSION_DIR="${selected/#\~/$HOME}"  # expand ~ to $HOME
+
+    # Check if tmux session exists
+    if tmux has-session -t "$SESSION_NAME" 2>/dev/null; then
+        echo "Session '$SESSION_NAME' already exists. Attaching..."
+        tmux attach -t "$SESSION_NAME"
+    else
+        echo "Creating new tmux session '$SESSION_NAME' in $SESSION_DIR..."
+        tmux new-session -s "$SESSION_NAME" -c "$SESSION_DIR"
+    fi
+}
 
 # Disable X11 beep
 xset b off
@@ -417,35 +422,4 @@ qemu-system-x86_64 \
 
 
 
-
-#  ============================================================
-#  TMUX
-#  ============================================================
-
-DEV_DIR="$HOME/dev"
-
-# List only top-level directories
-dirs=()
-while IFS= read -r -d $'\0' dir; do
-    dirs+=("$(basename "$dir")")
-done < <(find "$DEV_DIR" -maxdepth 1 -mindepth 1 -type d -print0)
-
-# Use FZF for exact matching only
-# --exact ensures direct matching
-selected=$(printf '%s\n' "${dirs[@]}" | fzf --exact --prompt="Select project dir: ")
-
-# Exit if no selection
-[[ -z "$selected" ]] && exit 0
-
-SESSION_NAME="$selected"
-SESSION_DIR="$DEV_DIR/$selected"
-
-# Check if tmux session already exists
-if tmux has-session -t "$SESSION_NAME" 2>/dev/null; then
-    echo "Session '$SESSION_NAME' already exists. Attaching..."
-    tmux attach -t "$SESSION_NAME"
-else
-    echo "Creating new tmux session '$SESSION_NAME' in $SESSION_DIR..."
-    tmux new-session -s "$SESSION_NAME" -c "$SESSION_DIR"
-fi
 
