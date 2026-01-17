@@ -283,7 +283,7 @@ RecordRegion=Meta+Shift+R
 _launch=Ctrl+Alt+T
 
 [services][systemsettings.desktop]
-_launch=Meta+K\tTools
+_launch=Meta+Shift+K\tTools
 
 [wacomtablet]
 Map to fullscreen=none,Meta+Ctrl+F,Map to fullscreen

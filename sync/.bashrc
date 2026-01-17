@@ -26,6 +26,28 @@ if [ -z "$TMUX" ]; then
   exec tmux new-session -A -s dev
 fi
 
+
+tmux_fzf_dev_picker() {
+local files selected
+
+files=$(ls "$HOME"$HOME/dev/{sd*,tty*} 2>/dev/null)
+[ -z "$files" ] && {
+echo "No matching directories found"
+read -r
+return
+}
+
+selected=$(printf "%s\n" $files | fzf 
+--height 40% 
+--border 
+--prompt "Select file: ")
+
+clear
+echo "$selected"
+read -rp "Press Enter to close..."
+}
+
+
 tmux_project() {
     local DEV_DIR="$HOME/dev"
     local dirs
