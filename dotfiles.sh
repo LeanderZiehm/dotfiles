@@ -4,8 +4,10 @@ set -euo pipefail
 DOTFILES_DIR="$(dirname "$(realpath "$0")")"
 
 DOTFILES=(
-    ~/.vimrc
-    ~/.config/nvim/init.lua
+		~/.config/nvim/init.lua
+		~/.bashrc
+		~/.tmux.conf
+		~/.vimrc
     ~/.zshrc
     ~/.config/kglobalshortcutsrc
     ~/.config/i3

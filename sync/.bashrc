@@ -1,0 +1,451 @@
+
+# Don't auto-insert anything; always show menu
+bind 'set show-all-if-ambiguous on'
+bind 'set menu-complete-display-prefix on'
+bind '"\t":menu-complete'
+bind '"\e[Z":menu-complete-backward'  # Shift-Tab to go backwards
+
+# # Optional: ignore case
+# bind 'set completion-ignore-case on'
+# # Make tab completion smarter and less aggressive
+# # Show all options if ambiguous
+# bind 'set show-all-if-ambiguous on'
+#
+# # Cycle through options instead of auto-completing halfway
+# bind '"\t":menu-complete'
+#
+# # Optional: display all possible completions immediately
+# bind 'set completion-display-width 0'
+#
+# # Optional: ignore case for completions (like Zsh)
+# bind 'set completion-ignore-case on'
+#
+
+# Enable bash completion if installed
+# if [ -f /usr/share/bash-completion/bash_completion ]; then
+#     . /usr/share/bash-completion/bash_completion
+# elif [ -f /etc/bash_completion ]; then
+#     . /etc/bash_completion
+# fi
+
+# Tab completion cycles through options
+# bind '"\t":menu-complete'
+# bind '"\e[Z":menu-complete-backward'
+# # Make tab completion ignore case
+# bind 'set completion-ignore-case on'
+
+# Ctrl+R searches history incrementally (like Zsh)
+bind '"\C-r": reverse-search-history'
+
+bind '"\e[A": history-search-backward'
+bind '"\e[B": history-search-forward'
+
+# shopt -s autocd             # change to dir by typing its name
+# shopt -s cdspell             # autocorrect minor typos in directory names
+# shopt -s dirspell            # correct typos in command arguments like paths
+
+_git_branches() {
+  COMPREPLY=($(compgen -W "$(git branch --all | sed 's#^\s*##' | sed 's#remotes/##')" -- "${COMP_WORDS[1]}"))
+}
+complete -F _git_branches checkout
+
+
+
+# Disable X11 beep
+xset b off
+
+# Store command history forever
+HISTFILE=~/.bash_history
+HISTSIZE=999999999
+SAVEHIST=$HISTSIZE   # In Bash, just HISTSIZE is enough
+shopt -s histappend   # Append to history rather than overwrite
+
+
+
+
+#### Programming Languages
+
+# Node version manager
+export NVM_DIR="$HOME/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"
+[ -s "$NVM_DIR/bash_completion" ] && . "$NVM_DIR/bash_completion"
+
+# JBang
+alias j!=jbang
+export PATH="$HOME/.jbang/bin:$PATH"
+
+# Python / Miniconda
+#conda-activate() { source ~/miniconda3/bin/activate; }
+
+# pnpm
+export PNPM_HOME="$HOME/.local/share/pnpm"
+[[ ":$PATH:" != *":$PNPM_HOME:"* ]] && export PATH="$PNPM_HOME:$PATH"
+
+# Go
+export PATH="$HOME/go/bin:$PATH"
+
+# Bun
+#export BUN_INSTALL="$HOME/.bun"
+#export PATH="$BUN_INSTALL/bin:$PATH"
+#[ -s "$BUN_INSTALL/_bun" ] && source "$BUN_INSTALL/_bun"
+
+
+#####
+# User scripts
+export PATH="$PATH:/home/user/.local/bin:/home/user/bin:$HOME/bin"
+export PATH="$HOME/bin/commands:$PATH"
+
+##### Aliases
+
+
+alias dotfiles='/home/user/dotfiles/dotfiles.sh'
+alias pacman-ophins-list="pacman -Qtdq"
+alias pacman-ophins-remove="sudo pacman -Rns $(pacman -Qtdq)"
+alias pacman-installed="pacman -Qi | awk '/^Name/{name=$3} /^Installed Size/{size=$4} END{print name,size}' | sort -nrk2"
+
+# Vim / editor
+
+alias vim="nvim"
+alias bashrc="vim ~/.bashrc"
+alias nvimrc="vim ~/.config/nvim/init.lua"
+#alias lvim="NVIM_APPNAME=LazyVim nvim"
+#alias svim="NVIM_APPNAME=SlimNvim nvim"
+alias vimrc="vim ~/.vimrc"
+alias zshrc="vim ~/.bashrc"
+alias slides="vim ~/dev/repos/00_active-repos/presentation-artificial-intelligence/slides.md"
+alias fzfman="apropos . | fzf --exact"
+alias manfzf="apropos . | fzf --exact"
+alias zoxide-debug="zoxide query -l -s"
+
+export EDITOR=nvim
+
+
+#####
+# ff_find_files() {
+#   find ~/dev ~/.config \
+#     \( -name "node_modules" -o -name ".git" -o -name ".venv" -o -name "*.png" -o -name "*.jpg" -o -name "*.svg" -o -name "*.webp" -o -name "*.gif" -o -name "*.ico" -o -name "*.ttf" -o -name "*.woff" -o -name "*.woff2" -o -name "*.pfb" -o -name "*.hyb" -o -name "*.bcmap" -o -name "*.class" -o -name "*.so" -o -name "*.jar" -o -name "*.pyc" -o -name "*.tflite" -o -name "*.tgz" -o -path "*/leveldb/*" -o -name "*.dat" -o -name "*.lock" -o -name "*.db" -o -name "*.syms" -o -path "*/dist-info/*" -o -name "*.old" -o -name "*.map" \) -prune -o -type f -print 2>/dev/null | sed "s|^$HOME|~|"
+# }
+# ff() {
+#   local file=$(ff_find_files | fzf --exact --ignore-case --query="$1") || return
+#   vim "$file"
+# }
+
+# WIKI setup
+export WIKI_ROOT=~/dev/wiki
+alias wiki="cd $WIKI_ROOT && vim $WIKI_ROOT/index.md"
+alias wiki-git="cd $WIKI_ROOT && git add . && git commit -m 'sync' && git push"
+# --------------------
+# Journal function with embedded template
+# journal() {
+#   local NOTES_DIR="$WIKI_ROOT/journal"
+#   local TS="$(date '+%Y-%m-%d_%H%M')"
+#   local DATE="$(date '+%Y-%m-%d')"
+#   local FILE="$NOTES_DIR/$TS.md"
+#
+#   mkdir -p "$NOTES_DIR"
+#
+#   cat > "$FILE" <<EOF
+# # Journal — $DATE
+#
+# ## Context
+# - Location:
+# - Mood:
+# - Focus:
+#
+# ## Notes
+#
+# ## Reflection
+# EOF
+#
+#   vim "$FILE"
+# }
+
+# --------------------
+# Idea function with embedded template
+# idea() {
+#   local NOTES_DIR="$WIKI_ROOT/ideas"
+#   local TS="$(date '+%Y-%m-%d %H:%M:%S')"
+#   local ID="$(date +%s)-$(openssl rand -hex 2)"
+#   local FILE="$NOTES_DIR/$ID.md"
+#
+#   mkdir -p "$NOTES_DIR"
+#
+#   cat > "$FILE" <<EOF
+# ---
+# id: $ID
+# created: $TS
+# tags: []
+# ---
+#
+# # $ID
+#
+# ## Idea
+#
+# ## Links
+# - 
+# EOF
+#
+#   vim "$FILE"
+# }
+#
+
+
+ff_find_files() {
+    local dirs=(~/dev ~/.config)
+    find "${dirs[@]}" \
+        \( -name "node_modules" -o -name ".git" -o -name ".venv" \
+           -o -name "*.png" -o -name "*.jpg" -o -name "*.svg" -o -name "*.webp" -o -name "*.gif" -o -name "*.ico" \
+           -o -name "*.ttf" -o -name "*.woff" -o -name "*.woff2" -o -name "*.pfb" -o -name "*.hyb" -o -name "*.bcmap" \
+           -o -name "*.class" -o -name "*.so" -o -name "*.jar" -o -name "*.pyc" -o -name "*.tflite" -o -name "*.tgz" \
+           -o -path "*/leveldb/*" -o -name "*.dat" -o -name "*.lock" -o -name "*.db" -o -name "*.syms" -o -path "*/dist-info/*" -o -name "*.old" -o -name "*.map" \
+        \) -prune -o -type f -print 2>/dev/null | sed "s|^$HOME|~|"
+}
+
+fd_find_dirs_deep() {
+    local dirs=(~/dev ~/.config)
+    find "${dirs[@]}" \
+        \( -name "node_modules" -o -name ".git" -o -name ".venv" -o -name "lib"  \
+           -o -path "*/leveldb/*" -o -path "*/dist-info/*" \
+        \) -prune -o -type d -print 2>/dev/null | sed "s|^$HOME|~|"
+
+
+}
+
+ff_find_dirs_one_level() {
+    local dirs=(~/dev ~/.config)
+    find "${dirs[@]}" -maxdepth 1 \
+        \( -name "node_modules" -o -name ".git" -o -name ".venv" \
+           -o -path "*/leveldb/*" -o -path "*/dist-info/*" \
+        \) -prune -o -type d -print 2>/dev/null | sed "s|^$HOME|~|"
+}
+
+
+ff() {
+    local file
+    file=$(ff_find_files | fzf --exact --ignore-case --query="$1") || return
+    vim "$file"
+}
+
+fd() {
+    local dir
+    dir=$(ff_find_dirs_one_level | fzf --exact --ignore-case --query="$1") || return
+    vim "$dir"
+}
+
+
+ff_stats() {
+    ff_find_files | awk -F. 'NF>1 {ext[tolower($NF)]++} END {for (e in ext) if (ext[e]>10) print ext[e], e}' | sort -n
+}
+
+replaceHomeWithWaves(){
+     sed "s|^$HOME|~|"
+}
+
+
+#fp() {
+    #local selection
+    # Flatten the directories into a list of files
+    #selection=$(find "${projects[@]}" -maxdepth 0 -type d | sed "s|^$HOME|~|"  | fzf --exact --ignore-case --query="$1") || return
+    #code "$selection"
+#}
+fp() {
+    local selection
+		local projects=(~/dotfiles ~/dev/wiki)
+    selection=$(printf "%s\n" "${projects[@]}" | sed "s|^$HOME|~|" |  fzf --exact --ignore-case --query="$1") || return
+    code "$selection"
+
+}
+
+
+
+
+du_top10() {
+    local TARGET="/home/user"
+    local EXCLUDES="--exclude=.git --exclude=.venv"
+
+    echo "Top 10 largest files in $TARGET"
+    du -ah $TARGET $EXCLUDES 2>/dev/null \
+        | grep -v '/$' \
+        | sort -hr \
+        | head -n 10
+
+    echo
+    echo "Top 10 largest directories in $TARGET"
+    du -h --max-depth=1 $TARGET $EXCLUDES 2>/dev/null \
+        | sort -hr \
+        | head -n 10
+}
+
+live_clipboard_server() {
+    host_dir="$HOME/host-clipboard"
+    mkdir -p "$host_dir"
+    tmpfile="$host_dir/clipboard.html"
+    clip_txt="$host_dir/clipboard.txt"
+    port=3214
+
+    # Detect clipboard tool
+    if command -v wl-paste &>/dev/null; then
+        clipboard_cmd="wl-paste"
+        echo "Using wl-clipboard (wl-paste)."
+    elif command -v xclip &>/dev/null; then
+        clipboard_cmd="xclip -selection clipboard -o"
+        echo "Using xclip."
+    elif command -v xsel &>/dev/null; then
+        clipboard_cmd="xsel --clipboard --output"
+        echo "Using xsel."
+    else
+        echo "No supported clipboard tool found (wl-paste, xclip, or xsel)."
+        return 1
+    fi
+
+    # Function to write HTML for live updates
+    write_clipboard_html() {
+        local content="$1"
+        if grep -qi "<html" <<< "$content"; then
+            echo "$content" > "$tmpfile"
+        else
+            cat > "$tmpfile" <<EOF
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Live Clipboard</title>
+</head>
+<body>
+<pre id="clip"></pre>
+<script>
+let prevContent = '';
+async function update() {
+    try {
+        const resp = await fetch('clipboard.txt?_=' + Date.now());
+        const text = await resp.text();
+        if (text !== prevContent) {
+            prevContent = text;
+            document.getElementById('clip').textContent = text;
+        }
+    } catch(e) {
+        console.error(e);
+    }
+}
+setInterval(update, 500);
+update();
+</script>
+</body>
+</html>
+EOF
+        fi
+    }
+
+    # Initial clipboard write
+    echo "$($clipboard_cmd 2>/dev/null || echo "")" > "$clip_txt"
+    write_clipboard_html "$(cat "$clip_txt")"
+
+    # Start server
+    python3 -m http.server $port -d "$host_dir" &
+    server_pid=$!
+
+    url="http://localhost:$port/clipboard.html"
+    echo "Serving clipboard live at $url"
+    sleep 1
+    xdg-open "$url" &>/dev/null
+
+    prev=""
+    stop_loop=false
+    cleanup() {
+        stop_loop=true
+        kill $server_pid 2>/dev/null
+        rm -rf "$host_dir"
+        echo "Server stopped and temporary folder deleted."
+    }
+    trap cleanup INT TERM
+
+    # Live update loop
+    while ! $stop_loop; do
+        current=$($clipboard_cmd 2>/dev/null || echo "")
+        if [[ "$current" != "$prev" ]]; then
+            echo "$current" > "$clip_txt"
+            write_clipboard_html "$current"
+            prev="$current"
+        fi
+        sleep 0.5
+    done
+}
+
+
+
+
+
+# Todo
+
+todo() {
+    if [ -z "$1" ]; then
+        echo "Usage: todo <text>"
+        return 1
+    fi
+
+    curl -X POST 'https://todo-api.leanderziehm.com/texts' \
+         -H 'accept: application/json' \
+         -H 'Content-Type: application/json' \
+         -d "{\"text\": \"$1\"}"
+}
+
+llm() {
+curl -X 'POST' \
+  'https://llm.leanderziehm.com/chat/auto' \
+  -H 'accept: application/json' \
+  -H 'Content-Type: application/json' \
+  -d "{\"message\": \"$1\"}"
+}
+
+
+kali(){
+qemu-system-x86_64 \
+    -enable-kvm \
+    -m 6G \
+    -cpu host \
+    -smp 4,sockets=1,cores=4,threads=1 \
+    -drive file=/home/user/VMs/kali.qcow2,if=virtio,cache=writeback \
+    -net nic,model=virtio -net user,hostfwd=tcp::2222-:22 \
+    -vga virtio \
+    -display gtk,gl=on \
+    -usb -device usb-tablet
+}
+
+
+
+
+
+
+
+
+#  ============================================================
+#  TMUX
+#  ============================================================
+
+DEV_DIR="$HOME/dev"
+
+# List only top-level directories
+dirs=()
+while IFS= read -r -d $'\0' dir; do
+    dirs+=("$(basename "$dir")")
+done < <(find "$DEV_DIR" -maxdepth 1 -mindepth 1 -type d -print0)
+
+# Use FZF for exact matching only
+# --exact ensures direct matching
+selected=$(printf '%s\n' "${dirs[@]}" | fzf --exact --prompt="Select project dir: ")
+
+# Exit if no selection
+[[ -z "$selected" ]] && exit 0
+
+SESSION_NAME="$selected"
+SESSION_DIR="$DEV_DIR/$selected"
+
+# Check if tmux session already exists
+if tmux has-session -t "$SESSION_NAME" 2>/dev/null; then
+    echo "Session '$SESSION_NAME' already exists. Attaching..."
+    tmux attach -t "$SESSION_NAME"
+else
+    echo "Creating new tmux session '$SESSION_NAME' in $SESSION_DIR..."
+    tmux new-session -s "$SESSION_NAME" -c "$SESSION_DIR"
+fi
+

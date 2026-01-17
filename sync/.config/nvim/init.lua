@@ -2,6 +2,32 @@ vim.g.mapleader = " "
 vim.g.maplocalleader = " "
 
 
+
+
+
+--  ============================================================
+--  DEBUG
+--  ============================================================
+-- Press a key and it prints the string representation
+vim.keymap.set('n', '<F5>', function()
+  print(vim.fn.keytrans(vim.fn.getcharstr()))
+end, { noremap = true })
+
+
+
+
+--  ============================================================
+--  Unmap
+--  ============================================================
+
+-- Disable Shift+Arrow completely
+local opts = { noremap = true, silent = true }
+
+vim.keymap.set({'n','i','v'}, '<S-Up>', '<Nop>', opts)
+vim.keymap.set({'n','i','v'}, '<S-Down>', '<Nop>', opts)
+vim.keymap.set({'n','i','v'}, '<S-Left>' , '<Nop>', opts)
+vim.keymap.set({'n','i','v'}, '<S-Right>', '<Nop>', opts)
+
 -- Treat empty buffers as markdown. (for example when doing: nvim )
 vim.api.nvim_create_autocmd("BufEnter", {
   callback = function()
@@ -14,9 +40,6 @@ vim.api.nvim_create_autocmd("BufEnter", {
 
 
 
-vim.keymap.set("n", "<C-_>", function()
-  vim.cmd("normal! gcc")
-end, { noremap = true, silent = true })
 
 
 -- jk or kj to escape insert mode
@@ -42,6 +65,33 @@ vim.api.nvim_set_keymap('n', '<M-z>', ':set wrap! linebreak!<CR>', { noremap = t
 
 
 
+--  ============================================================
+--  Comment
+--  ============================================================
+-- Toggle comment on the current line using the filetype's commentstring
+local function toggle_comment()
+    local cs = vim.bo.commentstring
+    if cs == "" then return end  -- exit if no commentstring defined
+
+    -- extract the actual comment marker (e.g., "%s" -> remove it)
+    local marker = cs:gsub("%%s", ""):gsub("^%s*(.-)%s*$", "%1")
+
+    local row = vim.api.nvim_win_get_cursor(0)[1] - 1  -- 0-indexed
+    local line = vim.api.nvim_buf_get_lines(0, row, row + 1, false)[1]
+
+    -- Toggle comment
+    if line:match("^%s*" .. vim.pesc(marker)) then
+        -- Uncomment
+        line = line:gsub("^(%s*)" .. vim.pesc(marker) .. "%s?", "%1")
+    else
+        -- Comment
+        line = marker .. " " .. line
+    end
+
+    vim.api.nvim_buf_set_lines(0, row, row + 1, false, {line})
+end
+
+vim.keymap.set("n", "<C-/>", toggle_comment, { silent = true, desc = "Toggle Comment" })
 
 
 --  ------------------------------------------------------------
@@ -1476,3 +1526,27 @@ vim.keymap.set('n', '<leader><e>', ':tabnew | Oil<CR>', { desc = "Open Oil in ne
 --   vim.cmd("tabnew")  -- create new tab
 --   oil.open()
 -- end, { desc = "Open Oil in a new tab / switch if already open" })
+--
+-- vim.keymap.set("n", "<C-/>", "gcc<CR>", { noremap = true, silent = true })
+-- vim.keymap.set("n", "<C-,>", "gcc", { noremap = true, silent = true })
+-- -- vim.keymap.set("n", "<C-m>", "gcc<Esc>", { noremap = true, silent = true })
+--
+-- -- Using Comment.nvim API (recommended)
+-- vim.keymap.set("n", "<C-m>", function()
+--     require('Comment.api').toggle.linewise.current()
+-- end, { noremap = true, silent = true })
+-- vim.keymap.set("n", "<C-_>", "normal! gcc", { noremap = true, silent = true })
+
+-- Map Ctrl+/ to the same function as gcc
+-- Get the gcc callback
+-- local gcc_map = vim.api.nvim_get_keymap("n")
+-- local gcc_callback
+-- for _, m in ipairs(gcc_map) do
+--   if m.lhs == "gcc" and m.callback then
+--     gcc_callback = m.callback
+--     break
+--   end
+-- end
+
+-- Map Ctrl+m in normal mode
+-- vim.api.nvim_set_keymap('n', '<C-m>', toggle_comment, { noremap = true, silent = true })
