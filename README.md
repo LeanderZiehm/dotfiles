@@ -20,3 +20,13 @@ mkdir -p ~/.config/nvim
 # Install
 curl -fsSL https://raw.githubusercontent.com/LeanderZiehm/dotfiles/refs/heads/main/sync/.config/nvim/init.lua -o ~/.config/nvim/init.lua
 ```
+
+# Tmux
+
+```
+
+
+# Install
+curl -fsSL https://raw.githubusercontent.com/LeanderZiehm/dotfiles/refs/heads/main/sync/.tmux.conf -o ~/.tmux.conf
+
+```
