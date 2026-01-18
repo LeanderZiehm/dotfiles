@@ -22,9 +22,9 @@ complete -F _git_branches checkout
 #  TMUX
 #  ============================================================
 # Autostart tmux
-if [ -z "$TMUX" ]; then
-  exec tmux new-session -A -s dev
-fi
+# if [ -z "$TMUX" ]; then
+#   exec tmux new-session -A -s dev
+# fi
 
 
 tmux_fzf_dev_picker() {

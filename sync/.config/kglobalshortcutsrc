@@ -264,6 +264,9 @@ switch to next activity=none,,Switch to Next Activity
 switch to previous activity=none,,Switch to Previous Activity
 toggle do not disturb=none,,Toggle do not disturb
 
+[services][Alacritty.desktop]
+New=Ctrl+Alt+T\tMeta+T
+
 [services][code.desktop]
 _launch=Meta+V\tMeta+C
 
@@ -278,9 +281,6 @@ _launch=Meta+S\tAlt+Space
 
 [services][org.kde.spectacle.desktop]
 RecordRegion=Meta+Shift+R
-
-[services][org.wezfurlong.wezterm.desktop]
-_launch=Ctrl+Alt+T
 
 [services][systemsettings.desktop]
 _launch=Meta+Shift+K\tTools
