@@ -445,3 +445,4 @@ qemu-system-x86_64 \
 
 
 
+alias mark='. "/home/user/.local/share/mark/mark.sh"'
