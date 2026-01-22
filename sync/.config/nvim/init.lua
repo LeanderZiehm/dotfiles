@@ -255,53 +255,124 @@ vim.keymap.set("t", "<C-j>", toggle_terminal, { silent = true, desc = "Toggle te
 --  ============================================================
 --  VIM WIKI
 --  ============================================================
-
 local function smart_gf()
-	local line = vim.api.nvim_get_current_line()
-	local col = vim.fn.col(".") -- cursor column
-	local path = nil
+  local api = vim.api
+  local fn = vim.fn
 
-	-- find Markdown link under cursor
-	for link in line:gmatch("%[.-%]%((.-)%)") do
-		local s, e = line:find("%[.-%]%(" .. vim.pesc(link) .. "%)")
-		if s and col >= s and col <= e then
-			path = link
-			break
-		end
-	end
+  -- Get current line info
+  local row = api.nvim_win_get_cursor(0)[1]
+  local line = api.nvim_get_current_line()
+  local col = fn.col(".")
 
-	-- fallback to word under cursor
-	if not path then
-		path = vim.fn.expand("<cWORD>")
-	end
+  -- Get word under cursor
+  local word_start = col
+  local word_end = col
+  while word_start > 1 and line:sub(word_start - 1, word_start - 1):match("[%w_-]") do
+    word_start = word_start - 1
+  end
+  while word_end <= #line and line:sub(word_end, word_end):match("[%w_-]") do
+    word_end = word_end + 1
+  end
+  local word = line:sub(word_start, word_end - 1)
 
-	local buf_dir = vim.fn.expand("%:p:h")
-	local abs_path = vim.fn.fnamemodify(path, ":p")
+  if word == "" then
+    print("No word under cursor")
+    return
+  end
 
-	-- if file doesn't exist, treat as relative to current buffer
-	if vim.fn.filereadable(abs_path) == 0 then
-		abs_path = vim.fn.fnamemodify(buf_dir .. "/" .. path, ":p")
-	end
+  -- Determine folder path from nearest preceding headers
+  local headers = {}
+  for i = row, 1, -1 do
+    local l = api.nvim_buf_get_lines(0, i-1, i, false)[1]
+    local h = l:match("^(#+)%s*(.-)%s*$")
+    if h then
+      local level = #h
+      local name = l:match("^#+%s*(.-)%s*$"):gsub("%s+", "_"):gsub("[^%w_%-]", "")
+      -- only set if not already set, so we get the closest one
+      if not headers[level] then
+        headers[level] = name
+        -- clear deeper headers
+        for j = level + 1, 6 do headers[j] = nil end
+      end
+    end
+  end
 
-	-- create missing directories if needed
-	local dir = vim.fn.fnamemodify(abs_path, ":h")
-	if vim.fn.isdirectory(dir) == 0 then
-		vim.fn.mkdir(dir, "p") -- create parent directories
-	end
+  local path_parts = {}
+  for i = 1, 6 do
+    if headers[i] then
+      table.insert(path_parts, headers[i])
+    end
+  end
+  table.insert(path_parts, word .. ".md")
+  local path = table.concat(path_parts, "/")
 
-	-- create the file if it doesn't exist
-	if vim.fn.filereadable(abs_path) == 0 then
-		vim.fn.writefile({}, abs_path) -- create empty file
-	end
+  -- Create directories if needed
+  local dir = fn.fnamemodify(path, ":h")
+  if fn.isdirectory(dir) == 0 then
+    fn.mkdir(dir, "p")
+  end
 
-	-- finally, open it
-	vim.cmd("edit " .. vim.fn.fnameescape(abs_path))
+  -- Create file if it doesn't exist
+  if fn.filereadable(path) == 0 then
+    fn.writefile({}, path)
+  end
+
+  -- Replace word with Markdown link
+  local new_line = line:sub(1, word_start - 1)
+            .. "[" .. word .. "](" .. "./" .. path .. ")"
+            .. line:sub(word_end)
+  api.nvim_set_current_line(new_line)
+
+  -- Open file
+  vim.cmd("edit " .. fn.fnameescape(path))
 end
 
 vim.keymap.set("n", "<leader>cf", smart_gf, { noremap = true, silent = true })
 vim.keymap.set("n", "<leader>gf", smart_gf, { noremap = true, silent = true })
-vim.keymap.set("n", "<CR>", smart_gf, { noremap = true, silent = true })
+
+
+
+
 vim.keymap.set("n", "<BS>", "<C-o>", { noremap = true, silent = true })
+
+
+
+local function markdown_gf()
+  local line = vim.api.nvim_get_current_line()
+  local col = vim.fn.col(".")
+  -- Search for markdown link [text](path)
+  for start_pos, text, path in line:gmatch("()%[([^%]]+)%]%(([^%)]+)%)") do
+    local end_pos = start_pos + #("[" .. text .. "](" .. path .. ")") - 1
+    if col >= start_pos and col <= end_pos then
+      -- Open the file relative to current file
+      local current_file = vim.fn.expand("%:p:h")
+      local target = vim.fn.fnamemodify(current_file .. "/" .. path, ":p")
+      vim.cmd("edit " .. vim.fn.fnameescape(target))
+      return
+    end
+  end
+
+  -- Fallback to normal gf
+  vim.cmd("normal! gf")
+end
+
+vim.keymap.set("n", "<CR>", markdown_gf, { noremap = true, silent = true })
+
+-- Autosave Markdown files on BufLeave and TextChanged
+vim.api.nvim_create_autocmd({"BufLeave", "TextChanged", "TextChangedI"}, {
+    pattern = "*.md",
+    callback = function()
+        if vim.bo.modified then
+            vim.cmd("silent write")
+        end
+    end,
+})
+
+
+
+
+
+
 
 -- vim.keymap.set('n', '<leader>cf', function()
 --     local word = vim.fn.expand('<cWORD>')
