@@ -315,6 +315,9 @@ local function smart_gf()
   -- Create file if it doesn't exist
   if fn.filereadable(path) == 0 then
     fn.writefile({}, path)
+    -- Add first line as "# filename" where filename is just the base name without extension
+    local filename = word
+		fn.writefile({ "# " .. filename, "", "" }, path)
   end
 
   -- Replace word with Markdown link
@@ -325,21 +328,19 @@ local function smart_gf()
 
   -- Open file
   vim.cmd("edit " .. fn.fnameescape(path))
+	api.nvim_win_set_cursor(0, {3, 0})
 end
-
-vim.keymap.set("n", "<leader>cf", smart_gf, { noremap = true, silent = true })
-vim.keymap.set("n", "<leader>gf", smart_gf, { noremap = true, silent = true })
-
-
-
-
-vim.keymap.set("n", "<BS>", "<C-o>", { noremap = true, silent = true })
-
 
 
 local function markdown_gf()
   local line = vim.api.nvim_get_current_line()
   local col = vim.fn.col(".")
+  -- If the line is empty or only spaces, insert a new line
+  if line:match("^%s*$") then
+    vim.cmd("normal! o")
+    return
+  end
+
   -- Search for markdown link [text](path)
   for start_pos, text, path in line:gmatch("()%[([^%]]+)%]%(([^%)]+)%)") do
     local end_pos = start_pos + #("[" .. text .. "](" .. path .. ")") - 1
@@ -356,6 +357,22 @@ local function markdown_gf()
   vim.cmd("normal! gf")
 end
 
+
+-- Function to set Markdown-specific keymaps
+local function set_markdown_keymaps()
+  local local_opts = { noremap = true, silent = true, buffer = true }  -- buffer-local
+  vim.keymap.set("n", "<CR>", markdown_gf, local_opts)
+  vim.keymap.set("n", "<leader><CR>", smart_gf, local_opts)
+	vim.keymap.set("n", "<BS>", "<C-o>", local_opts)
+	vim.keymap.set("n", "<leader>cf", smart_gf, { noremap = true, silent = true })
+	vim.keymap.set("n", "<leader>gf", smart_gf, { noremap = true, silent = true })
+end
+
+-- Autocmd to trigger only for Markdown files
+vim.api.nvim_create_autocmd("FileType", {
+  pattern = { "markdown", "md" },
+  callback = set_markdown_keymaps,
+})
 vim.keymap.set("n", "<CR>", markdown_gf, { noremap = true, silent = true })
 
 -- Autosave Markdown files on BufLeave and TextChanged
