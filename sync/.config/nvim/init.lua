@@ -1011,19 +1011,19 @@ require("lazy").setup({
 			end, { desc = "[S]earch [N]eovim files" })
 		end,
 	},
-	{
-		"MeanderingProgrammer/render-markdown.nvim",
-		dependencies = { "nvim-treesitter/nvim-treesitter", "nvim-mini/mini.nvim" }, -- if you use the mini.nvim suite
-		-- dependencies = { 'nvim-treesitter/nvim-treesitter', 'nvim-mini/mini.icons' },        -- if you use standalone mini plugins
-		-- dependencies = { 'nvim-treesitter/nvim-treesitter', 'nvim-tree/nvim-web-devicons' }, -- if you prefer nvim-web-devicons
-		---@module 'render-markdown'
-		---@type render.md.UserConfig
-		opts = {
-
-			render_modes = { "v", "V" }, --'n', 't'
-			-- render_modes = {'v' },
-		},
-	},
+	-- {
+	-- 	"MeanderingProgrammer/render-markdown.nvim",
+	-- 	dependencies = { "nvim-treesitter/nvim-treesitter", "nvim-mini/mini.nvim" }, -- if you use the mini.nvim suite
+	-- 	-- dependencies = { 'nvim-treesitter/nvim-treesitter', 'nvim-mini/mini.icons' },        -- if you use standalone mini plugins
+	-- 	-- dependencies = { 'nvim-treesitter/nvim-treesitter', 'nvim-tree/nvim-web-devicons' }, -- if you prefer nvim-web-devicons
+	-- 	---@module 'render-markdown'
+	-- 	---@type render.md.UserConfig
+	-- 	opts = {
+	--
+	-- 		render_modes = { "v", "V" }, --'n', 't'
+	-- 		-- render_modes = {'v' },
+	-- 	},
+	-- },
 	-- {
 	--     "mason-org/mason.nvim",
 	--     opts = {}
@@ -1333,137 +1333,137 @@ require("lazy").setup({
 		end,
 	},
 
-	{
-		"nvimdev/dashboard-nvim",
-		event = "VimEnter",
-		dependencies = { "nvim-tree/nvim-web-devicons" },
-		config = function()
-			local dashboard = require("dashboard")
-
-			dashboard.setup({
-				theme = "doom",
-				config = {
-					header = { "", "", "", "", "", "", "", "", "", "", "" },
-					-- week_header = {
-					--   enable = true,
-					-- },
-
-					center = {
-						{
-							icon = "󰏓 ",
-							icon_hl = "Title",
-							desc = "Projects",
-							desc_hl = "String",
-							key = "p",
-							key_format = " %s",
-							action = "Telescope projects",
-						},
-						{
-							icon = "󰉓 ",
-							desc = "Oil File Explorer",
-							key = "e",
-							key_hl = "Number",
-							key_format = " %s",
-							action = "Oil",
-						},
-						{
-							icon = "󰈞 ",
-							desc = "Find Files",
-							key = "f",
-							key_hl = "Number",
-							key_format = " %s",
-							action = "Telescope find_files",
-						},
-						{
-							icon = "󰈢 ",
-							desc = "Recent Files",
-							key = "r",
-							key_format = " %s",
-							action = "Telescope oldfiles",
-						},
-						{
-							icon = "󰓩 ",
-							desc = "Buffers",
-							key = "b",
-							key_format = " %s",
-							action = "Telescope buffers",
-						},
-						{
-							icon = "󰈬 ",
-							desc = "Live Grep",
-							key = "g",
-							key_format = " %s",
-							action = "Telescope live_grep",
-						},
-
-						{
-							icon = "󰌌 ",
-							desc = "Keymaps",
-							key = "k",
-							key_format = " %s",
-							action = "Telescope keymaps",
-						},
-						{
-							icon = "󰒓 ",
-							desc = "Vim Options",
-							key = "o",
-							key_format = " %s",
-							action = "Telescope vim_options",
-						},
-						{
-							icon = "󰛢 ",
-							desc = "Commands",
-							key = "c",
-							key_format = " %s",
-							action = "Telescope commands",
-						},
-						{
-							icon = "󰋚 ",
-							desc = "Help",
-							key = "h",
-							key_format = " %s",
-							action = "Telescope help_tags",
-						},
-						{
-							icon = "󰏖 ",
-							desc = "Mason",
-							key = "m",
-							key_hl = "Number",
-							key_format = " %s",
-							action = "Mason",
-						},
-						{
-							icon = "󰒲 ",
-							desc = "Plugins",
-							key = "l",
-							key_format = " %s",
-							action = "Lazy",
-						},
-						{
-							icon = " ",
-							desc = "Edit Neovim Config",
-							key = "n",
-							key_hl = "Number",
-							key_format = " %s",
-							action = "edit $MYVIMRC",
-						},
-						-- {
-						--   icon = '󰙅 ',
-						--   desc = 'Quit',
-						--   key = 'q',
-						--   key_format = ' %s',
-						--   action = 'qa',
-						-- },
-					},
-
-					footer = {
-						--   '',
-						--   'Arch • Neovim • Telescope • Fast fingers',
-					},
-				},
-			})
-		end,
-	},
+	-- {
+	-- 	"nvimdev/dashboard-nvim",
+	-- 	event = "VimEnter",
+	-- 	dependencies = { "nvim-tree/nvim-web-devicons" },
+	-- 	config = function()
+	-- 		local dashboard = require("dashboard")
+	--
+	-- 		dashboard.setup({
+	-- 			theme = "doom",
+	-- 			config = {
+	-- 				header = { "", "", "", "", "", "", "", "", "", "", "" },
+	-- 				-- week_header = {
+	-- 				--   enable = true,
+	-- 				-- },
+	--
+	-- 				center = {
+	-- 					{
+	-- 						icon = "󰏓 ",
+	-- 						icon_hl = "Title",
+	-- 						desc = "Projects",
+	-- 						desc_hl = "String",
+	-- 						key = "p",
+	-- 						key_format = " %s",
+	-- 						action = "Telescope projects",
+	-- 					},
+	-- 					{
+	-- 						icon = "󰉓 ",
+	-- 						desc = "Oil File Explorer",
+	-- 						key = "e",
+	-- 						key_hl = "Number",
+	-- 						key_format = " %s",
+	-- 						action = "Oil",
+	-- 					},
+	-- 					{
+	-- 						icon = "󰈞 ",
+	-- 						desc = "Find Files",
+	-- 						key = "f",
+	-- 						key_hl = "Number",
+	-- 						key_format = " %s",
+	-- 						action = "Telescope find_files",
+	-- 					},
+	-- 					{
+	-- 						icon = "󰈢 ",
+	-- 						desc = "Recent Files",
+	-- 						key = "r",
+	-- 						key_format = " %s",
+	-- 						action = "Telescope oldfiles",
+	-- 					},
+	-- 					{
+	-- 						icon = "󰓩 ",
+	-- 						desc = "Buffers",
+	-- 						key = "b",
+	-- 						key_format = " %s",
+	-- 						action = "Telescope buffers",
+	-- 					},
+	-- 					{
+	-- 						icon = "󰈬 ",
+	-- 						desc = "Live Grep",
+	-- 						key = "g",
+	-- 						key_format = " %s",
+	-- 						action = "Telescope live_grep",
+	-- 					},
+	--
+	-- 					{
+	-- 						icon = "󰌌 ",
+	-- 						desc = "Keymaps",
+	-- 						key = "k",
+	-- 						key_format = " %s",
+	-- 						action = "Telescope keymaps",
+	-- 					},
+	-- 					{
+	-- 						icon = "󰒓 ",
+	-- 						desc = "Vim Options",
+	-- 						key = "o",
+	-- 						key_format = " %s",
+	-- 						action = "Telescope vim_options",
+	-- 					},
+	-- 					{
+	-- 						icon = "󰛢 ",
+	-- 						desc = "Commands",
+	-- 						key = "c",
+	-- 						key_format = " %s",
+	-- 						action = "Telescope commands",
+	-- 					},
+	-- 					{
+	-- 						icon = "󰋚 ",
+	-- 						desc = "Help",
+	-- 						key = "h",
+	-- 						key_format = " %s",
+	-- 						action = "Telescope help_tags",
+	-- 					},
+	-- 					{
+	-- 						icon = "󰏖 ",
+	-- 						desc = "Mason",
+	-- 						key = "m",
+	-- 						key_hl = "Number",
+	-- 						key_format = " %s",
+	-- 						action = "Mason",
+	-- 					},
+	-- 					{
+	-- 						icon = "󰒲 ",
+	-- 						desc = "Plugins",
+	-- 						key = "l",
+	-- 						key_format = " %s",
+	-- 						action = "Lazy",
+	-- 					},
+	-- 					{
+	-- 						icon = " ",
+	-- 						desc = "Edit Neovim Config",
+	-- 						key = "n",
+	-- 						key_hl = "Number",
+	-- 						key_format = " %s",
+	-- 						action = "edit $MYVIMRC",
+	-- 					},
+	-- 					-- {
+	-- 					--   icon = '󰙅 ',
+	-- 					--   desc = 'Quit',
+	-- 					--   key = 'q',
+	-- 					--   key_format = ' %s',
+	-- 					--   action = 'qa',
+	-- 					-- },
+	-- 				},
+	--
+	-- 				footer = {
+	-- 					--   '',
+	-- 					--   'Arch • Neovim • Telescope • Fast fingers',
+	-- 				},
+	-- 			},
+	-- 		})
+	-- 	end,
+	-- },
 
 	{
 		"ahmedkhalf/project.nvim",

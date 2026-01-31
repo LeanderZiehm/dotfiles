@@ -265,7 +265,7 @@ switch to previous activity=none,,Switch to Previous Activity
 toggle do not disturb=none,,Toggle do not disturb
 
 [services][Alacritty.desktop]
-New=Ctrl+Alt+T\tMeta+T
+New=Ctrl+Alt+T
 
 [services][bitwarden.desktop]
 _launch=Meta+B
@@ -276,8 +276,14 @@ _launch=Meta+C
 [services][google-chrome.desktop]
 _launch=Meta+G
 
+[services][net.local.wezterm-3.desktop]
+_launch=Meta+W
+
 [services][net.local.wezterm.desktop]
 _launch=Meta+Return
+
+[services][org.gnome.TextEditor.desktop]
+_launch=Meta+T
 
 [services][org.kde.krunner.desktop]
 _launch=Meta+S\tAlt+Space
