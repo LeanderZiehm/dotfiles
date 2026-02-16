@@ -124,7 +124,7 @@ vim.keymap.set({ "n", "v" }, "<leader>d", '"_d', { noremap = true, silent = true
 vim.keymap.set("i", "<C-v>", "<C-r>+", { silent = true })
 vim.keymap.set("n", "<C-v>", '"+p', { silent = true })
 vim.keymap.set("v", "<C-v>", '"+p', { silent = true })
-
+vim.keymap.set("v", "<C-z>", 'u', { silent = true })
 -- Function to copy like VSCode
 local function copy_like_vscode()
 	local mode = vim.fn.mode()
@@ -287,7 +287,7 @@ local function smart_gf()
     local h = l:match("^(#+)%s*(.-)%s*$")
     if h then
       local level = #h
-      local name = l:match("^#+%s*(.-)%s*$"):gsub("%s+", "_"):gsub("[^%w_%-]", "")
+      local name = l:match("^#+%s*(.-)%s*$"):gsub("%s+", "_"):gsub("[^%w_%-]", ""):lower()
       -- only set if not already set, so we get the closest one
       if not headers[level] then
         headers[level] = name
@@ -303,7 +303,7 @@ local function smart_gf()
       table.insert(path_parts, headers[i])
     end
   end
-  table.insert(path_parts, word .. ".md")
+  table.insert(path_parts, word:lower() .. ".md")
   local path = table.concat(path_parts, "/")
 
   -- Create directories if needed
@@ -797,43 +797,7 @@ require("lazy").setup({
 	--     end,
 	-- },
 	-- TREE SITTER
-	{ -- Highlight, edit, and navigate code
-		"nvim-treesitter/nvim-treesitter",
-		build = ":TSUpdate",
-		main = "nvim-treesitter.configs", -- Sets main module to use for opts
-		-- [[ Configure Treesitter ]] See `:help nvim-treesitter`
-		opts = {
-			ensure_installed = {
-				"bash",
-				"c",
-				"diff",
-				"html",
-				"lua",
-				"luadoc",
-				"markdown",
-				"markdown_inline",
-				"query",
-				"vim",
-				"vimdoc",
-			},
-			-- Autoinstall languages that are not installed
-			auto_install = true,
-			highlight = {
-				enable = true,
-				-- Some languages depend on vim's regex highlighting system (such as Ruby) for indent rules.
-				--  If you are experiencing weird indenting issues, add the language to
-				--  the list of additional_vim_regex_highlighting and disabled languages for indent.
-				additional_vim_regex_highlighting = { "ruby" },
-			},
-			indent = { enable = true, disable = { "ruby" } },
-		},
-		-- There are additional nvim-treesitter modules that you can use to interact
-		-- with nvim-treesitter. You should go explore a few and see what interests you:
-		--
-		--    - Incremental selection: Included, see `:help nvim-treesitter-incremental-selection-mod`
-		--    - Show your current context: https://github.com/nvim-treesitter/nvim-treesitter-context
-		--    - Treesitter + textobjects: https://github.com/nvim-treesitter/nvim-treesitter-textobjects
-	},
+
 
 	-- TELESCOPE
 	{ -- Fuzzy Finder (files, lsp, etc)
@@ -1465,6 +1429,23 @@ require("lazy").setup({
 	-- 	end,
 	-- },
 
+  {
+    "nvim-neo-tree/neo-tree.nvim",
+    branch = "v3.x",
+    dependencies = {
+      "nvim-lua/plenary.nvim",
+      "MunifTanjim/nui.nvim",
+      "nvim-tree/nvim-web-devicons", -- optional, but recommended
+    },
+    lazy = false, -- neo-tree will lazily load itself
+
+		config = function()
+			require("neo-tree").setup({})
+		end,
+
+	},
+
+
 	{
 		"ahmedkhalf/project.nvim",
 		dependencies = { "nvim-telescope/telescope.nvim" },
@@ -1499,5 +1480,10 @@ vim.api.nvim_set_keymap(
 	{ noremap = true, silent = true }
 )
 
-vim.keymap.set("n", "<C-e>", ":tabnew | Oil<CR>", { desc = "Open Oil in new tab (Ctrl+E)" })
-vim.keymap.set("n", "<leader><e>", ":tabnew | Oil<CR>", { desc = "Open Oil in new tab (Ctrl+E)" })
+
+
+vim.keymap.set("n", "<C-e>", ":Neotree toggle<CR>", { desc = "Toggle Neotree (Ctrl+E)" })
+vim.keymap.set("n", "<leader>e", ":Neotree toggle<CR>", { desc = "Toggle Neotree (Leader+E)" })
+
+-- vim.keymap.set("n", "<C-e>", ":tabnew | Oil<CR>", { desc = "Open Oil in new tab (Ctrl+E)" })
+-- vim.keymap.set("n", "<leader><e>", ":tabnew | Oil<CR>", { desc = "Open Oil in new tab (Ctrl+E)" })

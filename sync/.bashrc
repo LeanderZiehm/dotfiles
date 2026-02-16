@@ -1,17 +1,21 @@
-
-
 #  ============================================================
 #  Autocomplete
 #  ============================================================
-bind 'set show-all-if-ambiguous on'
-bind 'set menu-complete-display-prefix on'
-bind '"\t":menu-complete'
-bind '"\e[Z":menu-complete-backward'  # Shift-Tab to go backwards
-# Ctrl+R searches history incrementally (like Zsh)
-bind '"\C-r": reverse-search-history'
+if [[ -n $BASH_VERSION && $- == *i* ]]; then
+  set -o emacs 2>/dev/null || return  # WARNING: I HAVE NO IDEA WHAT THIS DOES? [CHATGPT GENERATED CODE]
+  bind 'set show-all-if-ambiguous on'
+  bind 'set menu-complete-display-prefix on'
+  bind '"\t":menu-complete'
+  bind '"\e[Z":menu-complete-backward'
+  bind '"\C-r": reverse-search-history'
+  bind '"\e[A": history-search-backward'
+  bind '"\e[B": history-search-forward'
+fi
 
-bind '"\e[A": history-search-backward'
-bind '"\e[B": history-search-forward'
+
+
+
+
 _git_branches() {
   COMPREPLY=($(compgen -W "$(git branch --all | sed 's#^\s*##' | sed 's#remotes/##')" -- "${COMP_WORDS[1]}"))
 }
@@ -79,7 +83,7 @@ tmux_project() {
 }
 
 # Disable X11 beep
-xset b off
+#xset b off
 
 # Store command history forever
 HISTFILE=~/.bash_history
@@ -416,13 +420,13 @@ todo() {
          -d "{\"text\": \"$1\"}"
 }
 
-llm() {
-curl -X 'POST' \
-  'https://llm.leanderziehm.com/chat/auto' \
-  -H 'accept: application/json' \
-  -H 'Content-Type: application/json' \
-  -d "{\"message\": \"$1\"}"
-}
+# llm() {
+# curl -X 'POST' \
+#   'https://llm.leanderziehm.com/chat/auto' \
+#   -H 'accept: application/json' \
+#   -H 'Content-Type: application/json' \
+#   -d "{\"message\": \"$1\"}"
+# }
 
 
 kali(){
@@ -504,3 +508,36 @@ if [ -f '/home/user/dev/repos/00_active-repos/devops/terraform/gcp/google-cloud-
 
 # The next line enables shell command completion for gcloud.
 if [ -f '/home/user/dev/repos/00_active-repos/devops/terraform/gcp/google-cloud-sdk/completion.bash.inc' ]; then . '/home/user/dev/repos/00_active-repos/devops/terraform/gcp/google-cloud-sdk/completion.bash.inc'; fi
+
+
+
+alias export-bw="sh /home/user/dev/repos/00_active-repos/devops/secrets/export-bw.sh"
+
+# docker
+export DOCKER_HOST=unix://$XDG_RUNTIME_DIR/docker.sock
+alias generate_readme='bash /home/user/dev/repos/00_active-repos/my-linux-setup/llm-cli/generate_readme.sh'
+alias llm='bash /home/user/dev/repos/00_active-repos/my-linux-setup/llm-cli/llm.sh'
+alias clipoff="systemctl --user stop clipboard-feedback.service"
+alias clipon="systemctl --user start clipboard-feedback.service"
+alias datagrip="nohup bash /home/user/installed/datagrip/bin/datagrip.sh >/dev/null 2>&1 &"
+
+
+pacls() {
+  pacman -Qi |
+  awk -F': *' '
+    /^Name/ { name=$2 }
+    /^Installed Size/ {
+      size=$2
+      split(size, a, " ")
+      value=a[1]
+      unit=a[2]
+
+      if (unit=="KiB") value/=1024
+      if (unit=="GiB") value*=1024
+
+      printf "%.2f\t%s\n", value, name
+    }
+  ' |
+  sort -n |
+  awk '{ printf "%-40s %.2f MB\n", $2, $1 }'
+}

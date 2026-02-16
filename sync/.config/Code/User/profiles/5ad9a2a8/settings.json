@@ -17,5 +17,7 @@
     ],
     "python.defaultInterpreterPath": "/home/user/venv/global/bin/python",
     "python.venvPath": "~/venv",
-    "explorer.confirmDelete": false
+    "explorer.confirmDelete": false,
+    "terminal.integrated.defaultProfile.linux": "bash",
+    "workbench.settings.showAISearchToggle": false
 }

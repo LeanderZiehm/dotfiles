@@ -63,7 +63,7 @@
         "editor.defaultFormatter": "esbenp.prettier-vscode"
     },
     "[json]": {
-        "editor.defaultFormatter": "esbenp.prettier-vscode"
+        "editor.defaultFormatter": "vscode.json-language-features"
     },
     "[css]": {
         "editor.defaultFormatter": "esbenp.prettier-vscode"
@@ -75,7 +75,8 @@
     "editor.pasteAs.preferences": [
         "markdown.link"
     ],
-    "terminal.integrated.defaultProfile.linux": "bash"
+    "terminal.integrated.defaultProfile.linux": "bash",
+    "chat.disableAIFeatures": true
 }
 
 //   //"editor.fontFamily": "monospace, 'Droid Sans Mono', 'monospace'"
