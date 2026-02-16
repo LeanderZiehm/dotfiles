@@ -4,18 +4,19 @@ set -euo pipefail
 DOTFILES_DIR="$(dirname "$(realpath "$0")")"
 
 DOTFILES=(
-		~/.config/nvim/init.lua
 		~/.bashrc
+		~/.config/nvim/init.lua
+		~/.wezterm.lua
 		~/.tmux.conf
 		~/.vimrc
     ~/.zshrc
     ~/.config/kglobalshortcutsrc
+		~/.config/Code/User/keybindings.json
+		~/.config/Code/User/settings.json
+		~/.config/Code/User/profiles/
     ~/.config/i3
     ~/.config/hypr
     ~/.config/yazi/
-    ~/.config/Code/User/keybindings.json
-    ~/.config/Code/User/settings.json
-    ~/.config/Code/User/profiles/
     ~/.config/dunst
     ~/.config/kitty
     ~/.config/flameshot
