@@ -30,3 +30,9 @@ curl -fsSL https://raw.githubusercontent.com/LeanderZiehm/dotfiles/refs/heads/ma
 curl -fsSL https://raw.githubusercontent.com/LeanderZiehm/dotfiles/refs/heads/main/sync/.tmux.conf -o ~/.tmux.conf
 
 ```
+
+
+# TODO
+
+under sync folder create a folder for each hostname to have unique configs per distro
+create a script which lets the user select which configs to use/download/get/install from the sync

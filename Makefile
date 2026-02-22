@@ -7,3 +7,6 @@ create-shortcut:
 	@echo "Alias added."
 test:
 	sh ./tests/test_no_duplication.sh
+
+get-wezterm:
+	cp ./sync/.wezterm.lua ~/.wezterm.lua
