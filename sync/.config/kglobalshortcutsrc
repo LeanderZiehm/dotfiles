@@ -239,7 +239,7 @@ _k_friendly_name=Power Management
 powerProfile=Battery,Battery\tMeta+B,Switch Power Profile
 
 [plasmashell]
-Slideshow Wallpaper Next Image=none,,Next Wallpaper Image
+Slideshow Wallpaper Next Image=none,none,Next Wallpaper Image
 _k_friendly_name=plasmashell
 activate application launcher=Alt+F1\tMeta,Meta\tAlt+F1,Activate Application Launcher
 activate task manager entry 1=none,Meta+1,Activate Task Manager Entry 1
@@ -271,7 +271,7 @@ switch to previous activity=none,,Switch to Previous Activity
 toggle do not disturb=none,,Toggle do not disturb
 
 [services][Alacritty.desktop]
-New=Ctrl+Alt+T
+New=Meta+T\tCtrl+Alt+T
 
 [services][bitwarden.desktop]
 _launch=Meta+B
@@ -298,7 +298,7 @@ _launch=Meta+S\tAlt+Space
 RecordRegion=Meta+Shift+R
 
 [services][systemsettings.desktop]
-_launch=Meta+Shift+K\tTools
+_launch=Meta+K\tMeta+Shift+K\tTools
 
 [wacomtablet]
 Map to fullscreen=none,Meta+Ctrl+F,Map to fullscreen

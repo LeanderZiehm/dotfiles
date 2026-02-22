@@ -136,19 +136,20 @@ alias pacman-installed="pacman -Qi | awk '/^Name/{name=$3} /^Installed Size/{siz
 
 # Vim / editor
 
-alias vim="nvim"
+# alias vim="nvim"
 alias bashrc="vim ~/.bashrc"
 alias nvimrc="vim ~/.config/nvim/init.lua"
+alias i3config="vim ~/.config/i3/config"
 #alias lvim="NVIM_APPNAME=LazyVim nvim"
 #alias svim="NVIM_APPNAME=SlimNvim nvim"
 alias vimrc="vim ~/.vimrc"
-alias zshrc="vim ~/.bashrc"
+alias zshrc="vim ~/.zshrc"
 alias slides="vim ~/dev/repos/00_active-repos/presentation-artificial-intelligence/slides.md"
 alias fzfman="apropos . | fzf --exact"
 alias manfzf="apropos . | fzf --exact"
 alias zoxide-debug="zoxide query -l -s"
 
-export EDITOR=nvim
+export EDITOR=vim
 
 
 #####
@@ -541,3 +542,6 @@ pacls() {
   sort -n |
   awk '{ printf "%-40s %.2f MB\n", $2, $1 }'
 }
+
+alias findnodemodules="find ~/dev -type d -name node_modules -prune -print"
+alias deletenodemodules="find ~/dev -type d -name node_modules -prune -exec rm -rf {} +"
