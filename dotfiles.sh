@@ -40,7 +40,7 @@ IGNORE=(
 
 HOSTNAME=$(hostname)
 echo $HOSTNAME
-sync_dir="$DOTFILES_DIR/sync/$HOSTNAME/"
+sync_dir="$DOTFILES_DIR/sync/$HOSTNAME-$USER/"
 mkdir -p "$sync_dir"
 
 
