@@ -10,3 +10,6 @@ test:
 
 get-wezterm:
 	cp ./sync/.wezterm.lua ~/.wezterm.lua
+
+get-bashrc:
+	cp ./sync/.bashrc ~/.bashrc

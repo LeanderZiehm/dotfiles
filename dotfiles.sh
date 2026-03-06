@@ -4,30 +4,42 @@ set -euo pipefail
 DOTFILES_DIR="$(dirname "$(realpath "$0")")"
 
 DOTFILES=(
-		~/.bashrc
-		~/.config/nvim/init.lua
-		~/.wezterm.lua
-		~/.tmux.conf
-		~/.vimrc
-    ~/.zshrc
-    ~/.config/kglobalshortcutsrc
-		~/.config/Code/User/keybindings.json
-		~/.config/Code/User/settings.json
-		~/.config/Code/User/profiles/
+	~/.bashrc
+    ~/.wezterm.lua
+    ~/.tmux.conf
+    ~/.config/nvim/init.lua
     ~/.config/i3
     ~/.config/hypr
-    ~/.config/yazi/
-    ~/.config/dunst
-    ~/.config/kitty
-    ~/.config/flameshot
+    ~/.zshrc
+    ~/.vimrc
 )
+
+	# ~/.bashrc
+    # ~/.config/nvim/init.lua
+    # ~/.wezterm.lua
+    # ~/.tmux.conf
+    # ~/.vimrc
+    # ~/.zshrc
+    # ~/.config/kglobalshortcutsrc
+    # ~/.config/Code/User/keybindings.json
+    # ~/.config/Code/User/settings.json
+    # ~/.config/Code/User/profiles/
+    # ~/.config/i3
+    # ~/.config/hypr
+    # ~/.config/yazi/
+    # ~/.config/dunst
+    # ~/.config/kitty
+    # ~/.config/flameshot
+
 
 IGNORE=(
     "*state.vscdb*"
     "*.backup*"
 )
 
-sync_dir="$DOTFILES_DIR/sync/"
+HOSTNAME=$(hostname)
+echo $HOSTNAME
+sync_dir="$DOTFILES_DIR/sync/$HOSTNAME/"
 mkdir -p "$sync_dir"
 
 
