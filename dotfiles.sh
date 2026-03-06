@@ -9,11 +9,12 @@ DOTFILES=(
     ~/.tmux.conf
     ~/.config/nvim/init.lua
     ~/.config/i3
-    ~/.config/hypr
     ~/.zshrc
-    ~/.vimrc
 )
 
+
+    # ~/.config/hypr
+    # ~/.vimrc
 	# ~/.bashrc
     # ~/.config/nvim/init.lua
     # ~/.wezterm.lua
