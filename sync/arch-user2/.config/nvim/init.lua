@@ -1,10 +1,22 @@
-
 -- =========================================================
 -- Clipboard & Mouse
 -- =========================================================
 
-vim.opt.clipboard = "unnamedplus"
 vim.opt.mouse = "a"
+
+
+-- za zf zM zR
+vim.opt.foldmethod = "indent"
+-- vim.opt.foldnestmax = 2
+-- vim.opt.foldlevelstart = 99
+
+
+
+-- vim.opt.clipboard = "unnamedplus"
+vim.keymap.set("n", "y", '"+y')
+vim.keymap.set("v", "y", '"+y')
+vim.keymap.set("n", "yy", '"+yy')
+
 
 -- Highlight Yanking
 vim.api.nvim_create_autocmd("TextYankPost", {
@@ -77,18 +89,40 @@ end
 vim.keymap.set({ "n", "v" }, "<C-c>", copy_like_vscode, { silent = true })
 
 
--- Restore cursor position when reopening a file
-vim.api.nvim_create_autocmd("BufReadPost", {
-	callback = function()
-		local mark = vim.api.nvim_buf_get_mark(0, '"') -- '"' is the last position mark
-		local line = mark[1]
-		local col = mark[2]
-		local last_line = vim.api.nvim_buf_line_count(0)
-		if line > 0 and line <= last_line then
-			vim.api.nvim_win_set_cursor(0, { line, col })
-		end
-	end,
-})
+
+--  ============================================================
+--  Terminal
+--  ============================================================
+vim.keymap.set("t", "<Esc>", [[<C-\><C-n>]], { silent = true })
+-- Terminal toggle with Ctrl-J
+local term_buf = nil
+local term_win = nil
+
+local function toggle_terminal()
+	if term_win and vim.api.nvim_win_is_valid(term_win) then
+		vim.api.nvim_win_close(term_win, true)
+		term_win = nil
+		return
+	end
+	vim.cmd("botright split")
+	vim.cmd("resize 15")
+
+	if term_buf and vim.api.nvim_buf_is_valid(term_buf) then
+		vim.api.nvim_win_set_buf(0, term_buf)
+	else
+		vim.cmd("terminal")
+		term_buf = vim.api.nvim_get_current_buf()
+	end
+
+	term_win = vim.api.nvim_get_current_win()
+	vim.cmd("startinsert")
+end
+
+vim.keymap.set("n", "<C-j>", toggle_terminal, { silent = true, desc = "Toggle terminal" })
+vim.keymap.set("t", "<C-j>", toggle_terminal, { silent = true, desc = "Toggle terminal" })
+
+
+
 
 
 
@@ -102,6 +136,24 @@ vim.keymap.set({ "n", "i", "v" }, "<S-Left>", "<Nop>", opts)
 vim.keymap.set({ "n", "i", "v" }, "<S-Right>", "<Nop>", opts)
 
 
+
+
+
+
+
+
+-- Restore cursor position when reopening a file
+vim.api.nvim_create_autocmd("BufReadPost", {
+	callback = function()
+		local mark = vim.api.nvim_buf_get_mark(0, '"') -- '"' is the last position mark
+		local line = mark[1]
+		local col = mark[2]
+		local last_line = vim.api.nvim_buf_line_count(0)
+		if line > 0 and line <= last_line then
+			vim.api.nvim_win_set_cursor(0, { line, col })
+		end
+	end,
+})
 
 -- =========================================================
 -- Core UI
@@ -274,3 +326,158 @@ vim.cmd("highlight LineNrAbove guifg="..colors.gray.." guibg="..colors.bg)
 vim.cmd("highlight LineNrBelow guifg="..colors.gray.." guibg="..colors.bg)
 
 --vim.o.guicursor = "n-v-c:block-Cursor/lCursor,i-ci-ve:ver25-CursorIM,r-cr:hor20-CursorReplace"
+
+
+
+-- TODO ADD LLM
+
+
+-- LLM integration
+-- Debug log helper
+local function log_to_file(content)
+  local f = io.open(vim.fn.expand("~/.llm_debug.log"), "a+")
+  if f then
+    f:write(os.date("%Y-%m-%d %H:%M:%S") .. " - " .. tostring(content) .. "\n")
+    f:close()
+  end
+end
+
+-- Robust debug log helper
+local function log_to_file(content)
+  local log_path = vim.fn.expand("~/.llm_debug.log")
+  -- prepend timestamp
+  local line = os.date("%Y-%m-%d %H:%M:%S") .. " - " .. tostring(content) .. "\n"
+  local f, err = io.open(log_path, "a+")
+  if not f then
+    -- fallback: print error in Neovim if file can't be opened
+    vim.notify("Failed to open log: " .. tostring(err), vim.log.levels.ERROR)
+    return
+  end
+  f:write(line)
+  f:close()
+end
+
+
+-- Escape JSON strings safely
+local function json_escape(str)
+  str = str:gsub("\\", "\\\\")
+  str = str:gsub('"', '\\"')
+  str = str:gsub("\n", "\\n")
+  return str
+end
+
+-- Send message to LLM API
+local function send_llm(message, system_prompt)
+  system_prompt = system_prompt or "You are a helpful assistant. Provide clear, concise, and accurate answers."
+
+  local json = string.format(
+    '{"message": "%s", "system_prompt": "%s"}',
+    json_escape(message),
+    json_escape(system_prompt)
+  )
+
+local cmd = string.format(
+  'curl -s -X POST https://llm.leanderziehm.com/chat/auto ' ..
+  "-H 'Content-Type: application/json' -H 'Accept: application/json' " ..
+  "-d '%s'",
+  json
+)  log_to_file("Curl command: " .. cmd)
+
+  local handle = io.popen(cmd)
+  if not handle then
+    log_to_file("Failed to run curl command")
+    return "Error: Could not run curl command."
+  end
+
+  local result = handle:read("*a")
+  handle:close()
+  log_to_file("Raw response: " .. tostring(result))
+
+  -- Parse JSON manually (basic)
+  local answer = result:match('"message"%s*:%s*"(.-)"') or result:match('"response"%s*:%s*"(.-)"')
+  if answer then
+    answer = answer:gsub('\\"','"'):gsub('\\\\','\\'):gsub('\\n','\n')
+  else
+    log_to_file("No 'message' or 'response' found in API output")
+    answer = "Error: No valid response from LLM API."
+  end
+
+  log_to_file("Parsed answer: " .. tostring(answer))
+  return answer
+end
+
+-- Open response in a new scratch buffer
+local function open_llm_response_in_new_buffer(response)
+  response = response or "No response received."
+  local buf = vim.api.nvim_create_buf(false, true) -- scratch buffer
+  vim.api.nvim_buf_set_lines(buf, 0, -1, false, vim.split(response, "\n"))
+  vim.api.nvim_buf_set_option(buf, "filetype", "markdown")
+  vim.api.nvim_set_current_buf(buf)
+end
+
+-- Main command triggered by keybinding
+local function prompt_and_get_llm()
+  vim.ui.input({ prompt = "LLM Message: " }, function(input)
+    if not input or input == "" then return end
+
+    local response = send_llm(input)
+    
+    -- Optional: notify in Neovim
+    vim.notify("LLM Response received", vim.log.levels.INFO)
+
+    open_llm_response_in_new_buffer(response)
+  end)
+end
+
+-- Keymap: <leader>llm
+vim.keymap.set("n", "<leader>llm", prompt_and_get_llm, { noremap = true, silent = true })
+
+
+local function send_selection_or_line_debug()
+  log_to_file("=== LLM Triggered ===")
+
+  local start_line, end_line
+  local mode = vim.fn.mode()
+  log_to_file("Current mode: " .. mode)
+
+  if mode == "v" or mode == "V" then
+    start_line = vim.fn.line("'<")
+    end_line = vim.fn.line("'>")
+    log_to_file("Visual selection: " .. start_line .. " -> " .. end_line)
+    -- Exit visual mode
+    vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes("<Esc>", true, false, true), "n", false)
+  else
+    start_line = vim.fn.line(".")
+    end_line = start_line
+    log_to_file("Normal mode: using line " .. start_line)
+  end
+
+  local lines = vim.api.nvim_buf_get_lines(0, start_line - 1, end_line, false)
+  local text = table.concat(lines, "\n")
+  log_to_file("Text to send:\n" .. text)
+  vim.notify("Sending text to LLM:\n" .. text, vim.log.levels.INFO)
+
+  local ok, response = pcall(send_llm, text)
+  if not ok then
+    log_to_file("send_llm error: " .. tostring(response))
+    vim.notify("Error sending to LLM: " .. tostring(response), vim.log.levels.ERROR)
+    return
+  end
+
+  log_to_file("LLM response:\n" .. response)
+  vim.notify("LLM response received", vim.log.levels.INFO)
+
+  -- Insert response below
+  vim.api.nvim_buf_set_lines(0, end_line, end_line, false, vim.split(response, "\n"))
+  log_to_file("Response inserted below line " .. end_line)
+end
+
+-- Keymap: Ctrl + Shift + Alt + Enter with debug
+vim.keymap.set("n", "<C-S-A-CR>", send_selection_or_line_debug, { noremap = true, silent = false })
+vim.keymap.set("v", "<C-S-A-CR>", send_selection_or_line_debug, { noremap = true, silent = false })
+
+
+
+
+
+

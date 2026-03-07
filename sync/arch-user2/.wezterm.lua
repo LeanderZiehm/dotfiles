@@ -1,24 +1,31 @@
 local wezterm = require 'wezterm'
 
 local config = {}
+
+-- font
+config.font = wezterm.font("FiraCode Nerd Font Mono")
+config.font_size = 12.5
+
 config.enable_tab_bar = false;
-config.window_decorations = "NONE";
+-- config.window_decorations = "NONE";
 config.enable_wayland = false
 config.window_close_confirmation = 'NeverPrompt'
 
 
-config.keys = {
+-- config.keys = {
+--
+-- { key = 'a', mods = 'CTRL', action = wezterm.action_callback(function(window, pane)
+--     local dims = pane:get_dimensions()
+--     local txt = pane:get_text_from_region(0, dims.scrollback_top, 0, dims.scrollback_top + dims.scrollback_rows)
+--     window:copy_to_clipboard(txt:match('^%s*(.-)%s*$')) -- trim leading and trailing whitespace
+--     end)
+-- }
+-- }
 
-{ key = 'a', mods = 'CTRL', action = wezterm.action_callback(function(window, pane)
-    local dims = pane:get_dimensions()
-    local txt = pane:get_text_from_region(0, dims.scrollback_top, 0, dims.scrollback_top + dims.scrollback_rows)
-    window:copy_to_clipboard(txt:match('^%s*(.-)%s*$')) -- trim leading and trailing whitespace
-    end)
-}
-}
 
-config.font = wezterm.font("FiraCode Nerd Font Mono")
-config.font_size = 12.5
+
+-- OVERRIDE CONFIG TO BE NOTHING
+-- config = {}
 
 return config
 

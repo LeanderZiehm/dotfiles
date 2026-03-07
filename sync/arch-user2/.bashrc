@@ -12,7 +12,9 @@ if [[ -n $BASH_VERSION && $- == *i* ]]; then
   bind '"\e[B": history-search-forward'
 fi
 
+# vim
 
+alias vim=nvim
 
 
 
@@ -90,6 +92,14 @@ HISTFILE=~/.bash_history
 HISTSIZE=999999999
 SAVEHIST=$HISTSIZE   # In Bash, just HISTSIZE is enough
 shopt -s histappend   # Append to history rather than overwrite
+
+# Increase history size
+#HISTSIZE=100000
+HISTFILESIZE=200000
+# Avoid duplicate entries
+HISTCONTROL=ignoredups:erasedups
+# Immediately append each command to the history file
+PROMPT_COMMAND='history -a; history -n'
 
 
 
@@ -514,7 +524,7 @@ alias export-bw="sh /home/user/dev/repos/00_active-repos/devops/secrets/export-b
 
 # docker
 export DOCKER_HOST=unix://$XDG_RUNTIME_DIR/docker.sock
-alias generate_readme='bash /home/user/dev/repos/00_active-repos/my-linux-setup/llm-cli/generate_readme.sh'
+alias generate_readme='bash /home/$USER/dev/my-linux-setup/llm-cli/generate_readme.sh'
 alias llm='bash /home/user/dev/repos/00_active-repos/my-linux-setup/llm-cli/llm.sh'
 alias clipoff="systemctl --user stop clipboard-feedback.service"
 alias clipon="systemctl --user start clipboard-feedback.service"
@@ -583,5 +593,11 @@ qarch() {
 
     # Call base function with config
     qemu_launch "$NAME" "$ISO" "$IMG" "$MEM" "$CPU"
+}
+
+
+recmp3(){
+ffmpeg -f pulse -i "$(pactl list short sources | awk '/\.monitor/ {print $2; exit}')" -ac 2 -b:a 192k strudel3.mp3
+
 }
 
