@@ -6,7 +6,7 @@ vim.opt.mouse = "a"
 
 
 -- za zf zM zR
-vim.opt.foldmethod = "indent"
+--vim.opt.foldmethod = "indent"
 -- vim.opt.foldnestmax = 2
 -- vim.opt.foldlevelstart = 99
 

@@ -601,3 +601,24 @@ ffmpeg -f pulse -i "$(pactl list short sources | awk '/\.monitor/ {print $2; exi
 
 }
 
+
+
+# Load Angular CLI autocompletion.
+source <(ng completion script)
+
+
+tmuxs() {
+  local session
+  session=$(tmux list-sessions -F "#{session_name}" 2>/dev/null | fzf)
+
+  if [ -z "$session" ]; then
+    echo "No session selected."
+    return
+  fi
+
+  if [ -n "$TMUX" ]; then
+    tmux switch-client -t "$session"
+  else
+    tmux attach -t "$session"
+  fi
+}
